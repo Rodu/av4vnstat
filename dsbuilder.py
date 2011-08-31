@@ -75,8 +75,8 @@ def build_hours_dataset():
                 continue # will skip hours with no traffic at all
                 
             date = datetime.datetime.utcfromtimestamp(float(data[2]))
-            rxMib = str(float(data[3]) / 1000)
-            txMib = str(float(data[4]) / 1000)
+            rxMib = str(round(float(data[3]) / 1024))
+            txMib = str(round(float(data[4]) / 1024))
             rxKib = data[3]
             txKib = data[4]
             

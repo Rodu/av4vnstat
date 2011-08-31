@@ -113,7 +113,7 @@ BYRO.vnstat.VNStat = function()
             
             x = function(d) { return d.x * w / mx; },
             labelx = function(d) { return p + x(d); },
-            labely = function(d,i) { return d.y; },
+            labely = function(d,i) { return (d.y > 0) ? d.y : ""; },
             labeltot = function(d,i) { return d.y + d.y0; },
             y0 = function(d) { return h - d.y0 * h / my; },
             y1 = function(d) { 
