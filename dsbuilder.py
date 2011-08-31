@@ -42,7 +42,7 @@ def main():
 def build_daily_dataset():
     jsdataset.write("this.data_daily = [")
     day_entries = lines_by_regexp('^d;', DAILY_DATASET_TYPE)
-    jsdataset.write("],\n")
+    jsdataset.write("];\n")
     jsdataset.write("this.day_entries = ")
     jsdataset.write(str(day_entries))
     jsdataset.write(";\n")
@@ -50,7 +50,7 @@ def build_daily_dataset():
 def build_monthly_dataset():
     jsdataset.write("this.data_monthly = [")
     entries = lines_by_regexp('^m;', MONTHLY_DATASET_TYPE)
-    jsdataset.write("],\n")
+    jsdataset.write("];\n")
     jsdataset.write("this.month_entries = ")
     jsdataset.write(str(entries))
     jsdataset.write(";\n")
@@ -58,7 +58,7 @@ def build_monthly_dataset():
 def build_topten_dataset():
     jsdataset.write("this.data_topten = [")
     entries = lines_by_regexp('^t;', TOPTEN_DATASET_TYPE)
-    jsdataset.write("],\n")
+    jsdataset.write("];\n")
     jsdataset.write("this.topten_entries = ")
     jsdataset.write(str(entries))
     jsdataset.write(";\n")
@@ -83,7 +83,7 @@ def build_hours_dataset():
             write_data_entry(HOURLY_DATASET_TYPE, date, rxMib, txMib, rxKib, txKib)
             
             entries += 1
-    jsdataset.write("],\n")
+    jsdataset.write("];\n")
     jsdataset.write("this.hour_entries = ")
     jsdataset.write(str(entries))
     jsdataset.write(";\n")
