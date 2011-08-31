@@ -1,3 +1,6 @@
+
+BYRO.vnstat.data = {};
+
 BYRO.vnstat.data.Data = function()
 {
 
