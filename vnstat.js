@@ -30,23 +30,30 @@ BYRO.vnstat.VNStat = function()
         document.getElementById("chart").innerHTML = "";
     };
     
+    /* TODO: ugly...
+     * The code should be reviewed. There should be an initialization
+     * phase and the variable declarations should be separate from their
+     * initialization to free the code from restrictive initialization
+     * and execution dependencies */
     this.draw = function(dsType)
     {
-        var dataset;
+        var dataset,
+        data_entries = 0;
         
+        switch(dsType)
+        {
+            case 0:
+                dataset = data.data_hourly;
+                data_entries = data.hour_entries;
+                break;
+            case 1:
+                dataset = data.data_daily;
+                data_entries = data.day_entries;
+                break;
+        }
+            
         var stream_layers = function(n, m, dsType, o) {
             if (arguments.length < 4) o = 0;
-            
-            switch(dsType)
-            {
-                case 0:
-                    dataset = data.data_hourly;
-                    break;
-                case 1:
-                    dataset = data.data_daily;
-                    break;
-            }
-          
               return d3.range(n).map(function() {
                   var a = getValue(arguments[1]), i;
                   return a.map(function(d, i) {
@@ -77,7 +84,7 @@ BYRO.vnstat.VNStat = function()
         };
         
         var n = 2, // number of layers
-            m = 6, // number of samples per layer
+            m = data_entries, // number of samples per layer
             chart_data = d3.layout.stack()(stream_layers(n, m, dsType, .1)),
             color = d3.interpolateRgb("#AEA8DA", "#60699F");
 

@@ -21,7 +21,7 @@ this.data_hourly = [{d: 0, time: "31/8", rx: 41, tx: 23},
 ];
 
 this.day_entries = 6;
-
+this.hour_entries = 6;
 //dataset = dataset_daily;
 
 };
