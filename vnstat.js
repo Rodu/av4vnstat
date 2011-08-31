@@ -50,6 +50,14 @@ BYRO.vnstat.VNStat = function()
                 dataset = data.data_daily;
                 data_entries = data.day_entries;
                 break;
+            case 2:
+                dataset = data.data_monthly;
+                data_entries = data.month_entries;
+                break;
+            case 3:
+                dataset = data.data_topten;
+                data_entries = data.topten_entries;
+                break;
         }
             
         var stream_layers = function(n, m, dsType, o) {
@@ -139,6 +147,7 @@ BYRO.vnstat.VNStat = function()
             .attr("x", p)
             .attr("y", h)
             .attr("height", 0)
+            //.attr("onmouseover", "alert('hello')")
           .transition()
             .delay(function(d, i) { return i * 10; })
             .attr("y", y1)
