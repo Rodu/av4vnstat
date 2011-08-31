@@ -1,0 +1,18 @@
+#topmenu {
+    font-family: arial, helvetica, verdana;
+    font-size:1.2em;
+    border: solid 1px #333242;
+    background-color:#DEDAFF;
+    padding: 10px;
+}
+#topmenu a {
+    
+}
+
+#chart {
+  font: 10px sans-serif;
+}
+
+line {
+  stroke: black;
+}

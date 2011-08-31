@@ -1,0 +1,5 @@
+
+NOTE:
+	The python dsbuilder.py is executed hourly by a cron job scheduled and
+	pointing to the file in this directory.
+
