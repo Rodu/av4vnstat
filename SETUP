@@ -1,0 +1,48 @@
+SETUP
+
+First of all it is necessary to install vnstat.
+On a Debian based Linux distribution this is done with a:
+
+$ sudo apt-get install vnstat
+
+Next we need to initialize the vnstat db and inform vnstat about the network card we want to record the traffic from.
+Assuming we want to monitor the eth0 (any interface can be monitored giving the proper name)
+we need to issue:
+
+$ sudo vnstat -u -i eth0
+
+At this point vnstat will start to monitor the network interface at regular intervals and
+will builld its own data file.
+To show the data grabbed so far we can give from the terminal the command:
+
+$ vnstat -i eth0
+
+Now we need to indicate in the python script 'dsbuilder.py' the same network interface
+at the line where the script calls vnstat to get the data output.
+
+We need to change the value 'eth0' indicated at the line:
+
+network_card = "eth0"
+
+to the one we gave to vnstat above during the initialization, if we are monitoring
+a different network interface.
+
+Once vnstat is installed we need to create a cron entry to run the python script that reads
+the vnstat data and transform them in the javascript data set we need for the visualization.
+To do this an entry in the crontab can be created where the script is executed each 15 minutes.
+
+$ crontab -e
+
+will open the cron editor and in there we can add the line:
+
+15 * * * * /home/pluto/run/dsbuilder.py
+
+Note the path needs to be changed to point to the python script properly.
+In the example we assume to have a folder named run under the pluto's home.
+
+Once all this is done and vnstat has enough data to show (after a while) we can run
+the vnstat.html and see the results in the Stacked Bars visualization.
+
+You can also lounch the example.html in the browser to see what the result could look like.
+
+

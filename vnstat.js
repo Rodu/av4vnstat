@@ -1,29 +1,29 @@
 /* @namespace */
-var BYRO;
+var RODU;
 
-if (!BYRO)
+if (!RODU)
 {
-    BYRO = {};
+    RODU = {};
 }
 else
 {
-    throw("'BYRO' already defined by other module.");
+    throw("'RODU' already defined by other module.");
 }
 
-if (!BYRO.vnstat)
+if (!RODU.vnstat)
 {
 	/** Package containing...  
 	 * @namespace */
-	BYRO.vnstat = {};
+	RODU.vnstat = {};
 }
 else
 {
-    throw("'BYRO.widgets' already defined by other module.");
+    throw("'RODU.vnstat' already defined by other module.");
 }
 
-BYRO.vnstat.VNStat = function()
+RODU.vnstat.VNStat = function()
 {
-    var data = new BYRO.vnstat.data.Data();
+    var data = new RODU.vnstat.data.Data();
     
     this.cleanup = function()
     {

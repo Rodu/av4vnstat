@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#       untitled.py
+#       dsbuilder.py
 #       
-#       Copyright 2011 Roberto S. <rob@marlix>
+#       Copyright (C) 2011 Rodu
 #       
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -16,17 +16,16 @@
 #       GNU General Public License for more details.
 #       
 #       You should have received a copy of the GNU General Public License
-#       along with this program; if not, write to the Free Software
-#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#       MA 02110-1301, USA.
+#       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
+import sys
 import datetime
 import commands
 
 def main():
 
-    jsdataset.write("BYRO.vnstat.data = {};\nBYRO.vnstat.data.Data = function(){\n")
+    jsdataset.write("RODU.vnstat.data = {};\nRODU.vnstat.data.Data = function(){\n")
     
     build_hours_dataset()
     build_daily_dataset()
@@ -136,7 +135,10 @@ if __name__ == '__main__':
     MONTHLY_DATASET_TYPE = 2
     TOPTEN_DATASET_TYPE = 3
     
-    vnstatdb = commands.getoutput("vnstat --dumpdb -i ppp0").split("\n")
-    jsdataset = open("/media/repository/dev/byro_vnstat/stream/data.js", 'w')
+    # change this to the network card name on which vnstat records traffic
+    network_card = "eth1"
+    
+    vnstatdb = commands.getoutput("vnstat --dumpdb -i " + network_card).split("\n")
+    jsdataset = open(sys.path[0] + "/data.js", 'w')
     
     main()
