@@ -41,7 +41,7 @@ Note the path needs to be changed to point to the python script properly.
 In the example we assume to have a folder named run under the pluto's home.
 
 Once all this is done and vnstat has enough data to show (after a while) we can run
-the vnstat.html and see the results in the Stacked Bars visualization.
+the av4vnstat.html and see the results in the Stacked Bars visualization.
 
 You can also lounch the example.html in the browser to see what the result could look like.
 

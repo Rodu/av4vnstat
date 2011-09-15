@@ -1,5 +1,7 @@
 README
 
+av4vnstat - Another Viewer for vnstat
+
 Visualizing vnstat data using the d3 data visualization library (http://bost.ocks.org/mike/)  
 
 The simple project is an experiment with the d3 (http://mbostock.github.com/d3/)
