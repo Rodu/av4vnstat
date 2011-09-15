@@ -2,8 +2,7 @@ README
 
 av4vnstat - Another Viewer for vnstat
 
-Visualizing vnstat data using the d3 data visualization library (http://bost.ocks.org/mike/)  
-
+Visualizing vnstat data using the d3 data visualization library.
 The simple project is an experiment with the d3 (http://mbostock.github.com/d3/)
 data visualization library.
 
@@ -17,4 +16,4 @@ a javascript data set to be used in the web page containing the chart.
 
 Using the d3 library the Stacked Bars visualization will be drawn using SVG.
 
-For setup instructions see the SETUP file
+For setup instructions see the SETUP file.
