@@ -136,7 +136,7 @@ if __name__ == '__main__':
     TOPTEN_DATASET_TYPE = 3
     
     # change this to the network card name on which vnstat records traffic
-    network_card = "eth1"
+    network_card = "ppp0"
     
     vnstatdb = commands.getoutput("vnstat --dumpdb -i " + network_card).split("\n")
     jsdataset = open(sys.path[0] + "/data.js", 'w')
