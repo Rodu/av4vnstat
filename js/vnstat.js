@@ -28,6 +28,7 @@ if (!RODU.namespaceConflict){
     RODU.vnstat.singleton = {};
     RODU.vnstat.util = {};
     RODU.vnstat.chart = {};
+    RODU.vnstat.data = {};
     
     RODU.vnstat.constants = {
         // Set this to true to see error messages in the browser web console
@@ -256,29 +257,57 @@ if (!RODU.namespaceConflict){
     RODU.vnstat.chart.Chart = function(){
           new Highcharts.Chart({
              chart: {
-                renderTo: 'hourlyDataChart',
-                type: 'bar'
+                renderTo: RODU.vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART,
+                type: 'spline'
              },
              title: {
                 text: 'Fruit Consumption'
              },
              xAxis: {
-                categories: ['Apples', 'Bananas', 'Oranges']
+                categories: RODU.vnstat.data.hourlyDataChart.categories
              },
              yAxis: {
                 title: {
                    text: 'Fruit eaten'
                 }
              },
-             series: [{
-                name: 'Jane',
-                data: [1, 0, 4]
-             }, {
-                name: 'John',
-                data: [5, 7, 3]
-             }]
+             series: RODU.vnstat.data.hourlyDataChart.series
           });
     };
+    
+    /**
+     * This data set will be generated and represents the data for
+     * the hourly chart.
+     */
+    RODU.vnstat.data.hourlyDataChart = {
+        series: [{
+			name: 'Tokyo',
+			marker: {
+				symbol: 'square'
+			},
+			data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, {
+				y: 26.5,
+				marker: {
+					symbol: 'url(../../graphics/sun.png)'
+				}
+			}, 23.3, 18.3, 13.9, 9.6]
+
+		}, {
+			name: 'London',
+			marker: {
+				symbol: 'diamond'
+			},
+			data: [{
+				y: 3.9,
+				marker: {
+					symbol: 'url(../../graphics/snow.png)'
+				}
+			}, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+		}],
+         
+         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+				'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+     };
     
     /**
      * The WidgetRenderer is used to render to HTML (or else) the widgets
@@ -315,22 +344,6 @@ if (!RODU.namespaceConflict){
             }
             
             document.getElementById(renderInfo.containerId).appendChild(ul);
-        };
-        
-        /**
-         * The method (shold) receive a command as parameter and render
-         * it in HTML.
-         */
-        this.renderCommand = function(command){
-            RODU.vnstat.util.debug("rendering command");
-            var output = [];
-            output.push("<a href=\"#\" onclick=\"\" title=\"");
-            output.push(command.description);
-            output.push("\">");
-            output.push(command.label);
-            output.push("</a>\n");
-            
-            RODU.vnstat.util.debug(output.join(""));
         };
     };
     
