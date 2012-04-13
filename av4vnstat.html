@@ -2,18 +2,28 @@
 <html>
   <head>
     <title>Stacked Bar Chart</title>
-    <script type="text/javascript" src="lib/d3.js"></script>
-    <script type="text/javascript" src="lib/d3.layout.js"></script>
-    <script type="text/javascript" src="vnstat.js"></script>
-    <script type="text/javascript" src="data.js"></script>
     <link type="text/css" rel="stylesheet" href="vnstat.css"/>
+    <script src="lib/jquery.min.js" type="text/javascript"></script>
+    <script src="lib/highcharts.js" type="text/javascript"></script>
+    <script src="js/vnstat.js" type="text/javascript"></script>
   </head>
   <body>
-    <div id="topmenu">Visualize data for: <a href="#" onclick="RODU.vnstat.vnStat.cleanup();RODU.vnstat.vnStat.draw(0);">hours</a>&nbsp;|&nbsp;<a href="#" onclick="RODU.vnstat.vnStat.cleanup();RODU.vnstat.vnStat.draw(1);">days</a>&nbsp;|&nbsp;<a href="#" onclick="RODU.vnstat.vnStat.cleanup();RODU.vnstat.vnStat.draw(2);">months</a>&nbsp;|&nbsp;<a href="#" onclick="RODU.vnstat.vnStat.cleanup();RODU.vnstat.vnStat.draw(3);">top ten days</a></div>
-    <div id="charttitle">All data expressed in MiB (rounded values).</div>
-    <div id="chart"></div>
-    <script type="text/javascript">
-        RODU.vnstat.vnStat = new RODU.vnstat.VNStat();
-    </script>
+    <div id="mainContainer">
+        <div id="header">Header</div>
+        <div id="body">
+            <div id="verticalTabContainer">verticalTabContainer</div>
+            <div id="contents">
+                <div id="contentsBasic">
+                    <div id="basicTabContainer" class="topTabContainer">topTabContainer</div>
+                    <div id="basicChartContainer" class="chartContainer">chartContainer</div>
+                </div>
+                <div id="contentsAdvanced">
+                    <div id="advancedTabContainer" class="topTabContainer">topTabContainer</div>
+                    <div id="advancedChartContainer" class="chartContainer">chartContainer</div>
+                </div>
+            </div>
+        </div>
+        <div id="footer">Footer</div>
+    </div>
   </body>
 </html>
