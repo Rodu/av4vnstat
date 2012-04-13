@@ -40,13 +40,20 @@ if (!RODU.namespaceConflict){
      * This would be the principal object of the program.
      */
     RODU.vnstat.VNStat = function(){
-        RODU.vnstat.singleton.widgetList = new RODU.vnstat.WidgetList();
+        var wl = RODU.vnstat.singleton.widgetList = new RODU.vnstat.WidgetList();
         var widgetRenderer = new RODU.vnstat.WidgetRenderer();
         
         widgetRenderer.renderCommandList({
             container: document.getElementById("verticalTabContainer"),
+            commandMapName: "mainCommandMap",
             listCssClass: "verticalTabList",
             listItemCssClass: "verticalTabItem"});
+        
+        widgetRenderer.renderCommandList({
+            container: document.getElementById("basicTabContainer"),
+            commandMapName: "basicChartsCommandMap",
+            listCssClass: "horizontalTabList",
+            listItemCssClass: "horizontalTabItem"});
     };
 
     /**
@@ -82,11 +89,22 @@ if (!RODU.namespaceConflict){
      * in the application.
      */
     RODU.vnstat.WidgetList = function(){
-        // Holds a map of initialized commands associating the command
-        // name to the command instance
+        // Holds a map of initialized commands for the main section,
+        // associating the command name to the command instance.
         this.commandMap = {
-            ShowBasicDataCommand: new RODU.vnstat.command.ShowBasicDataCommand,
-            ShowAdvancedDataCommand: new RODU.vnstat.command.ShowAdvancedDataCommand
+            mainCommandMap: {
+                ShowBasicDataCommand: new RODU.vnstat.command.ShowBasicDataCommand,
+                ShowAdvancedDataCommand: new RODU.vnstat.command.ShowAdvancedDataCommand
+            },
+            
+            basicChartsCommandMap: {
+                ShowHourlyUsageCommand: new RODU.vnstat.command.ShowHourlyUsageCommand,
+                ShowDailyUsageCommand: new RODU.vnstat.command.ShowDailyUsageCommand,
+                ShowMonthlyUsageCommand: new RODU.vnstat.command.ShowMonthlyUsageCommand,
+                ShowTopTenUsageCommand: new RODU.vnstat.command.ShowTopTenUsageCommand
+            },
+            
+            advancedChartsCommandMap: {}
         };
     };
     
@@ -99,7 +117,7 @@ if (!RODU.namespaceConflict){
                 "Basic data",
                 "Shows the basic data collected",
                 function(){ 
-                    console.log("executing command name 10"); 
+                    console.log("executing command name ShowBasicDataCommand"); 
                 }));
     };
     
@@ -112,7 +130,63 @@ if (!RODU.namespaceConflict){
                 "Advanced data",
                 "Shows the advanced calculated data",
                 function(){ 
-                    console.log("executing command name 20"); 
+                    console.log("executing command name ShowAdvancedDataCommand"); 
+                })
+        );
+    };
+    
+    /**
+     * Define the command used to show the basic hourly usage chart.
+     */
+    RODU.vnstat.command.ShowHourlyUsageCommand = function(){
+        return (
+            new RODU.vnstat.command.Command("ShowHourlyUsageCommand",
+                "Hours",
+                "Shows the data traffic by hour",
+                function(){ 
+                    console.log("executing command name ShowHourlyUsageCommand"); 
+                })
+        );
+    };
+    
+    /**
+     * Define the command used to show the basic daily usage chart.
+     */
+    RODU.vnstat.command.ShowDailyUsageCommand = function(){
+        return (
+            new RODU.vnstat.command.Command("ShowDailyUsageCommand",
+                "Days",
+                "Shows the data traffic by day",
+                function(){ 
+                    console.log("executing command name ShowDailyUsageCommand"); 
+                })
+        );
+    };
+    
+    /**
+     * Define the command used to show the basic monthly usage chart.
+     */
+    RODU.vnstat.command.ShowMonthlyUsageCommand = function(){
+        return (
+            new RODU.vnstat.command.Command("ShowMonthlyUsageCommand",
+                "Months",
+                "Shows the data traffic by month",
+                function(){ 
+                    console.log("executing command name ShowMonthlyUsageCommand"); 
+                })
+        );
+    };
+    
+    /**
+     * Define the command used to show the basic top 10 days usage chart.
+     */
+    RODU.vnstat.command.ShowTopTenUsageCommand = function(){
+        return (
+            new RODU.vnstat.command.Command("ShowTopTenUsageCommand",
+                "Top 10 days",
+                "Shows the top 10 days data traffic",
+                function(){ 
+                    console.log("executing command name ShowTopTenUsageCommand"); 
                 })
         );
     };
@@ -128,7 +202,7 @@ if (!RODU.namespaceConflict){
         this.renderCommandList = function(renderInfo){
             //console.log("rendering command list");
             var oCommand, command, ul, li, ahref,
-                commandMap = RODU.vnstat.singleton.widgetList.commandMap; //shortcut
+                commandMap = RODU.vnstat.singleton.widgetList.commandMap[renderInfo.commandMapName];
                 
             ul = renderInfo.container.appendChild(document.createElement("UL"));
             ul.setAttribute("class", renderInfo.listCssClass);
@@ -143,7 +217,7 @@ if (!RODU.namespaceConflict){
                 ahref = document.createElement("A");
                 ahref.setAttribute("href", "#");
                 ahref.setAttribute("onclick", 
-                    "RODU.vnstat.singleton.widgetList.commandMap['" + command.name + "'].execute()");
+                    "RODU.vnstat.singleton.widgetList.commandMap['" + renderInfo.commandMapName + "']['" + command.name + "'].execute()");
                 ahref.setAttribute("title", command.description);
                 ahref.appendChild(document.createTextNode(command.label));
                 

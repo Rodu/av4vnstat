@@ -44,6 +44,17 @@ DIV {
     padding: 0;
 }
 
+.horizontalTabList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.horizontalTabItem {
+    display: inline;
+    margin-left: 20px;
+}
+
 .verticalTabItem {
     text-decoration: none;
 }
