@@ -37,6 +37,17 @@ DIV {
     background-color: #dadada;
 }
 
+.verticalTabList {
+    list-style-type: none;
+    line-height: 40px;
+    margin: 0;
+    padding: 0;
+}
+
+.verticalTabItem {
+    text-decoration: none;
+}
+
 .topTabContainer {
     height: 40px;
 }
