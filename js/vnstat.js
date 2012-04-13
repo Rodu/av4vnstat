@@ -54,6 +54,12 @@ if (!RODU.namespaceConflict){
             commandMapName: "basicChartsCommandMap",
             listCssClass: "horizontalTabList",
             listItemCssClass: "horizontalTabItem"});
+        
+        widgetRenderer.renderCommandList({
+            container: document.getElementById("advancedTabContainer"),
+            commandMapName: "advancedChartsCommandMap",
+            listCssClass: "horizontalTabList",
+            listItemCssClass: "horizontalTabItem"});
     };
 
     /**
@@ -73,7 +79,7 @@ if (!RODU.namespaceConflict){
             // the label will be shown in the UI
             label: (label || "N/A"),
             // the description could be shown as a tooltip in the UI
-            description: (description || "N/A"),
+            description: (description || ""),
             /**
              * The method will execute some functionality.
              * 
@@ -104,7 +110,9 @@ if (!RODU.namespaceConflict){
                 ShowTopTenUsageCommand: new RODU.vnstat.command.ShowTopTenUsageCommand
             },
             
-            advancedChartsCommandMap: {}
+            advancedChartsCommandMap: {
+                ShowDataLeftCommand: new RODU.vnstat.command.ShowDataLeftCommand
+            }
         };
     };
     
@@ -117,7 +125,8 @@ if (!RODU.namespaceConflict){
                 "Basic data",
                 "Shows the basic data collected",
                 function(){ 
-                    console.log("executing command name ShowBasicDataCommand"); 
+                    console.log("executing command name ShowBasicDataCommand");
+                    
                 }));
     };
     
@@ -127,7 +136,7 @@ if (!RODU.namespaceConflict){
     RODU.vnstat.command.ShowAdvancedDataCommand = function(){
         return (
             new RODU.vnstat.command.Command("ShowAdvancedDataCommand",
-                "Advanced data",
+                "Advanced monitoring",
                 "Shows the advanced calculated data",
                 function(){ 
                     console.log("executing command name ShowAdvancedDataCommand"); 
@@ -187,6 +196,20 @@ if (!RODU.namespaceConflict){
                 "Shows the top 10 days data traffic",
                 function(){ 
                     console.log("executing command name ShowTopTenUsageCommand"); 
+                })
+        );
+    };
+    
+    /**
+     * Define the command used to show the chart for remaining data (data left).
+     */
+    RODU.vnstat.command.ShowDataLeftCommand = function(){
+        return (
+            new RODU.vnstat.command.Command("ShowDataLeftCommand",
+                "Data left",
+                "Shows the amount of data still available",
+                function(){ 
+                    console.log("executing command name ShowDataLeftCommand"); 
                 })
         );
     };
