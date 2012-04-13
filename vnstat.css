@@ -30,6 +30,10 @@ DIV {
     
 }
 
+.chartsContainer {
+    display: none;
+}
+
 #verticalTabContainer {
     float: left;
     width: 200px;
@@ -65,6 +69,12 @@ DIV {
 
 .chartContainer {
    
+}
+
+.chart {
+    width: 100%;
+    height: 400px;
+    display: none;
 }
 
 #footer {

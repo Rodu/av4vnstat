@@ -26,12 +26,39 @@ if (!RODU.namespaceConflict){
     RODU.vnstat.command = {};
     // here will save instances that need to be shared among multiple objects
     RODU.vnstat.singleton = {};
+    RODU.vnstat.util = {};
+    RODU.vnstat.chart = {};
+    
+    RODU.vnstat.constants = {
+        // Set this to true to see error messages in the browser web console
+        DEBUG: true,
         
+        // Mapping of document elements ids to (pseudo) constants
+        ELEMENT_ID: {
+            CONTAINERS: {
+                BASIC_DATA_CHARTS: "basicDataCharts",
+                ADVANCED_MONITORING_CHARTS: "advancedMonitoringCharts"
+            },
+            
+            CHARTS: {
+                HOURLY_DATA_CHART: "hourlyDataChart",
+                DAILY_DATA_CHART: "dailyDataChart",
+                MONTHLY_DATA_CHART: "monthlyDataChart",
+                TOP_TEN_DATA_CHART: "topTenDataChart"
+            }
+        }
+    };
+    
     /**
      * We use jQuery here like it would be the program main.
      */
-    $(document).ready(function(){
-        //console.log("No namespace conflict...");
+    $(window).load(function(){
+        RODU.vnstat.util.debug("-------------------------------------");
+        RODU.vnstat.util.debug("No namespace conflict");
+        
+        // Instantiating some singletons
+        RODU.vnstat.singleton.widgetManager = new RODU.vnstat.WidgetManager;
+        
         new RODU.vnstat.VNStat();
     }); // end jQuery ready call
 
@@ -44,19 +71,19 @@ if (!RODU.namespaceConflict){
         var widgetRenderer = new RODU.vnstat.WidgetRenderer();
         
         widgetRenderer.renderCommandList({
-            container: document.getElementById("verticalTabContainer"),
+            containerId: "verticalTabContainer",
             commandMapName: "mainCommandMap",
             listCssClass: "verticalTabList",
             listItemCssClass: "verticalTabItem"});
         
         widgetRenderer.renderCommandList({
-            container: document.getElementById("basicTabContainer"),
+            containerId: "basicTabContainer",
             commandMapName: "basicChartsCommandMap",
             listCssClass: "horizontalTabList",
             listItemCssClass: "horizontalTabItem"});
         
         widgetRenderer.renderCommandList({
-            container: document.getElementById("advancedTabContainer"),
+            containerId: "advancedTabContainer",
             commandMapName: "advancedChartsCommandMap",
             listCssClass: "horizontalTabList",
             listItemCssClass: "horizontalTabItem"});
@@ -104,10 +131,10 @@ if (!RODU.namespaceConflict){
             },
             
             basicChartsCommandMap: {
-                ShowHourlyUsageCommand: new RODU.vnstat.command.ShowHourlyUsageCommand,
-                ShowDailyUsageCommand: new RODU.vnstat.command.ShowDailyUsageCommand,
-                ShowMonthlyUsageCommand: new RODU.vnstat.command.ShowMonthlyUsageCommand,
-                ShowTopTenUsageCommand: new RODU.vnstat.command.ShowTopTenUsageCommand
+                ShowHourlyChartCommand: new RODU.vnstat.command.ShowHourlyChartCommand,
+                ShowDailyChartCommand: new RODU.vnstat.command.ShowDailyChartCommand,
+                ShowMonthlyChartCommand: new RODU.vnstat.command.ShowMonthlyChartCommand,
+                ShowTopTenChartCommand: new RODU.vnstat.command.ShowTopTenChartCommand
             },
             
             advancedChartsCommandMap: {
@@ -125,8 +152,9 @@ if (!RODU.namespaceConflict){
                 "Basic data",
                 "Shows the basic data collected",
                 function(){ 
-                    console.log("executing command name ShowBasicDataCommand");
-                    
+                    RODU.vnstat.util.debug("Executing command name ShowBasicDataCommand");
+                    RODU.vnstat.singleton.widgetManager.showContainer(
+                        RODU.vnstat.constants.ELEMENT_ID.CONTAINERS.BASIC_DATA_CHARTS);
                 }));
     };
     
@@ -139,7 +167,9 @@ if (!RODU.namespaceConflict){
                 "Advanced monitoring",
                 "Shows the advanced calculated data",
                 function(){ 
-                    console.log("executing command name ShowAdvancedDataCommand"); 
+                    RODU.vnstat.util.debug("Executing command name ShowAdvancedDataCommand");
+                    RODU.vnstat.singleton.widgetManager.showContainer(
+                        RODU.vnstat.constants.ELEMENT_ID.CONTAINERS.ADVANCED_MONITORING_CHARTS);
                 })
         );
     };
@@ -147,13 +177,17 @@ if (!RODU.namespaceConflict){
     /**
      * Define the command used to show the basic hourly usage chart.
      */
-    RODU.vnstat.command.ShowHourlyUsageCommand = function(){
+    RODU.vnstat.command.ShowHourlyChartCommand = function(){
         return (
-            new RODU.vnstat.command.Command("ShowHourlyUsageCommand",
+            new RODU.vnstat.command.Command("ShowHourlyChartCommand",
                 "Hours",
                 "Shows the data traffic by hour",
                 function(){ 
-                    console.log("executing command name ShowHourlyUsageCommand"); 
+                    RODU.vnstat.util.debug("Executing command name ShowHourlyChartCommand");
+                    RODU.vnstat.singleton.widgetManager.showChart(
+                        RODU.vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART);
+                    // Draws the chart
+                    new RODU.vnstat.chart.Chart;
                 })
         );
     };
@@ -161,13 +195,15 @@ if (!RODU.namespaceConflict){
     /**
      * Define the command used to show the basic daily usage chart.
      */
-    RODU.vnstat.command.ShowDailyUsageCommand = function(){
+    RODU.vnstat.command.ShowDailyChartCommand = function(){
         return (
-            new RODU.vnstat.command.Command("ShowDailyUsageCommand",
+            new RODU.vnstat.command.Command("ShowDailyChartCommand",
                 "Days",
                 "Shows the data traffic by day",
                 function(){ 
-                    console.log("executing command name ShowDailyUsageCommand"); 
+                    RODU.vnstat.util.debug("Executing command name ShowDailyChartCommand");
+                    RODU.vnstat.singleton.widgetManager.showChart(
+                        RODU.vnstat.constants.ELEMENT_ID.CHARTS.DAILY_DATA_CHART);
                 })
         );
     };
@@ -175,13 +211,13 @@ if (!RODU.namespaceConflict){
     /**
      * Define the command used to show the basic monthly usage chart.
      */
-    RODU.vnstat.command.ShowMonthlyUsageCommand = function(){
+    RODU.vnstat.command.ShowMonthlyChartCommand = function(){
         return (
-            new RODU.vnstat.command.Command("ShowMonthlyUsageCommand",
+            new RODU.vnstat.command.Command("ShowMonthlyChartCommand",
                 "Months",
                 "Shows the data traffic by month",
                 function(){ 
-                    console.log("executing command name ShowMonthlyUsageCommand"); 
+                    RODU.vnstat.util.debug("Executing command name ShowMonthlyChartCommand"); 
                 })
         );
     };
@@ -189,13 +225,13 @@ if (!RODU.namespaceConflict){
     /**
      * Define the command used to show the basic top 10 days usage chart.
      */
-    RODU.vnstat.command.ShowTopTenUsageCommand = function(){
+    RODU.vnstat.command.ShowTopTenChartCommand = function(){
         return (
-            new RODU.vnstat.command.Command("ShowTopTenUsageCommand",
+            new RODU.vnstat.command.Command("ShowTopTenChartCommand",
                 "Top 10 days",
                 "Shows the top 10 days data traffic",
                 function(){ 
-                    console.log("executing command name ShowTopTenUsageCommand"); 
+                    RODU.vnstat.util.debug("Executing command name ShowTopTenChartCommand"); 
                 })
         );
     };
@@ -209,9 +245,39 @@ if (!RODU.namespaceConflict){
                 "Data left",
                 "Shows the amount of data still available",
                 function(){ 
-                    console.log("executing command name ShowDataLeftCommand"); 
+                    RODU.vnstat.util.debug("executing command name ShowDataLeftCommand"); 
                 })
         );
+    };
+    
+    /**
+     * Defined a Chart object of basic type.
+     */
+    RODU.vnstat.chart.Chart = function(){
+          new Highcharts.Chart({
+             chart: {
+                renderTo: 'hourlyDataChart',
+                type: 'bar'
+             },
+             title: {
+                text: 'Fruit Consumption'
+             },
+             xAxis: {
+                categories: ['Apples', 'Bananas', 'Oranges']
+             },
+             yAxis: {
+                title: {
+                   text: 'Fruit eaten'
+                }
+             },
+             series: [{
+                name: 'Jane',
+                data: [1, 0, 4]
+             }, {
+                name: 'John',
+                data: [5, 7, 3]
+             }]
+          });
     };
     
     /**
@@ -223,16 +289,16 @@ if (!RODU.namespaceConflict){
          * The method renders to HTML the list of commands defined.
          */
         this.renderCommandList = function(renderInfo){
-            //console.log("rendering command list");
+            RODU.vnstat.util.debug("Rendering command list " + renderInfo.commandMapName);
             var oCommand, command, ul, li, ahref,
                 commandMap = RODU.vnstat.singleton.widgetList.commandMap[renderInfo.commandMapName];
                 
-            ul = renderInfo.container.appendChild(document.createElement("UL"));
+            ul = document.createElement("UL");
             ul.setAttribute("class", renderInfo.listCssClass);
             
             for (oCommand in commandMap){
-                //console.log(widgetList.commandList[i].label);
                 command = commandMap[oCommand];
+                RODU.vnstat.util.debug("- Instantiating command " + command.name);
                 
                 li = document.createElement("LI");
                 li.setAttribute("class", renderInfo.listItemCssClass);
@@ -248,7 +314,7 @@ if (!RODU.namespaceConflict){
                 ul.appendChild(li);
             }
             
-            renderInfo.container.appendChild(ul);
+            document.getElementById(renderInfo.containerId).appendChild(ul);
         };
         
         /**
@@ -256,7 +322,7 @@ if (!RODU.namespaceConflict){
          * it in HTML.
          */
         this.renderCommand = function(command){
-            //console.log("rendering command");
+            RODU.vnstat.util.debug("rendering command");
             var output = [];
             output.push("<a href=\"#\" onclick=\"\" title=\"");
             output.push(command.description);
@@ -264,7 +330,67 @@ if (!RODU.namespaceConflict){
             output.push(command.label);
             output.push("</a>\n");
             
-            console.log(output.join(""));
+            RODU.vnstat.util.debug(output.join(""));
         };
     };
+    
+    /**
+     * Manipulates some properties related to the widget appearance.
+     */
+    RODU.vnstat.WidgetManager = function(){
+        // Workaround for this...
+        var self = this,
+        
+        // Private method to hide all the ids in the received dictionary    
+        hideAll = function(dictionary){
+            RODU.vnstat.util.debug("Hiding all containers in dictionary...");
+            var containerId;
+            for (containerId in dictionary){
+                // hiding all containers
+                self.hide(dictionary[containerId]);
+            }
+        };
+        
+        // Shows the element registered with the id received
+        this.show = function(elementId){
+            RODU.vnstat.util.debug("Showing element with id " + elementId);
+            document.getElementById(elementId).style.display = "block";
+        };
+        
+        // The method hides all the containers and only shows the one
+        // matching the received id
+        this.showContainer = function(elementId){
+            // First we hide all the containers
+            hideAll(RODU.vnstat.constants.ELEMENT_ID.CONTAINERS);
+            // Showing the container by id
+            this.show(elementId);
+        };
+        
+        // The method hides all the chart containers and only shows the one
+        // matching the received id
+        this.showChart = function(elementId){
+            // First we hide all the other charts
+            hideAll(RODU.vnstat.constants.ELEMENT_ID.CHARTS);
+            this.show(elementId);
+        };
+        
+        // Hides the element registered with the id received
+        this.hide = function(elementId){
+            RODU.vnstat.util.debug("Hiding element with id " + elementId);
+            document.getElementById(elementId).style.display = "none";
+        };
+    };
+    
+    /**
+     * Utility function to show debug messages depending on the value
+     * of the DEBUG constant.
+     */
+    RODU.vnstat.util.debug = function(message){
+        var timestamp;
+        if (RODU.vnstat.constants.DEBUG){
+            timestamp = "[ " + new Date().getTime() + " ] ";
+            console.log(timestamp + message);
+        }
+    };
+    
 } // end check on namespace conflict
