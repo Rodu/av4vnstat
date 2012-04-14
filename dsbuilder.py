@@ -22,11 +22,11 @@ import re
 import sys
 import datetime
 import commands
+import operator
 
 def main():
 
     build_hours_dataset()
-    
     #build_daily_dataset()
     #build_monthly_dataset()
     #build_topten_dataset()
@@ -38,51 +38,166 @@ def main():
     return 0
 
 def build_hours_dataset():
+    # The chart name desired
+    CHART_DATASET_NAME = "hourlyDataChart"
     # Field position in the vnstat dataset
-    HOURS_FIELD = 1
-    RX_KIB_FIELD = 3
-    TX_KIB_FIELD = 4
+    DATETIME_FIELD = 0
+    RX_KIB_FIELD = 1
+    TX_KIB_FIELD = 2
+    arrRxMib = []
+    arrTxMib = []
+    rxMib = ""
+    txMib = ""
+    dataList = get_hourly_data_array()
     
-    # Creating the data object in the respective namespace
-    jsdataset.write("RODU.vnstat.data.hourlyDataChart = {\n")
+    for data in dataList:
+        dateutc = datetime.datetime.utcfromtimestamp(float(data[DATETIME_FIELD]))
+        timeref = "Date.UTC(" + str(dateutc.year) + ","
+        # Months are one based but we want them zero based
+        timeref = timeref + str(dateutc.month - 1) + ","
+        timeref = timeref + str(dateutc.day) + ","
+        timeref = timeref + str(dateutc.hour) + ","
+        timeref = timeref + str(dateutc.minute) + ","
+        timeref = timeref + str(dateutc.second) + ")"
+        # Calculating MiB from KiB rounded to 2 decimal digits
+        rxMib = str(round(data[RX_KIB_FIELD], 2))
+        txMib = str(round(data[TX_KIB_FIELD], 2))
+        
+        arrRxMib.append([timeref, rxMib])
+        arrTxMib.append([timeref, txMib])
+    
+    #print(str(arrTxMib).replace("'", ""))
+    jsdataset.write("RODU.vnstat.data.")
+    jsdataset.write(CHART_DATASET_NAME)
+    jsdataset.write(" = {\n")
     # Opening the series filed
     jsdataset.write("\tseries: [{\n")
     jsdataset.write("\t\tname: 'Downloaded MiB',\n")
-    jsdataset.write("\t\tmarker: { symbol: 'square' },\n")
+    jsdataset.write("\t\tmarker: { symbol: 'square' },\n\t\tdata: ")
+    jsdataset.write(str(arrRxMib).replace("'", ""))
+    jsdataset.write("\n\t},{\n")
     
-    hours = ""
-    rxMib = "\t\tdata: ["
-    txMib = "\t\tdata: ["
+    jsdataset.write("\t\tname: 'Uploaded MiB',\n")
+    jsdataset.write("\t\tmarker: { symbol: 'diamond' },\n\t\tdata: ")
+    jsdataset.write(str(arrTxMib).replace("'", ""))
+    jsdataset.write("\n\t}],\n")
+    # closing the object
+    jsdataset.write("\n};\n")
+
+def build_daily_dataset():
+    # Field position in the vnstat dataset
+    DAYS_FIELD = 2
+    RX_MIB_FIELD = 3
+    TX_MIB_FIELD = 4
+    RX_KIB_FIELD = 5
+    TX_KIB_FIELD = 6
+    
+    build_line_chart_dataset("dailyDataChart", "^d;", DAYS_FIELD, RX_MIB_FIELD, TX_MIB_FIELD, RX_KIB_FIELD, TX_KIB_FIELD)
+
+def build_line_chart_dataset(chartDataSetName, timePattern, 
+        timePatternField, rxMiBField, txMiBField, rxKiBField, txKiBField):
+    # Creating the data object in the respective namespace
+    jsdataset.write("RODU.vnstat.data.")
+    jsdataset.write(chartDataSetName)
+    jsdataset.write(" = {\n")
+    
+    # Opening the series filed
+    jsdataset.write("\tseries: [{\n")
+    
+    timeref = ""
+    # To provide data properly to the charting library I need to sort
+    # entries by date ascending. Initially they come just in the opposite order.
+    # The two following arrays will contain the data and will be sorted accordingly.
+    arrRxMib = []
+    yestrArrRxMib = []
+    
+    arrTxMib = []
+    
+    rxMib = ""
+    txMib = ""
     
     for line in vnstatdb:
-        m = re.match('^h;', line)
+        m = re.match(timePattern, line)
         if (m is not None):
             # here I have a data line to read
             data = line.split(';')
-            # will skip hours with no traffic at all
-            if (data[RX_KIB_FIELD] != "0" and data[TX_KIB_FIELD] != "0"):
-                #hours = hours + str(datetime.datetime.utcfromtimestamp(int(data[HOURS_FIELD]))) + ","
-                hours = hours + str(data[HOURS_FIELD]) + ","
-                # Calculating MiB from KiB rounded to 2 decimal digits
-                rxMib = rxMib + str(round(float(data[RX_KIB_FIELD]) / 1024, 2)) + ","
-                txMib = txMib + str(round(float(data[TX_KIB_FIELD]) / 1024, 2)) + ","
-            
+            # will skip timeref with no traffic at all
+            if (data[timePatternField] != "0"):
+                dateutc = datetime.datetime.utcfromtimestamp(float(data[timePatternField]))
+                timeref = "Date.UTC(" + str(dateutc.year) + ","
+                # Months are one based but we want them zero based
+                timeref = timeref + str(dateutc.month - 1) + ","
+                timeref = timeref + str(dateutc.day)
+                
+                if (timePattern == "^h;"):
+                    #timeref = timeref + data[timePatternField] + ","
+                    timeref = timeref + "," + str(dateutc.hour) + ","
+                    timeref = timeref + str(dateutc.minute) + ","
+                    timeref = timeref + str(dateutc.second) + "),"
+                    
+                    print("Y:" + str(dateutc.day))
+                    print(datetime.datetime.now().day)
+                    if (dateutc.day < datetime.datetime.now().day):
+                        yestrArrRxMib.append([timeref + str(round(float(data[rxKiBField]) / 1024, 2))])
+                    else:
+                        # Calculating MiB from KiB rounded to 2 decimal digits
+                        arrRxMib.append([timeref + str(round(float(data[rxKiBField]) / 1024, 2))])
+                        arrTxMib.append([timeref + str(round(float(data[txKiBField]) / 1024, 2))])
+                        #txMib = txMib + str(round(float(data[txKiBField]) / 1024, 2)) + ","
+                else:
+                    timeref = timeref + "),"
+                    # Reading the MiB from data appending the KiB value as well
+                    arrRxMib.insert(0, [timeref + str(data[rxMiBField]) + "." + str(data[rxKiBField])])
+                    arrTxMib.insert(0, [timeref + str(data[txMiBField]) + "." + str(data[txKiBField])])
+    
+    if (len(yestrArrRxMib) > 0):
+        arrRxMib.insert(0, yestrArrRxMib)
+    
+    rxMib = "\t\tdata: " + str(arrRxMib).replace("'", "")
+    txMib = "\t\tdata: " + str(arrTxMib).replace("'", "")
+    
+    jsdataset.write("\t\tname: 'Downloaded MiB',\n")
+    jsdataset.write("\t\tmarker: { symbol: 'square' },\n")
     jsdataset.write(rxMib)
-    jsdataset.write("]\n\t},{\n")
+    jsdataset.write("\n\t},{\n")
+    
     jsdataset.write("\t\tname: 'Uploaded MiB',\n")
     jsdataset.write("\t\tmarker: { symbol: 'diamond' },\n")
     jsdataset.write(txMib)
-    # Closing the series field
-    jsdataset.write("]\n\t}],\n")
+    jsdataset.write("\n\t}],\n")
     
-    jsdataset.write("\tcategories: [")
-    jsdataset.write(hours)
-    jsdataset.write("]\n")
+    #jsdataset.write("\tcategories: [")
+    #jsdataset.write(timeref)
+    #jsdataset.write("]\n")
     
     # closing the object
     jsdataset.write("\n};\n")
+
+def get_hourly_data_array():
+    TIME_PATTERN = "^h;"
+    DATETIME_FIELD = 2
+    RX_KIB_FIELD = 3
+    TX_KIB_FIELD = 4
     
-def build_daily_dataset():
+    data = []
+    for line in vnstatdb:
+        m = re.match(TIME_PATTERN, line)
+        if (m is not None):
+            # here I have a data line to read
+            dataEntry = line.split(';')
+            #dateutc = datetime.datetime.utcfromtimestamp(float(dataEntry[DATETIME_FIELD]))
+            dateutc = long(dataEntry[DATETIME_FIELD])
+            # Let's ignore hours with no traffic recorded
+            if (dateutc != 0):
+                rxMib = float(dataEntry[RX_KIB_FIELD]) / 1024
+                txMib = float(dataEntry[TX_KIB_FIELD]) / 1024
+                # Appending data
+                data.append([dateutc, rxMib, txMib])
+    
+    # Sorting the data by datetime ascending before returning them
+    return sorted(data,key=operator.itemgetter(0))
+    
+def build_daily_dataset_old():
     jsdataset.write("this.data_daily = [")
     day_entries = lines_by_regexp('^d;', DAILY_DATASET_TYPE)
     jsdataset.write("];\n")

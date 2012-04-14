@@ -188,7 +188,7 @@ if (!RODU.namespaceConflict){
                     RODU.vnstat.singleton.widgetManager.showChart(
                         RODU.vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART);
                     // Draws the chart
-                    new RODU.vnstat.chart.Chart;
+                    new RODU.vnstat.chart.HourlyDataChart;
                 })
         );
     };
@@ -205,6 +205,8 @@ if (!RODU.namespaceConflict){
                     RODU.vnstat.util.debug("Executing command name ShowDailyChartCommand");
                     RODU.vnstat.singleton.widgetManager.showChart(
                         RODU.vnstat.constants.ELEMENT_ID.CHARTS.DAILY_DATA_CHART);
+                    // Draws the chart
+                    new RODU.vnstat.chart.DailyDataChart;
                 })
         );
     };
@@ -252,9 +254,9 @@ if (!RODU.namespaceConflict){
     };
     
     /**
-     * Defined a Chart object of basic type.
+     * Defined a HourlyDataChart object.
      */
-    RODU.vnstat.chart.Chart = function(){
+    RODU.vnstat.chart.HourlyDataChart = function(){
           new Highcharts.Chart({
              chart: {
                 renderTo: RODU.vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART,
@@ -264,14 +266,56 @@ if (!RODU.namespaceConflict){
                 text: 'Last 24 Hours Usage'
              },
              xAxis: {
-                categories: RODU.vnstat.data.hourlyDataChart.categories
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    hour: '%H:%M'
+                }
              },
              yAxis: {
                 title: {
                    text: 'Traffic in MiB'
                 }
              },
+             tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        Highcharts.dateFormat('%e. %b at %H:%M', this.x) +' - '+ this.y + ' MiB';
+                }
+            },
              series: RODU.vnstat.data.hourlyDataChart.series
+          });
+    };
+    
+    /**
+     * Defined a DailyDataChart object.
+     */
+    RODU.vnstat.chart.DailyDataChart = function(){
+          new Highcharts.Chart({
+            chart: {
+                renderTo: RODU.vnstat.constants.ELEMENT_ID.CHARTS.DAILY_DATA_CHART,
+                type: 'spline'
+            },
+            title: {
+                text: 'Last 30 Days Usage'
+            },
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    day: '%e. %b',
+                }
+            },
+            yAxis: {
+                title: {
+                   text: 'Traffic in MiB'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y;
+                }
+            },
+            series: RODU.vnstat.data.dailyDataChart.series
           });
     };
     
