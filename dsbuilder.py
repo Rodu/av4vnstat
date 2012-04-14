@@ -24,22 +24,15 @@ import datetime
 import commands
 import operator
 
-def main():
-
-    build_hours_dataset()
-    #build_daily_dataset()
-    #build_monthly_dataset()
-    #build_topten_dataset()
+# **********************************************************************
+# The function creates the dataset for the hourly and daily data collected
+# and generates the Javascript to be used in the respective charts.
+#
+def build_linear_chart_dataset(chartDataSetName):
+    global LINEAR_CHART_TYPE
+    global HOURS_CHART_DATASET_NAME
     
-    #jsdataset.write("\n};\n")
-    
-    jsdataset.close()
-    
-    return 0
-
-def build_hours_dataset():
-    # The chart name desired
-    CHART_DATASET_NAME = "hourlyDataChart"
+    dataList = []
     # Field position in the vnstat dataset
     DATETIME_FIELD = 0
     RX_KIB_FIELD = 1
@@ -48,8 +41,15 @@ def build_hours_dataset():
     arrTxMib = []
     rxMib = ""
     txMib = ""
-    dataList = get_hourly_data_array()
     
+    parameters = {}
+    if (chartDataSetName == HOURS_CHART_DATASET_NAME):
+        parameters["TIME_PATTERN"] = "^h;"
+        parameters["DATETIME_FIELD"] = 2
+        parameters["RX_KIB_FIELD"] = 3
+        parameters["TX_KIB_FIELD"] = 4
+        dataList = get_linear_data_array(parameters)
+        
     for data in dataList:
         dateutc = datetime.datetime.utcfromtimestamp(float(data[DATETIME_FIELD]))
         timeref = "Date.UTC(" + str(dateutc.year) + ","
@@ -66,25 +66,17 @@ def build_hours_dataset():
         arrRxMib.append([timeref, rxMib])
         arrTxMib.append([timeref, txMib])
     
-    #print(str(arrTxMib).replace("'", ""))
-    jsdataset.write("RODU.vnstat.data.")
-    jsdataset.write(CHART_DATASET_NAME)
-    jsdataset.write(" = {\n")
-    # Opening the series filed
-    jsdataset.write("\tseries: [{\n")
-    jsdataset.write("\t\tname: 'Downloaded MiB',\n")
-    jsdataset.write("\t\tmarker: { symbol: 'square' },\n\t\tdata: ")
-    jsdataset.write(str(arrRxMib).replace("'", ""))
-    jsdataset.write("\n\t},{\n")
-    
-    jsdataset.write("\t\tname: 'Uploaded MiB',\n")
-    jsdataset.write("\t\tmarker: { symbol: 'diamond' },\n\t\tdata: ")
-    jsdataset.write(str(arrTxMib).replace("'", ""))
-    jsdataset.write("\n\t}],\n")
-    # closing the object
-    jsdataset.write("\n};\n")
+    # Let's write results to file
+    write_JS_data_object(LINEAR_CHART_TYPE,
+        chartDataSetName,
+        str(arrRxMib).replace("'", ""),
+        str(arrTxMib).replace("'", ""))
 
-def build_daily_dataset():
+# **********************************************************************
+# The function creates the dataset for the hourly data collected and
+# generates the Javascript to be used in the chart.
+#
+def build_days_dataset():
     # Field position in the vnstat dataset
     DAYS_FIELD = 2
     RX_MIB_FIELD = 3
@@ -173,103 +165,77 @@ def build_line_chart_dataset(chartDataSetName, timePattern,
     # closing the object
     jsdataset.write("\n};\n")
 
-def get_hourly_data_array():
-    TIME_PATTERN = "^h;"
-    DATETIME_FIELD = 2
-    RX_KIB_FIELD = 3
-    TX_KIB_FIELD = 4
-    
+# **********************************************************************
+# In dealing with the vnstat database format we need to do some adjustments
+# to the data in order to be consumed by the chart library.
+#
+# We need to sort them in ascending order and we will remove entries
+# with no data at all.
+#
+def get_linear_data_array(parameters):
     data = []
     for line in vnstatdb:
-        m = re.match(TIME_PATTERN, line)
+        m = re.match(parameters["TIME_PATTERN"], line)
         if (m is not None):
             # here I have a data line to read
             dataEntry = line.split(';')
             #dateutc = datetime.datetime.utcfromtimestamp(float(dataEntry[DATETIME_FIELD]))
-            dateutc = long(dataEntry[DATETIME_FIELD])
+            dateutc = long(dataEntry[parameters["DATETIME_FIELD"]])
             # Let's ignore hours with no traffic recorded
             if (dateutc != 0):
-                rxMib = float(dataEntry[RX_KIB_FIELD]) / 1024
-                txMib = float(dataEntry[TX_KIB_FIELD]) / 1024
+                rxMib = float(dataEntry[parameters["RX_KIB_FIELD"]]) / 1024
+                txMib = float(dataEntry[parameters["TX_KIB_FIELD"]]) / 1024
                 # Appending data
                 data.append([dateutc, rxMib, txMib])
     
     # Sorting the data by datetime ascending before returning them
     return sorted(data,key=operator.itemgetter(0))
+
+# **********************************************************************
+# The write_JS_data_object generates the Javascript data set expected
+# by the chart type.
+# 
+def write_JS_data_object(chartType, chartDatasetName, strRxMib, strTxMib):
+    global LINEAR_CHART_TYPE
     
-def build_daily_dataset_old():
-    jsdataset.write("this.data_daily = [")
-    day_entries = lines_by_regexp('^d;', DAILY_DATASET_TYPE)
-    jsdataset.write("];\n")
-    jsdataset.write("this.day_entries = ")
-    jsdataset.write(str(day_entries))
-    jsdataset.write(";\n")
-
-def build_monthly_dataset():
-    jsdataset.write("this.data_monthly = [")
-    entries = lines_by_regexp('^m;', MONTHLY_DATASET_TYPE)
-    jsdataset.write("];\n")
-    jsdataset.write("this.month_entries = ")
-    jsdataset.write(str(entries))
-    jsdataset.write(";\n")
-
-def build_topten_dataset():
-    jsdataset.write("this.data_topten = [")
-    entries = lines_by_regexp('^t;', TOPTEN_DATASET_TYPE)
-    jsdataset.write("];\n")
-    jsdataset.write("this.topten_entries = ")
-    jsdataset.write(str(entries))
-    jsdataset.write(";\n")
-
-def lines_by_regexp(regexp, datasetType):
-    entries = 0
-    for line in vnstatdb:
-        m = re.match(regexp, line)
-        if (m is not None):
-            m = re.search(';1$', line)
-            if (m is not None):
-                # here I have a data line to read
-                data = line.split(';')
-                date = datetime.datetime.utcfromtimestamp(float(data[2]))
-                datestring = ""
-                rxMib = data[3]
-                txMib = data[4]
-                rxKib = data[5]
-                txKib = data[6]
-                
-                write_data_entry(datasetType, date, rxMib, txMib, rxKib, txKib)
-                
-                entries += 1
-    return entries
-                
-def write_data_entry(datasetType, date, rxMib, txMib, rxKib, txKib):
-    jsdataset.write("{time: ")
-    jsdataset.write("\"")
+    jsdataset.write("RODU.vnstat.data.")
+    jsdataset.write(chartDatasetName)
+    jsdataset.write(" = {\n")
     
-    if (datasetType == HOURLY_DATASET_TYPE):
-        jsdataset.write(str(date.hour))
+    if (chartType == LINEAR_CHART_TYPE):        
+        # Opening the series filed
+        jsdataset.write("\tseries: [{\n")
+        jsdataset.write("\t\tname: 'Downloaded MiB',\n")
+        jsdataset.write("\t\tmarker: { symbol: 'square' },\n\t\tdata: ")
+        jsdataset.write(strRxMib)
+        jsdataset.write("\n\t},{\n")
         
-    elif (datasetType == DAILY_DATASET_TYPE or datasetType == TOPTEN_DATASET_TYPE):
-        jsdataset.write(str(date.day))
-        jsdataset.write("/")
-        jsdataset.write(str(date.month))
-        
-    elif (datasetType == MONTHLY_DATASET_TYPE):
-        jsdataset.write(str(date.month))
-        jsdataset.write("/")
-        jsdataset.write(str(date.year))
-        
-    jsdataset.write("\", rx: ")
-    jsdataset.write(rxMib)
-    jsdataset.write(", tx: ")
-    jsdataset.write(txMib)
-    jsdataset.write("},\n") # a one more comma will remain...
-                
+        jsdataset.write("\t\tname: 'Uploaded MiB',\n")
+        jsdataset.write("\t\tmarker: { symbol: 'diamond' },\n\t\tdata: ")
+        jsdataset.write(strTxMib)
+        jsdataset.write("\n\t}],\n")
+    
+    # closing the object
+    jsdataset.write("\n};\n")
+
+# **********************************************************************
+def main():
+
+    build_linear_chart_dataset(HOURS_CHART_DATASET_NAME)
+    
+    #build_monthly_dataset()
+    #build_topten_dataset()
+    
+    #jsdataset.write("\n};\n")
+    
+    jsdataset.close()
+    
+    return 0
+    
 if __name__ == '__main__':
-    HOURLY_DATASET_TYPE = 0
-    DAILY_DATASET_TYPE = 1
-    MONTHLY_DATASET_TYPE = 2
-    TOPTEN_DATASET_TYPE = 3
+    LINEAR_CHART_TYPE = 10
+    
+    HOURS_CHART_DATASET_NAME = "hourlyDataChart"
     
     # change this to the network card name on which vnstat records traffic
     network_card = "ppp0"
