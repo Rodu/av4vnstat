@@ -312,7 +312,7 @@ if (!RODU.namespaceConflict){
             tooltip: {
                 formatter: function() {
                         return '<b>'+ this.series.name +'</b><br/>'+
-                        Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y;
+                        Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y + ' MiB';
                 }
             },
             series: RODU.vnstat.data.dailyDataChart.series
