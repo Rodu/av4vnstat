@@ -25,19 +25,63 @@ import commands
 
 def main():
 
-    jsdataset.write("RODU.vnstat.data = {};\nRODU.vnstat.data.Data = function(){\n")
-    
     build_hours_dataset()
-    build_daily_dataset()
-    build_monthly_dataset()
-    build_topten_dataset()
     
-    jsdataset.write("\n};\n")
+    #build_daily_dataset()
+    #build_monthly_dataset()
+    #build_topten_dataset()
+    
+    #jsdataset.write("\n};\n")
     
     jsdataset.close()
     
     return 0
 
+def build_hours_dataset():
+    # Field position in the vnstat dataset
+    HOURS_FIELD = 1
+    RX_KIB_FIELD = 3
+    TX_KIB_FIELD = 4
+    
+    # Creating the data object in the respective namespace
+    jsdataset.write("RODU.vnstat.data.hourlyDataChart = {\n")
+    # Opening the series filed
+    jsdataset.write("\tseries: [{\n")
+    jsdataset.write("\t\tname: 'Downloaded MiB',\n")
+    jsdataset.write("\t\tmarker: { symbol: 'square' },\n")
+    
+    hours = ""
+    rxMib = "\t\tdata: ["
+    txMib = "\t\tdata: ["
+    
+    for line in vnstatdb:
+        m = re.match('^h;', line)
+        if (m is not None):
+            # here I have a data line to read
+            data = line.split(';')
+            # will skip hours with no traffic at all
+            if (data[RX_KIB_FIELD] != "0" and data[TX_KIB_FIELD] != "0"):
+                #hours = hours + str(datetime.datetime.utcfromtimestamp(int(data[HOURS_FIELD]))) + ","
+                hours = hours + str(data[HOURS_FIELD]) + ","
+                # Calculating MiB from KiB rounded to 2 decimal digits
+                rxMib = rxMib + str(round(float(data[RX_KIB_FIELD]) / 1024, 2)) + ","
+                txMib = txMib + str(round(float(data[TX_KIB_FIELD]) / 1024, 2)) + ","
+            
+    jsdataset.write(rxMib)
+    jsdataset.write("]\n\t},{\n")
+    jsdataset.write("\t\tname: 'Uploaded MiB',\n")
+    jsdataset.write("\t\tmarker: { symbol: 'diamond' },\n")
+    jsdataset.write(txMib)
+    # Closing the series field
+    jsdataset.write("]\n\t}],\n")
+    
+    jsdataset.write("\tcategories: [")
+    jsdataset.write(hours)
+    jsdataset.write("]\n")
+    
+    # closing the object
+    jsdataset.write("\n};\n")
+    
 def build_daily_dataset():
     jsdataset.write("this.data_daily = [")
     day_entries = lines_by_regexp('^d;', DAILY_DATASET_TYPE)
@@ -62,31 +106,6 @@ def build_topten_dataset():
     jsdataset.write(str(entries))
     jsdataset.write(";\n")
 
-def build_hours_dataset():
-    jsdataset.write("this.data_hourly = [")
-    entries = 0
-    for line in vnstatdb:
-        m = re.match('^h;', line)
-        if (m is not None):
-            # here I have a data line to read
-            data = line.split(';')
-            if (data[2] == "0"):
-                continue # will skip hours with no traffic at all
-                
-            date = datetime.datetime.utcfromtimestamp(float(data[2]))
-            rxMib = str(round(float(data[3]) / 1024))
-            txMib = str(round(float(data[4]) / 1024))
-            rxKib = data[3]
-            txKib = data[4]
-            
-            write_data_entry(HOURLY_DATASET_TYPE, date, rxMib, txMib, rxKib, txKib)
-            
-            entries += 1
-    jsdataset.write("];\n")
-    jsdataset.write("this.hour_entries = ")
-    jsdataset.write(str(entries))
-    jsdataset.write(";\n")
-    
 def lines_by_regexp(regexp, datasetType):
     entries = 0
     for line in vnstatdb:
@@ -112,13 +131,15 @@ def write_data_entry(datasetType, date, rxMib, txMib, rxKib, txKib):
     jsdataset.write("{time: ")
     jsdataset.write("\"")
     
-    if (datasetType == 0):
+    if (datasetType == HOURLY_DATASET_TYPE):
         jsdataset.write(str(date.hour))
-    elif (datasetType == 1 or datasetType == 3):
+        
+    elif (datasetType == DAILY_DATASET_TYPE or datasetType == TOPTEN_DATASET_TYPE):
         jsdataset.write(str(date.day))
         jsdataset.write("/")
         jsdataset.write(str(date.month))
-    elif (datasetType == 2):
+        
+    elif (datasetType == MONTHLY_DATASET_TYPE):
         jsdataset.write(str(date.month))
         jsdataset.write("/")
         jsdataset.write(str(date.year))
@@ -139,6 +160,6 @@ if __name__ == '__main__':
     network_card = "ppp0"
     
     vnstatdb = commands.getoutput("vnstat --dumpdb -i " + network_card).split("\n")
-    jsdataset = open(sys.path[0] + "/data.js", 'w')
+    jsdataset = open(sys.path[0] + "/js/data.js", 'w')
     
     main()
