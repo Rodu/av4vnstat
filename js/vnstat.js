@@ -260,16 +260,14 @@ if (!RODU.namespaceConflict){
           new Highcharts.Chart({
              chart: {
                 renderTo: RODU.vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART,
-                type: 'spline'
+                type: 'column'
              },
              title: {
                 text: 'Last 24 Hours Usage'
              },
              xAxis: {
-                type: 'datetime',
-                dateTimeLabelFormats: {
-                    hour: '%H:%M'
-                }
+                
+                categories: RODU.vnstat.data.hourlyDataChart.categories
              },
              yAxis: {
                 title: {
@@ -279,7 +277,7 @@ if (!RODU.namespaceConflict){
              tooltip: {
                 formatter: function() {
                         return '<b>'+ this.series.name +'</b><br/>'+
-                        Highcharts.dateFormat('%e. %b at %H:%M', this.x) +' - '+ this.y + ' MiB';
+                                this.x + ' hrs - ' + this.y + ' MiB';
                 }
             },
              series: RODU.vnstat.data.hourlyDataChart.series
@@ -312,7 +310,7 @@ if (!RODU.namespaceConflict){
             tooltip: {
                 formatter: function() {
                         return '<b>'+ this.series.name +'</b><br/>'+
-                        Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y + ' MiB';
+                        Highcharts.dateFormat('%e %b', this.x) +' - '+ this.y + ' MiB';
                 }
             },
             series: RODU.vnstat.data.dailyDataChart.series

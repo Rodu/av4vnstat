@@ -25,10 +25,12 @@ import commands
 import operator
 
 # **********************************************************************
-# The function creates the dataset for the hourly and daily data collected
+# The function creates the dataset for the chart type indicated by the
+# parameter chartType, using the data collected in the vnstat db
 # and generates the Javascript to be used in the respective charts.
 #
-def build_linear_chart_dataset(chartDataSetName):
+def build_chart_dataset(chartType, chartDatasetName):
+    global BAR_CHART_TYPE
     global LINEAR_CHART_TYPE
     global HOURS_CHART_DATASET_NAME
     global DAYS_CHART_DATASET_NAME
@@ -36,13 +38,14 @@ def build_linear_chart_dataset(chartDataSetName):
     dataList = []
     # Field position in the dataList
     DATETIME_FIELD, RX_MIB_FIELD, TX_MIB_FIELD = range(3)
+    arrTimeRef = []
     arrRxMiB = []
     arrTxMiB = []
     rxMiB = ""
     txMiB = ""
     
     parameters = {}
-    if (chartDataSetName == HOURS_CHART_DATASET_NAME):
+    if (chartDatasetName == HOURS_CHART_DATASET_NAME):
         parameters["CHART_DATASET_NAME"] = HOURS_CHART_DATASET_NAME
         # Pattern for matching lines of hourly data in vnstat db dump
         parameters["TIME_PATTERN"] = "^h;"
@@ -51,7 +54,7 @@ def build_linear_chart_dataset(chartDataSetName):
         parameters["RX_KIB_FIELD"] = 3
         parameters["TX_KIB_FIELD"] = 4
         
-    elif (chartDataSetName == DAYS_CHART_DATASET_NAME):
+    elif (chartDatasetName == DAYS_CHART_DATASET_NAME):
         parameters["CHART_DATASET_NAME"] = DAYS_CHART_DATASET_NAME
         # Pattern for matching lines of daily data in vnstat db dump
         parameters["TIME_PATTERN"] = "^d;"
@@ -69,30 +72,32 @@ def build_linear_chart_dataset(chartDataSetName):
         # We add one hour because vnstat is measuring traffic at min 59
         # leading to a wrong day indication on the chart in some cases.
         dateutc += datetime.timedelta(hours=1)
-        timeref = "Date.UTC(" + str(dateutc.year) + ","
-        # Months are one based but we want them zero based
-        timeref = timeref + str(dateutc.month - 1) + ","
-        timeref = timeref + str(dateutc.day) + ","
-        timeref = timeref + str(dateutc.hour) + ","
-        timeref = timeref + str(dateutc.minute) + ","
-        timeref = timeref + str(dateutc.second) + ")"
+        if (chartDatasetName == HOURS_CHART_DATASET_NAME):
+            # We are only interested in the hours
+            timeref = dateutc.hour
+        elif (chartDatasetName == DAYS_CHART_DATASET_NAME):
+            timeref = "Date.UTC(" + str(dateutc.year) + ","
+            # Months are one based but we want them zero based
+            timeref = timeref + str(dateutc.month - 1) + ","
+            timeref = timeref + str(dateutc.day) + ","
+            timeref = timeref + str(dateutc.hour) + ","
+            timeref = timeref + str(dateutc.minute) + ","
+            timeref = timeref + str(dateutc.second) + ")"
+        
         # Rounding down to two decimal places value calculated for MiBs
         rxMiB = str(round(data[RX_MIB_FIELD], 2))
         txMiB = str(round(data[TX_MIB_FIELD], 2))
         
-        arrRxMiB.append([timeref, rxMiB])
-        arrTxMiB.append([timeref, txMiB])
+        arrTimeRef.append(timeref)
+        arrRxMiB.append(rxMiB)
+        arrTxMiB.append(txMiB)
     
     # Let's write results to file
-    write_JS_data_object(LINEAR_CHART_TYPE,
-        chartDataSetName,
-        str(arrRxMiB).replace("'", ""),
-        str(arrTxMiB).replace("'", ""))
+    write_JS_data_object(chartType, chartDatasetName, arrTimeRef, arrRxMiB, arrTxMiB)
+        
+        #str(arrRxMiB).replace("'", ""),
+        #str(arrTxMiB).replace("'", ""))
 
-# **********************************************************************
-def build_bar_chart_dataset(chartDataSetName):
-    
-    
 # **********************************************************************
 # In dealing with the vnstat database format we need to do some adjustments
 # to the data in order to be consumed by the chart library.
@@ -131,37 +136,73 @@ def get_linear_data_array(parameters):
     return sorted(data,key=operator.itemgetter(0))
 
 # **********************************************************************
-# The write_JS_data_object generates the Javascript data set expected
-# by the chart type.
+# Calls respective generator functions depending on the chartType param.
 # 
-def write_JS_data_object(chartType, chartDatasetName, strRxMiB, strTxMiB):
-    global LINEAR_CHART_TYPE
+def write_JS_data_object(chartType, chartDatasetName, arrTimeRef, arrRxMiB, arrTxMiB):
+    open_JS_data_object(chartDatasetName)
     
+    if (chartType == BAR_CHART_TYPE):
+        write_categories_data_object(arrTimeRef)
+        write_series_data_object(arrRxMiB, arrTxMiB)
+            
+    elif (chartType == LINEAR_CHART_TYPE):
+        arrSeriesRxMiB = []
+        arrSeriesTxMiB = []
+        i = 0
+        while (i < len(arrTimeRef)):
+            arrSeriesRxMiB.append([arrTimeRef[i], arrRxMiB[i]])
+            arrSeriesTxMiB.append([arrTimeRef[i], arrTxMiB[i]])
+            i += 1
+        
+        write_series_data_object(arrSeriesRxMiB, arrSeriesTxMiB)
+        
+    close_JS_data_object()
+    
+# **********************************************************************
+# Generates the Javascript data set expected by the linear chart type.
+# 
+def write_series_data_object(arrRxMiB, arrTxMiB):
+    # Opening the series filed
+    jsdataset.write("\tseries: [{\n")
+    # Download
+    jsdataset.write("\t\tname: 'Download',\n")
+    jsdataset.write("\t\tmarker: { symbol: 'square' },\n\t\tdata: ")
+    jsdataset.write(str(arrRxMiB).replace("'",""))
+    jsdataset.write("\n\t},{\n")
+    # Upload
+    jsdataset.write("\t\tname: 'Upload',\n")
+    jsdataset.write("\t\tmarker: { symbol: 'diamond' },\n\t\tdata: ")
+    jsdataset.write(str(arrTxMiB).replace("'",""))
+    jsdataset.write("\n\t}],\n")
+    
+# **********************************************************************
+# Generates the Javascript data set expected by the bar chart type.
+# 
+def write_categories_data_object(arrTimeRef):
+    jsdataset.write("\n\tcategories: ")
+    jsdataset.write(str(arrTimeRef))
+    jsdataset.write(",\n")
+    
+# **********************************************************************
+# Writes the opening of a Javascript literal using the chartDatasetName
+# as the name of the literal.
+#
+def open_JS_data_object(chartDatasetName):
     jsdataset.write("RODU.vnstat.data.")
     jsdataset.write(chartDatasetName)
     jsdataset.write(" = {\n")
     
-    if (chartType == LINEAR_CHART_TYPE):        
-        # Opening the series filed
-        jsdataset.write("\tseries: [{\n")
-        jsdataset.write("\t\tname: 'Download',\n")
-        jsdataset.write("\t\tmarker: { symbol: 'square' },\n\t\tdata: ")
-        jsdataset.write(strRxMiB)
-        jsdataset.write("\n\t},{\n")
-        
-        jsdataset.write("\t\tname: 'Upload',\n")
-        jsdataset.write("\t\tmarker: { symbol: 'diamond' },\n\t\tdata: ")
-        jsdataset.write(strTxMiB)
-        jsdataset.write("\n\t}],\n")
-    
-    # closing the object
+# **********************************************************************
+# Writes the closing of a Javascript literal
+#
+def close_JS_data_object():
     jsdataset.write("\n};\n")
-
+    
 # **********************************************************************
 def main():
 
-    build_linear_chart_dataset(HOURS_CHART_DATASET_NAME)
-    build_linear_chart_dataset(DAYS_CHART_DATASET_NAME)
+    build_chart_dataset(BAR_CHART_TYPE, HOURS_CHART_DATASET_NAME)
+    build_chart_dataset(LINEAR_CHART_TYPE, DAYS_CHART_DATASET_NAME)
     
     #build_monthly_dataset()
     #build_topten_dataset()
@@ -173,7 +214,8 @@ def main():
     return 0
     
 if __name__ == '__main__':
-    LINEAR_CHART_TYPE = 10
+    BAR_CHART_TYPE = 10
+    LINEAR_CHART_TYPE = 20
     
     HOURS_CHART_DATASET_NAME = "hourlyDataChart"
     DAYS_CHART_DATASET_NAME = "dailyDataChart"
