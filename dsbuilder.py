@@ -23,6 +23,7 @@ import sys
 import datetime
 import commands
 import operator
+import unittest
 
 # **********************************************************************
 # The function creates the dataset for the chart type indicated by the
@@ -199,17 +200,26 @@ def close_JS_data_object():
     jsdataset.write("\n};\n")
     
 # **********************************************************************
+#
+#
+class TestingClass(unittest.TestCase):
+    
+    def setUp(self):
+        self.number = 0
+    
+    def test_number(self):
+        self.assertEqual(self.number, 1)
+
+# **********************************************************************
 def main():
 
-    build_chart_dataset(BAR_CHART_TYPE, HOURS_CHART_DATASET_NAME)
-    build_chart_dataset(LINEAR_CHART_TYPE, DAYS_CHART_DATASET_NAME)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestingClass)
+    unittest.TextTestRunner(verbosity=2).run(suite)
     
-    #build_monthly_dataset()
-    #build_topten_dataset()
+    #build_chart_dataset(BAR_CHART_TYPE, HOURS_CHART_DATASET_NAME)
+    #build_chart_dataset(LINEAR_CHART_TYPE, DAYS_CHART_DATASET_NAME)
     
-    #jsdataset.write("\n};\n")
-    
-    jsdataset.close()
+    #jsdataset.close()
     
     return 0
     
