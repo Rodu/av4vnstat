@@ -22,7 +22,7 @@ Created on 17 Apr 2012
 '''
 
 from av4vnstat.parser.DataParser import DataParser
-from av4vnstat.util.ConfigEnum import ConfigEnum
+from av4vnstat.util.Config import ConfigEnum
 
 class Av4vnstat(object):
     '''

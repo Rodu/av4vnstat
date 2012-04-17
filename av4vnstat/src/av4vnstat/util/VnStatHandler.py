@@ -14,9 +14,7 @@
 #       You should have received a copy of the GNU General Public License
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from av4vnstat.util.ConfigEnum import ConfigEnum
-from ConfigParser import ConfigParser, NoSectionError, NoOptionError
-from av4vnstat.util import Logging
+from av4vnstat.util.Config import ConfigEnum, ConfigReader
 
 '''
 Created on 17 Apr 2012
@@ -39,29 +37,11 @@ class VnStatHandler(object):
         
         @param vnstatCmd: the path to the vnstat executable as declared in the config file.
         '''
-        self.CONFIG = ConfigEnum()
-        self._loadConfigurationFile()
-    
-    '''
-    
-    '''
-    def _loadConfigurationFile(self):
-        self.configParser = ConfigParser()
-        self.configParser.read(self.CONFIG.CONFIG_FILE)
-        self.vnstatCmd = None
-        self.logger = Logging.Logger()
-        try:
-            self.vnstatCmd = self.configParser.get(self.CONFIG.VNSTAT_SECTION,
-                                                  self.CONFIG.VNSTAT_CMD)
-        except(NoSectionError):
-            self.logger.log("[Error] Section with name: " + self.CONFIG.VNSTAT_SECTION +
-                            " not existing in configuration file.")
-        except(NoOptionError):
-            self.logger.log("[Error] Option with name: " + self.CONFIG.VNSTAT_CMD +
-                            " not existing in configuration file.")
+        self.CONFIG_ENUM = ConfigEnum()
+        self.configReader = ConfigReader()
+        self.vnstatCmd = self.configReader.read(self.CONFIG_ENUM.VNSTAT_SECTION,
+                                                  self.CONFIG_ENUM.VNSTAT_CMD)
         
-        self.logger.closeLogFile()
-          
     '''
     The method will dump the content of the vnstat db to the a file.
     

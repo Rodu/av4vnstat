@@ -14,7 +14,8 @@
 #       You should have received a copy of the GNU General Public License
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from av4vnstat.util.ConfigEnum import ConfigEnum
+
+
 
 '''
 Created on 17 Apr 2012
@@ -26,17 +27,15 @@ class Logger(object):
     '''
     classdocs
     '''
-
-
-    def __init__(self):
+    def __init__(self, logFileName):
         '''
         Constructor
         '''
         self.logFile = None
-        self.configEnum = ConfigEnum()
-        self.logFileName = self.configEnum.LOG_FILE_NAME
+        self.logFileName = logFileName
+        self._openLogFile()
         
-    def openLogFile(self):
+    def _openLogFile(self):
         self.logFile = open(self.logFileName, 'a')
         
     def log(self, message):
