@@ -18,6 +18,7 @@
 import os
 from ConfigParser import ConfigParser, NoSectionError, NoOptionError
 from av4vnstat.util import Logging
+from stat import S_ISDIR, ST_MODE
 '''
 Created on 17 Apr 2012
 
@@ -28,22 +29,65 @@ class ConfigEnum(object):
     '''
     classdocs
     '''
+    # Parametrizing the program name that will be used as suffix in many places.
+    _PROGRAM_NAME = "av4vnstat"
+    
+    # Reading environment variable so that to use the user home folder to store
+    # some program content
     USER_HOME_DIR = os.environ["HOME"]
     
-    LOG_FILE_NAME = USER_HOME_DIR  + "/av4vnstat.log"
+    # This will be a folder (possibly) hidden that will contain file needed by
+    # the program, that the user will not have need (normally) to access.
+    #AV4VNSTAT_WORK_DIR = USER_HOME_DIR + "/." + _PROGRAM_NAME
+    AV4VNSTAT_WORK_DIR = USER_HOME_DIR + "/" + _PROGRAM_NAME
     
-    CONFIG_FILE = USER_HOME_DIR  + "/av4vnstat.cfg"
+    # Defines the name for the log file that will be used to store some messages
+    # for easier debug.
+    LOG_FILE_NAME = USER_HOME_DIR  + "/" + _PROGRAM_NAME + ".log"
     
-    VNSTAT_SECTION = "vnstat_section"
+    # Represent the path to the file containing configurable options that the
+    # user needs to have an easy access to.
+    # (Not use _PROGRAM_NAME here to not hide the file from the user).
+    CONFIG_FILE = USER_HOME_DIR  + "/av4vnstat" + ".cfg"
     
-    VNSTAT_CMD = "vnstat_cmd"
+    # Defining configuration file section and option constant names
+    SEC_VNSTAT = "VNSTAT"
+    OPT_VNSTAT_CMD = "vnstat_cmd"
     
+    SEC_NETWORK_CARD = "NETWORK_CARD"
+    OPT_CARD_NAME = "card_name"
+    
+    # This file is used to dump the content of vnstat so that it can be
+    # successively parsed by the parser
+    VNSTAT_DBDUMP_FILE_NAME = USER_HOME_DIR + "/" + _PROGRAM_NAME + "/vnstat_dbdump.txt"
+        
+class ConfigInitializer(object):
+    def __init__(self):
+        # Let's check if the directory for containing the program data already
+        # exists
+        CONFIG = ConfigEnum()
+        
+        mode = os.stat(CONFIG.AV4VNSTAT_WORK_DIR)[ST_MODE]
+        #print(S_ISDIR(mode))
+        if (S_ISDIR(mode)):
+            print("fine")
+        else:
+            try:
+                os.mkdir(CONFIG.AV4VNSTAT_WORK_DIR)
+            except(OSError):
+                msg = "Cannot create directory: "
+                msg += CONFIG.AV4VNSTAT_WORK_DIR
+                print(msg)
+                exit(1)
     
 '''
 '''
 class ConfigReader(object):
     
     def __init__(self):
+        
+        ConfigInitializer()
+        
         self.CONFIG_ENUM = ConfigEnum()
         self.configParser = ConfigParser()
         self.configParser.read(self.CONFIG_ENUM.CONFIG_FILE)
@@ -52,12 +96,14 @@ class ConfigReader(object):
     def read(self, sectionName, optionName):
         try:
             # Reading the vnstat executable from inside the config file
-            self.vnstatCmd = self.configParser.get(sectionName, optionName)
+            return self.configParser.get(sectionName, optionName)
         except(NoSectionError):
             self.logger.log("[Error] Section with name: " + sectionName +
                             " not existing in configuration file.")
+            exit(1)
         except(NoOptionError):
             self.logger.log("[Error] Option with name: " + optionName +
                             " not existing in configuration file.")
-        
+            exit(1)
+            
         self.logger.closeLogFile()

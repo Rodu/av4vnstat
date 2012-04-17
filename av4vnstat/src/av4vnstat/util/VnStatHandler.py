@@ -15,7 +15,8 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from av4vnstat.util.Config import ConfigEnum, ConfigReader
-
+import commands
+from av4vnstat.util import Logging
 '''
 Created on 17 Apr 2012
 
@@ -39,12 +40,38 @@ class VnStatHandler(object):
         '''
         self.CONFIG_ENUM = ConfigEnum()
         self.configReader = ConfigReader()
-        self.vnstatCmd = self.configReader.read(self.CONFIG_ENUM.VNSTAT_SECTION,
-                                                  self.CONFIG_ENUM.VNSTAT_CMD)
+        self.vnstatDumpDbFile = None
+        self.logger = Logging.Logger(self.CONFIG_ENUM.LOG_FILE_NAME)
         
+        # First of all we will refresh the file on running the program
+        self._writeDBContentToFile()
     '''
     The method will dump the content of the vnstat db to the a file.
     
     @param outFile: the name of the file that will contain the vnstat db
     '''
-    #def writeDBContent(self, outFile):
+    def _writeDBContentToFile(self):
+        vnstatCmd = self.configReader.read(self.CONFIG_ENUM.SEC_VNSTAT,
+                                                  self.CONFIG_ENUM.OPT_VNSTAT_CMD)
+        networkCard = self.configReader.read(self.CONFIG_ENUM.SEC_NETWORK_CARD,
+                                                  self.CONFIG_ENUM.OPT_CARD_NAME)
+        self._openVnStatDumpDbFile('w')
+        self.vnstatDumpDbFile.write(commands.getoutput(vnstatCmd + " --dumpdb -i " + networkCard))
+        self._closeVnStatDumpDbFile()
+    
+    def _openVnStatDumpDbFile(self, mode):
+        try:
+            self.vnstatDumpDbFile = open(self.CONFIG_ENUM.VNSTAT_DBDUMP_FILE_NAME, mode)
+        except(IOError):
+            msg = "The file " + self.CONFIG_ENUM.VNSTAT_DBDUMP_FILE_NAME
+            msg += " cannot be open with mode '" + mode + "'."
+            print(msg)
+            self.logger.log(msg)
+            exit(1)
+        
+    def _closeVnStatDumpDbFile(self):
+        self.vnstatDumpDbFile.close()
+        
+    def getVnStatDbFile(self):
+        self._openVnStatDumpDbFile('r')
+        return self.vnstatDumpDbFile

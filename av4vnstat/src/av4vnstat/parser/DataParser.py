@@ -31,7 +31,12 @@ class DataParser(object):
         Constructor
         '''
         self.vnStatHandler = VnStatHandler()
+        self.vnstatDumpDbFile = self.vnStatHandler.getVnStatDbFile()
         
     def parse(self):
         print("parsing...")
+        for line in self.vnstatDumpDbFile:
+            print(line)
+        
+        self.vnstatDumpDbFile.close()
     

@@ -22,7 +22,6 @@ Created on 17 Apr 2012
 '''
 
 from av4vnstat.parser.DataParser import DataParser
-from av4vnstat.util.Config import ConfigEnum
 
 class Av4vnstat(object):
     '''
@@ -42,8 +41,6 @@ class Av4vnstat(object):
         '''
         Constructor
         '''
-        self.CONFIG = ConfigEnum()
-        self.configParser = None
         self.dataParser = None
         
     def main(self):
