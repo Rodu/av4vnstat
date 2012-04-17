@@ -21,10 +21,9 @@ Created on 17 Apr 2012
 @author: Rodu
 '''
 
-from av4vnstat.parser.DataParser import DataParser
 from ConfigParser import ConfigParser
+from av4vnstat.parser.DataParser import DataParser
 from av4vnstat.util.ConfigEnum import ConfigEnum
-from av4vnstat.util.VnStatHandler import VnStatHandler
 
 class Av4vnstat(object):
     '''
@@ -48,21 +47,10 @@ class Av4vnstat(object):
         self.configParser = None
         self.dataParser = None
         
-    def loadConfiguration(self):
-        # TODO: try catch here?
-        self.configParser = ConfigParser()
-        self.configParser.read(self.CONFIG.CONFIG_FILE)
-        
     def main(self):
-        self.loadConfiguration()
-        
         self.dataParser = DataParser()
         self.dataParser.parse()
-        self.finalize()
-    
-    def finalize(self):
-        self.dataParser.finalize()
-        
+            
 if __name__ == '__main__':
     
     Av4vnstat().main()

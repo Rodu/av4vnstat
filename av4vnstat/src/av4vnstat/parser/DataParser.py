@@ -26,18 +26,12 @@ class DataParser(object):
     '''
     classdocs
     '''
-
-
     def __init__(self):
         '''
         Constructor
         '''
         self.vnStatHandler = VnStatHandler()
-        self.vnStatHandler.loadConfigurationFile()
         
     def parse(self):
         print("parsing...")
     
-    def finalize(self):
-        self.vnStatHandler.finalize()
-        self.vnStatHandler = None

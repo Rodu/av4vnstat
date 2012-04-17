@@ -40,12 +40,16 @@ class VnStatHandler(object):
         @param vnstatCmd: the path to the vnstat executable as declared in the config file.
         '''
         self.CONFIG = ConfigEnum()
+        self._loadConfigurationFile()
+    
+    '''
+    
+    '''
+    def _loadConfigurationFile(self):
         self.configParser = ConfigParser()
         self.configParser.read(self.CONFIG.CONFIG_FILE)
         self.vnstatCmd = None
         self.logger = Logging.Logger()
-        
-    def loadConfigurationFile(self):
         try:
             self.vnstatCmd = self.configParser.get(self.CONFIG.VNSTAT_SECTION,
                                                   self.CONFIG.VNSTAT_CMD)
@@ -55,13 +59,9 @@ class VnStatHandler(object):
         except(NoOptionError):
             self.logger.log("[Error] Option with name: " + self.CONFIG.VNSTAT_CMD +
                             " not existing in configuration file.")
-    '''
-    Class destructor method
-    '''
-    def finalize(self):
-        self.logger.closeLogFile()
-        self.configParser = None
         
+        self.logger.closeLogFile()
+          
     '''
     The method will dump the content of the vnstat db to the a file.
     
