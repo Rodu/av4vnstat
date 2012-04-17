@@ -1,0 +1,84 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow:hidden;
+}
+
+DIV {
+    
+}
+
+#mainContainer {
+    height: 80%;
+    margin: 10px;
+}
+
+#header {
+    height: 80px;
+    border: solid 1px #AAAAAA;
+}
+
+#body {
+    height: 500px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: solid 1px #AAAAAA;
+}
+
+#contents {
+    
+}
+
+.chartsContainer {
+    display: none;
+}
+
+#verticalTabContainer {
+    float: left;
+    width: 200px;
+    height: 500px;
+    background-color: #dadada;
+}
+
+.verticalTabList {
+    list-style-type: none;
+    line-height: 40px;
+    margin: 0;
+    padding: 0;
+}
+
+.horizontalTabList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.horizontalTabItem {
+    display: inline;
+    margin-left: 20px;
+}
+
+.verticalTabItem {
+    text-decoration: none;
+}
+
+.topTabContainer {
+    height: 40px;
+}
+
+.chartContainer {
+   
+}
+
+.chart {
+    width: 600px;
+    height: 400px;
+    display: none;
+}
+
+#footer {
+    clear: both;
+    height: 80px;
+    border: solid 1px #AAAAAA;
+}
