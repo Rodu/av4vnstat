@@ -3,6 +3,7 @@ example.html
 example_data.js
 lib/*
 .metadata/
+.settings/
 .project
 .pydevproject
 

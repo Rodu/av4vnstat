@@ -299,7 +299,7 @@ if (!RODU.namespaceConflict){
             xAxis: {
                 type: 'datetime',
                 dateTimeLabelFormats: {
-                    day: '%e. %b',
+                    day: '%e. %b'
                 }
             },
             yAxis: {
