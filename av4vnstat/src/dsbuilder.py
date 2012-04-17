@@ -233,6 +233,6 @@ if __name__ == '__main__':
     NETWORK_CARD = "ppp0"
     
     vnstatdb = commands.getoutput("vnstat --dumpdb -i " + NETWORK_CARD).split("\n")
-    jsdataset = open(sys.path[0] + "/web/js/data.js", 'w')
+    jsdataset = open(sys.path[0] + "/../gen/data.js", 'w')
     
     main()
