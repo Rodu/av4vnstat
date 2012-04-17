@@ -21,7 +21,6 @@ Created on 17 Apr 2012
 @author: Rodu
 '''
 
-from ConfigParser import ConfigParser
 from av4vnstat.parser.DataParser import DataParser
 from av4vnstat.util.ConfigEnum import ConfigEnum
 
