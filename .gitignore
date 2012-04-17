@@ -2,3 +2,7 @@ data.js
 example.html
 example_data.js
 lib/*
+.metadata/
+.project
+.pydevproject
+
