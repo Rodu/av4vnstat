@@ -40,7 +40,7 @@ class Logger(object):
         
     def log(self, message):
         if (self.logFile == None):
-            self.openLogFile()
+            self._openLogFile()
         self.logFile.write(message)
         self.logFile.write("\n")
         

@@ -15,19 +15,16 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os
 from ConfigParser import ConfigParser, NoSectionError, NoOptionError
 from av4vnstat.util import Logging
 from stat import S_ISDIR, ST_MODE
-'''
-Created on 17 Apr 2012
-
-@author: Rodu
-'''
+import os
 
 class ConfigEnum(object):
     '''
-    classdocs
+    Created on 17 Apr 2012
+
+    @author: Rodu
     '''
     # Parametrizing the program name that will be used as suffix in many places.
     _PROGRAM_NAME = "av4vnstat"
@@ -60,6 +57,10 @@ class ConfigEnum(object):
     # This file is used to dump the content of vnstat so that it can be
     # successively parsed by the parser
     VNSTAT_DUMP_FILE_NAME = USER_HOME_DIR + "/" + _PROGRAM_NAME + "/vnstat_dbdump.txt"
+    
+    # Constants for JS data set chart names to be matched in the Javascript.
+    HOURS_CHART_DATASET_NAME = "hourlyDataChart"
+    DAYS_CHART_DATASET_NAME = "dailyDataChart"
         
 class ConfigInitializer(object):
     def __init__(self):

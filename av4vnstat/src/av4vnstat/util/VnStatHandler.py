@@ -14,17 +14,16 @@
 #       You should have received a copy of the GNU General Public License
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from av4vnstat.util import Logging
 from av4vnstat.util.Config import ConfigEnum, ConfigReader
 import commands
-from av4vnstat.util import Logging
-'''
-Created on 17 Apr 2012
-
-@author: Rodu
-'''
 
 class VnStatHandler(object):
     '''
+    Created on 17 Apr 2012
+    
+    @author: Rodu
+
     The class in in charge of the interaction with the vnstat program installed
     on the OS.
     
@@ -41,12 +40,12 @@ class VnStatHandler(object):
         self.CONFIG_ENUM = ConfigEnum()
         self.vnstatDumpFile = None
         
-    '''
-    The method will dump the content of the vnstat db to the a file.
-    
-    @param outFile: the name of the file that will contain the vnstat db
-    '''
     def _createVnStatDumpFile(self):
+        '''
+        The method will dump the content of the vnstat db to the a file.
+        
+        @param outFile: the name of the file that will contain the vnstat db
+        '''
         configReader = ConfigReader()
         vnstatCmd = configReader.read(self.CONFIG_ENUM.SEC_VNSTAT,
                                                   self.CONFIG_ENUM.OPT_VNSTAT_CMD)
