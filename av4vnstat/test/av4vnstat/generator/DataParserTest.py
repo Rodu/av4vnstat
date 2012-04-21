@@ -14,8 +14,8 @@
 #       You should have received a copy of the GNU General Public License
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from av4vnstat.generator.DataParser import DataParser
 from av4vnstat.util.VnStatHandler import VnStatHandler
-from av4vnstat.parser.DataParser import DataParser
 import unittest
 
 

@@ -14,17 +14,14 @@
 #       You should have received a copy of the GNU General Public License
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-'''
-Created on 17 Apr 2012
-
-@author: rob
-'''
-from av4vnstat.parser.DataParser import DataParser
+from av4vnstat.generator.DataParser import DataParser
 from av4vnstat.util.VnStatHandler import VnStatHandler
 
 class JSDatasetGenerator(object):
     '''
-    classdocs
+    Created on 17 Apr 2012
+
+    @author: rob
     '''
     def __init__(self):
         '''
