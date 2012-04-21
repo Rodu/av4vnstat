@@ -38,11 +38,11 @@ class Av4vnstat(object):
         '''
         Constructor
         '''
-        self.jsDataGenerator = None
         
     # *************************************************************************
     def main(self):
-        self.jsDataGenerator = JSDatasetGenerator()
+        jsDataGenerator = JSDatasetGenerator()
+        jsDataGenerator.generateHourlyDataSet()
             
 if __name__ == '__main__':
     

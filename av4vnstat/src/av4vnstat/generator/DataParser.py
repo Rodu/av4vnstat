@@ -45,22 +45,22 @@ class DataParser(object):
         
     # *************************************************************************
     def parseHourlyData(self):
-        return self._get_linear_data_array(Constants.HOURS_CHART_DATASET_NAME,
+        return self._getLinearDataArray(Constants.HOURS_CHART_DATASET_NAME,
                                            "^h;")
 
     # *************************************************************************
     def parseDailyData(self):
-        return self._get_linear_data_array(Constants.DAYS_CHART_DATASET_NAME,
+        return self._getLinearDataArray(Constants.DAYS_CHART_DATASET_NAME,
                                            "^d;")
         
     # *************************************************************************
     def parseMonthlyData(self):
-        return self._get_linear_data_array(Constants.MONTHS_CHART_DATASET_NAME,
+        return self._getLinearDataArray(Constants.MONTHS_CHART_DATASET_NAME,
                                            "^m;")
     
     # *************************************************************************
     def parseTopTenDaysData(self):
-        return self._get_linear_data_array(Constants.TOP_TEN_DAYS_DATASET_NAME,
+        return self._getLinearDataArray(Constants.TOP_TEN_DAYS_DATASET_NAME,
                                            "^t;")
     # *************************************************************************
     # In dealing with the vnstat database format we need to do some adjustments
@@ -69,8 +69,9 @@ class DataParser(object):
     # We need to sort them in ascending order and we will remove entries
     # with no data at all.
     #
-    def _get_linear_data_array(self, chartName, timePattern):
+    def _getLinearDataArray(self, chartName, timePattern):
         data = []
+        rxMiB = txMiB = 0.0
         
         # This index matches the datetime field position in the vnstat db dump
         DATETIME_FIELD = 2
@@ -92,7 +93,8 @@ class DataParser(object):
                 # Ignores entries with no traffic recorded
                 if (dateutc != 0):
                     # Appending a row of data
-                    data.append([dateutc, dataReaderFnc(dataEntry)])
+                    rxMiB, txMiB = dataReaderFnc(dataEntry)
+                    data.append([dateutc, rxMiB, txMiB])
         
         # Sorting the data by datetime ascending before returning them
         return sorted(data, key = operator.itemgetter(0))
