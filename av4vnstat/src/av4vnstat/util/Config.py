@@ -59,7 +59,7 @@ class ConfigEnum(object):
     
     # This file is used to dump the content of vnstat so that it can be
     # successively parsed by the parser
-    VNSTAT_DBDUMP_FILE_NAME = USER_HOME_DIR + "/" + _PROGRAM_NAME + "/vnstat_dbdump.txt"
+    VNSTAT_DUMP_FILE_NAME = USER_HOME_DIR + "/" + _PROGRAM_NAME + "/vnstat_dbdump.txt"
         
 class ConfigInitializer(object):
     def __init__(self):
