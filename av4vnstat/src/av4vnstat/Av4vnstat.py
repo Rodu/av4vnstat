@@ -43,6 +43,7 @@ class Av4vnstat(object):
         '''
         self.dataParser = None
         
+    # *************************************************************************
     def main(self):
         self.dataParser = DataParser()
         self.dataParser.parse()

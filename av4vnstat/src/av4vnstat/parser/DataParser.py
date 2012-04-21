@@ -17,7 +17,7 @@
 from av4vnstat.util.VnStatHandler import VnStatHandler
 import operator
 import re
-from av4vnstat.util.Config import ConfigEnum
+from av4vnstat.util.Config import Constants
 
 class DataParser(object):
     '''
@@ -29,7 +29,6 @@ class DataParser(object):
         '''
         Constructor
         '''
-        self.CONFIG_ENUM = ConfigEnum()
         self._vnStatHandler = VnStatHandler()
         self._vnStatDumpDbFile = None
     
@@ -41,19 +40,19 @@ class DataParser(object):
     # *************************************************************************
     def parseHourlyData(self):
         self._initVnStatDumpFile()
-        return self._get_linear_data_array(self.CONFIG_ENUM.HOURS_CHART_DATASET_NAME,
+        return self._get_linear_data_array(Constants.HOURS_CHART_DATASET_NAME,
                                            "^h;")
         
     # *************************************************************************
     def parseDailyData(self):
         self._initVnStatDumpFile()
-        return self._get_linear_data_array(self.CONFIG_ENUM.DAYS_CHART_DATASET_NAME,
+        return self._get_linear_data_array(Constants.DAYS_CHART_DATASET_NAME,
                                            "^d;")
         
     # *************************************************************************
     def parseMonthlyData(self):
         self._initVnStatDumpFile()
-        return self._get_linear_data_array(self.CONFIG_ENUM.MONTHS_CHART_DATASET_NAME,
+        return self._get_linear_data_array(Constants.MONTHS_CHART_DATASET_NAME,
                                            "^m;")
         
     # *************************************************************************
@@ -79,7 +78,7 @@ class DataParser(object):
         
         # Holding pointer to function
         dataReaderFnc = None
-        if (chartName == self.CONFIG_ENUM.HOURS_CHART_DATASET_NAME):
+        if (chartName == Constants.HOURS_CHART_DATASET_NAME):
             dataReaderFnc = self._readHourlyRxTxData
         else:
             dataReaderFnc = self._readDMTlyRxTxData
@@ -97,7 +96,7 @@ class DataParser(object):
                     data.append([dateutc, dataReaderFnc(dataEntry)])
         
         # Sorting the data by datetime ascending before returning them
-        return sorted(data, key=operator.itemgetter(0))
+        return sorted(data, key = operator.itemgetter(0))
     
     # *************************************************************************
     # The function reads data for Hourly entries

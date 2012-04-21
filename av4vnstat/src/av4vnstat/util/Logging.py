@@ -15,8 +15,6 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
-
 '''
 Created on 17 Apr 2012
 
@@ -33,11 +31,12 @@ class Logger(object):
         '''
         self.logFile = None
         self.logFileName = logFileName
-        self._openLogFile()
-        
+    
+    # *************************************************************************
     def _openLogFile(self):
         self.logFile = open(self.logFileName, 'a')
-        
+    
+    # *************************************************************************
     def log(self, message):
         if (self.logFile == None):
             self._openLogFile()
@@ -46,5 +45,6 @@ class Logger(object):
         
         #self.closeLogFile()
         
+    # *************************************************************************
     def closeLogFile(self):
         self.logFile.close()

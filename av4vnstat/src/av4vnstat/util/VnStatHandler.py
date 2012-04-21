@@ -15,7 +15,7 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from av4vnstat.util import Logging
-from av4vnstat.util.Config import ConfigEnum, ConfigReader
+from av4vnstat.util.Config import Constants, ConfigFileReader
 import commands
 
 class VnStatHandler(object):
@@ -37,38 +37,41 @@ class VnStatHandler(object):
         
         @param vnstatCmd: the path to the vnstat executable as declared in the config file.
         '''
-        self.CONFIG_ENUM = ConfigEnum()
         self.vnstatDumpFile = None
         
+    # *************************************************************************
     def _createVnStatDumpFile(self):
         '''
         The method will dump the content of the vnstat db to the a file.
         
         @param outFile: the name of the file that will contain the vnstat db
         '''
-        configReader = ConfigReader()
-        vnstatCmd = configReader.read(self.CONFIG_ENUM.SEC_VNSTAT,
-                                                  self.CONFIG_ENUM.OPT_VNSTAT_CMD)
-        networkCard = configReader.read(self.CONFIG_ENUM.SEC_NETWORK_CARD,
-                                                  self.CONFIG_ENUM.OPT_CARD_NAME)
+        configReader = ConfigFileReader()
+        vnstatCmd = configReader.read(Constants.SEC_VNSTAT,
+                                                  Constants.OPT_VNSTAT_CMD)
+        networkCard = configReader.read(Constants.SEC_NETWORK_CARD,
+                                                  Constants.OPT_CARD_NAME)
         self._openVnStatDumpFile('w')
         self.vnstatDumpFile.write(commands.getoutput(vnstatCmd + " --dumpdb -i " + networkCard))
         self._closeVnStatDumpFile()
     
+    # *************************************************************************
     def _openVnStatDumpFile(self, mode):
-        logger = Logging.Logger(self.CONFIG_ENUM.LOG_FILE_NAME)
+        logger = Logging.Logger(Constants.LOG_FILE_NAME)
         try:
-            self.vnstatDumpFile = open(self.CONFIG_ENUM.VNSTAT_DUMP_FILE_NAME, mode)
+            self.vnstatDumpFile = open(Constants.VNSTAT_DUMP_FILE_NAME, mode)
         except(IOError):
-            msg = "The file " + self.CONFIG_ENUM.VNSTAT_DUMP_FILE_NAME
+            msg = "The file " + Constants.VNSTAT_DUMP_FILE_NAME
             msg += " cannot be open with mode '" + mode + "'."
             print(msg)
             logger.log(msg)
             exit(1)
         
+    # *************************************************************************
     def _closeVnStatDumpFile(self):
         self.vnstatDumpFile.close()
         
+    # *************************************************************************
     def getVnStatDbFile(self):
         if (self.vnstatDumpFile == None):
             # First of all we will refresh the file on running the program

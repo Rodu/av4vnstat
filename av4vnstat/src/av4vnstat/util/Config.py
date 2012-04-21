@@ -20,7 +20,7 @@ from av4vnstat.util import Logging
 from stat import S_ISDIR, ST_MODE
 import os
 
-class ConfigEnum(object):
+class Constants(object):
     '''
     Created on 17 Apr 2012
 
@@ -63,49 +63,43 @@ class ConfigEnum(object):
     DAYS_CHART_DATASET_NAME = "dailyDataChart"
     MONTHS_CHART_DATASET_NAME = "monthlyDataChart"
         
-class ConfigInitializer(object):
+# *************************************************************************
+#
+#
+class ConfigFileReader(object):
+    
     def __init__(self):
+        
         # Let's check if the directory for containing the program data already
         # exists
-        CONFIG = ConfigEnum()
-        
-        mode = os.stat(CONFIG.AV4VNSTAT_WORK_DIR)[ST_MODE]
+        mode = os.stat(Constants.AV4VNSTAT_WORK_DIR)[ST_MODE]
         #print(S_ISDIR(mode))
-        if (S_ISDIR(mode)):
-            print("fine")
-        else:
+        if (not S_ISDIR(mode)):
             try:
-                os.mkdir(CONFIG.AV4VNSTAT_WORK_DIR)
+                os.mkdir(Constants.AV4VNSTAT_WORK_DIR)
             except(OSError):
                 msg = "Cannot create directory: "
-                msg += CONFIG.AV4VNSTAT_WORK_DIR
+                msg += Constants.AV4VNSTAT_WORK_DIR
                 print(msg)
                 exit(1)
-    
-'''
-'''
-class ConfigReader(object):
-    
-    def __init__(self):
         
-        ConfigInitializer()
-        
-        self.CONFIG_ENUM = ConfigEnum()
         self.configParser = ConfigParser()
-        self.configParser.read(self.CONFIG_ENUM.CONFIG_FILE)
-        self.logger = Logging.Logger(self.CONFIG_ENUM.LOG_FILE_NAME)
+        self.configParser.read(Constants.CONFIG_FILE)
         
+    # *************************************************************************
     def read(self, sectionName, optionName):
+        logger = Logging.Logger(Constants.LOG_FILE_NAME)
         try:
             # Reading the vnstat executable from inside the config file
             return self.configParser.get(sectionName, optionName)
+        
         except(NoSectionError):
-            self.logger.log("[Error] Section with name: " + sectionName + 
+            logger.log("[Error] Section with name: " + sectionName + 
                             " not existing in configuration file.")
             exit(1)
         except(NoOptionError):
-            self.logger.log("[Error] Option with name: " + optionName + 
+            logger.log("[Error] Option with name: " + optionName + 
                             " not existing in configuration file.")
             exit(1)
             
-        self.logger.closeLogFile()
+        logger.closeLogFile()
