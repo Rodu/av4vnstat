@@ -37,7 +37,7 @@ class VnStatHandler(object):
         
         @param vnstatCmd: the path to the vnstat executable as declared in the config file.
         '''
-        self.vnstatDumpFile = None
+        self._vnStatDumpFile = None
         
     # *************************************************************************
     def _createVnStatDumpFile(self):
@@ -52,14 +52,14 @@ class VnStatHandler(object):
         networkCard = configReader.read(Constants.SEC_NETWORK_CARD,
                                                   Constants.OPT_CARD_NAME)
         self._openVnStatDumpFile('w')
-        self.vnstatDumpFile.write(commands.getoutput(vnstatCmd + " --dumpdb -i " + networkCard))
+        self._vnStatDumpFile.write(commands.getoutput(vnstatCmd + " --dumpdb -i " + networkCard))
         self._closeVnStatDumpFile()
     
     # *************************************************************************
     def _openVnStatDumpFile(self, mode):
         logger = Logging.Logger(Constants.LOG_FILE_NAME)
         try:
-            self.vnstatDumpFile = open(Constants.VNSTAT_DUMP_FILE_NAME, mode)
+            self._vnStatDumpFile = open(Constants.VNSTAT_DUMP_FILE_NAME, mode)
         except(IOError):
             msg = "The file " + Constants.VNSTAT_DUMP_FILE_NAME
             msg += " cannot be open with mode '" + mode + "'."
@@ -69,13 +69,17 @@ class VnStatHandler(object):
         
     # *************************************************************************
     def _closeVnStatDumpFile(self):
-        self.vnstatDumpFile.close()
+        self._vnStatDumpFile.close()
+        
+    # *************************************************************************
+    def setVnStatDumpFile(self, vnStatDumpFile):
+        self._vnStatDumpFile = vnStatDumpFile
         
     # *************************************************************************
     def getVnStatDbFile(self):
-        if (self.vnstatDumpFile == None):
+        if (self._vnStatDumpFile == None):
             # First of all we will refresh the file on running the program
             self._createVnStatDumpFile()
             self._openVnStatDumpFile('r')
             
-        return self.vnstatDumpFile
+        return self._vnStatDumpFile

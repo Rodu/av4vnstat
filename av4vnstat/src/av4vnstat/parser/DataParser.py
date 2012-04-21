@@ -14,10 +14,9 @@
 #       You should have received a copy of the GNU General Public License
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from av4vnstat.util.VnStatHandler import VnStatHandler
+from av4vnstat.util.Config import Constants
 import operator
 import re
-from av4vnstat.util.Config import Constants
 
 class DataParser(object):
     '''
@@ -29,8 +28,15 @@ class DataParser(object):
         '''
         Constructor
         '''
-        self._vnStatHandler = VnStatHandler()
-        self._vnStatDumpDbFile = None
+        self._vnStatHandler = None
+    
+    # *************************************************************************
+    def setVnStatHandler(self, vnStatHandler):
+        self._vnStatHandler = vnStatHandler
+    
+    # *************************************************************************
+    def getVnStatHandler(self):
+        return self._vnStatHandler
     
     # *************************************************************************
     def parse(self):
@@ -39,36 +45,23 @@ class DataParser(object):
         
     # *************************************************************************
     def parseHourlyData(self):
-        self._initVnStatDumpFile()
         return self._get_linear_data_array(Constants.HOURS_CHART_DATASET_NAME,
                                            "^h;")
-        
+
     # *************************************************************************
     def parseDailyData(self):
-        self._initVnStatDumpFile()
         return self._get_linear_data_array(Constants.DAYS_CHART_DATASET_NAME,
                                            "^d;")
         
     # *************************************************************************
     def parseMonthlyData(self):
-        self._initVnStatDumpFile()
         return self._get_linear_data_array(Constants.MONTHS_CHART_DATASET_NAME,
                                            "^m;")
     
     # *************************************************************************
     def parseTopTenDaysData(self):
-        self._initVnStatDumpFile()
         return self._get_linear_data_array(Constants.TOP_TEN_DAYS_DATASET_NAME,
                                            "^t;")
-        
-    # *************************************************************************
-    #
-    #
-    def _initVnStatDumpFile(self):
-        if (self._vnStatDumpDbFile == None):
-            self._vnStatDumpDbFile = self._vnStatHandler.getVnStatDbFile()
-        return
-    
     # *************************************************************************
     # In dealing with the vnstat database format we need to do some adjustments
     # to the data in order to be consumed by the chart library.
@@ -89,7 +82,7 @@ class DataParser(object):
         else:
             dataReaderFnc = self._readDMTlyRxTxData
         
-        for line in self._vnStatDumpDbFile:
+        for line in self._vnStatHandler.getVnStatDbFile():
             m = re.match(timePattern, line)
             if (m is not None):
                 # here I have a data line to read

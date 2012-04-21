@@ -14,17 +14,14 @@
 #       You should have received a copy of the GNU General Public License
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-'''
-Created on 17 Apr 2012
-
-@author: Rodu
-'''
-
-from av4vnstat.parser.DataParser import DataParser
+from av4vnstat.generator.JSDatasetGenerator import JSDatasetGenerator
 
 class Av4vnstat(object):
     '''
+    Created on 17 Apr 2012
+
+    @author: Rodu
+    
     This represent the main class of the program.
     
     As the progam can be used by both the command line and the desktop GUI,
@@ -41,12 +38,11 @@ class Av4vnstat(object):
         '''
         Constructor
         '''
-        self.dataParser = None
+        self.jsDataGenerator = None
         
     # *************************************************************************
     def main(self):
-        self.dataParser = DataParser()
-        self.dataParser.parse()
+        self.jsDataGenerator = JSDatasetGenerator()
             
 if __name__ == '__main__':
     
