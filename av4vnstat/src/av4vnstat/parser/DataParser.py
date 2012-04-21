@@ -35,23 +35,18 @@ class DataParser(object):
         
     def parse(self):
         print("parsing...")
-        print(self.parseDailyData())
+        print(self.parseHourlyData())
+    
+    def parseHourlyData(self):
+        self._initVnStatDumpFile()
+        return self._get_linear_data_array(self.CONFIG_ENUM.HOURS_CHART_DATASET_NAME,
+                                           "^h;")
     
     def parseDailyData(self):
         self._initVnStatDumpFile()
-        parameters = {}
-        parameters["CHART_DATASET_NAME"] = self.CONFIG_ENUM.DAYS_CHART_DATASET_NAME
-        # Pattern for matching lines of daily data in vnstat db dump
-        parameters["TIME_PATTERN"] = "^d;"
-        # This indexes match the field position in the vnstat db dump
-        parameters["DATETIME_FIELD"] = 2
-        parameters["RX_MIB_FIELD"] = 3
-        parameters["TX_MIB_FIELD"] = 4
-        parameters["RX_KIB_FIELD"] = 5
-        parameters["TX_KIB_FIELD"] = 6
+        return self._get_linear_data_array(self.CONFIG_ENUM.DAYS_CHART_DATASET_NAME,
+                                           "^d;")
         
-        return self._get_linear_data_array(parameters)
-    
     def _initVnStatDumpFile(self):
         if (self._vnStatDumpDbFile == None):
             self._vnStatDumpDbFile = self._vnStatHandler.getVnStatDbFile()
@@ -64,30 +59,50 @@ class DataParser(object):
     # We need to sort them in ascending order and we will remove entries
     # with no data at all.
     #
-    def _get_linear_data_array(self, parameters):
+    def _get_linear_data_array(self, chartName, timePattern):
         data = []
+        
+        # This index matches the datetime field position in the vnstat db dump
+        DATETIME_FIELD = 2
+        
+        # Holding pointer to function
+        dataReaderFnc = None
+        if (chartName == self.CONFIG_ENUM.HOURS_CHART_DATASET_NAME):
+            dataReaderFnc = self._readHourlyRxTxData
+            
+        elif (chartName == self.CONFIG_ENUM.DAYS_CHART_DATASET_NAME):
+            dataReaderFnc = self._readDailyRxTxData
+        
         for line in self._vnStatDumpDbFile:
-            m = re.match(parameters["TIME_PATTERN"], line)
+            m = re.match(timePattern, line)
             if (m is not None):
                 # here I have a data line to read
                 dataEntry = line.split(';')
                 # Reading the milliseconds value representing an UTC date
-                dateutc = long(dataEntry[parameters["DATETIME_FIELD"]])
-                # Let's ignore hours with no traffic recorded
+                dateutc = long(dataEntry[DATETIME_FIELD])
+                # Ignores entries with no traffic recorded
                 if (dateutc != 0):
-                    if (parameters["CHART_DATASET_NAME"] == self.CONFIG_ENUM.HOURS_CHART_DATASET_NAME):
-                        rxMiB = float(dataEntry[parameters["RX_KIB_FIELD"]]) / 1024
-                        txMiB = float(dataEntry[parameters["TX_KIB_FIELD"]]) / 1024
-                        
-                    elif (parameters["CHART_DATASET_NAME"] == self.CONFIG_ENUM.DAYS_CHART_DATASET_NAME):
-                        rxMiB = float(dataEntry[parameters["RX_MIB_FIELD"]])
-                        rxMiB += float(dataEntry[parameters["RX_KIB_FIELD"]]) / 1024
-                        txMiB = float(dataEntry[parameters["TX_MIB_FIELD"]])
-                        txMiB += float(dataEntry[parameters["TX_KIB_FIELD"]]) / 1024
-                        
                     # Appending a row of data
-                    data.append([dateutc, rxMiB, txMiB])
+                    data.append([dateutc, dataReaderFnc(dataEntry)])
         
         # Sorting the data by datetime ascending before returning them
         return sorted(data,key=operator.itemgetter(0))
+    
+    def _readHourlyRxTxData(self, dataEntry):
+        RX_KIB_FIELD = 3
+        TX_KIB_FIELD = 4
+        rxMiB = float(dataEntry[RX_KIB_FIELD]) / 1024
+        txMiB = float(dataEntry[TX_KIB_FIELD]) / 1024
+        return rxMiB, txMiB
+    
+    def _readDailyRxTxData(self, dataEntry):
+        RX_MIB_FIELD = 3
+        TX_MIB_FIELD = 4
+        RX_KIB_FIELD = 5
+        TX_KIB_FIELD = 6
+        rxMiB = float(dataEntry[RX_MIB_FIELD])
+        rxMiB += float(dataEntry[RX_KIB_FIELD]) / 1024
+        txMiB = float(dataEntry[TX_MIB_FIELD])
+        txMiB += float(dataEntry[TX_KIB_FIELD]) / 1024
+        return rxMiB, txMiB
     
