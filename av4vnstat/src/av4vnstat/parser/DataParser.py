@@ -32,27 +32,39 @@ class DataParser(object):
         self.CONFIG_ENUM = ConfigEnum()
         self._vnStatHandler = VnStatHandler()
         self._vnStatDumpDbFile = None
-        
+    
+    # *************************************************************************
     def parse(self):
         print("parsing...")
-        print(self.parseHourlyData())
-    
+        print(self.parseMonthlyData())
+        
+    # *************************************************************************
     def parseHourlyData(self):
         self._initVnStatDumpFile()
         return self._get_linear_data_array(self.CONFIG_ENUM.HOURS_CHART_DATASET_NAME,
                                            "^h;")
-    
+        
+    # *************************************************************************
     def parseDailyData(self):
         self._initVnStatDumpFile()
         return self._get_linear_data_array(self.CONFIG_ENUM.DAYS_CHART_DATASET_NAME,
                                            "^d;")
         
+    # *************************************************************************
+    def parseMonthlyData(self):
+        self._initVnStatDumpFile()
+        return self._get_linear_data_array(self.CONFIG_ENUM.MONTHS_CHART_DATASET_NAME,
+                                           "^m;")
+        
+    # *************************************************************************
+    #
+    #
     def _initVnStatDumpFile(self):
         if (self._vnStatDumpDbFile == None):
             self._vnStatDumpDbFile = self._vnStatHandler.getVnStatDbFile()
         return
     
-    # **********************************************************************
+    # *************************************************************************
     # In dealing with the vnstat database format we need to do some adjustments
     # to the data in order to be consumed by the chart library.
     #
@@ -69,9 +81,8 @@ class DataParser(object):
         dataReaderFnc = None
         if (chartName == self.CONFIG_ENUM.HOURS_CHART_DATASET_NAME):
             dataReaderFnc = self._readHourlyRxTxData
-            
-        elif (chartName == self.CONFIG_ENUM.DAYS_CHART_DATASET_NAME):
-            dataReaderFnc = self._readDailyRxTxData
+        else:
+            dataReaderFnc = self._readDMTlyRxTxData
         
         for line in self._vnStatDumpDbFile:
             m = re.match(timePattern, line)
@@ -86,8 +97,11 @@ class DataParser(object):
                     data.append([dateutc, dataReaderFnc(dataEntry)])
         
         # Sorting the data by datetime ascending before returning them
-        return sorted(data,key=operator.itemgetter(0))
+        return sorted(data, key=operator.itemgetter(0))
     
+    # *************************************************************************
+    # The function reads data for Hourly entries
+    #
     def _readHourlyRxTxData(self, dataEntry):
         RX_KIB_FIELD = 3
         TX_KIB_FIELD = 4
@@ -95,7 +109,10 @@ class DataParser(object):
         txMiB = float(dataEntry[TX_KIB_FIELD]) / 1024
         return rxMiB, txMiB
     
-    def _readDailyRxTxData(self, dataEntry):
+    # *************************************************************************
+    # The function reads data for Daily, Monthly TopTen entries (DMT)
+    #
+    def _readDMTlyRxTxData(self, dataEntry):
         RX_MIB_FIELD = 3
         TX_MIB_FIELD = 4
         RX_KIB_FIELD = 5

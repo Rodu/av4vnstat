@@ -40,12 +40,12 @@ class ConfigEnum(object):
     
     # Defines the name for the log file that will be used to store some messages
     # for easier debug.
-    LOG_FILE_NAME = USER_HOME_DIR  + "/" + _PROGRAM_NAME + ".log"
+    LOG_FILE_NAME = USER_HOME_DIR + "/" + _PROGRAM_NAME + ".log"
     
     # Represent the path to the file containing configurable options that the
     # user needs to have an easy access to.
     # (Not use _PROGRAM_NAME here to not hide the file from the user).
-    CONFIG_FILE = USER_HOME_DIR  + "/av4vnstat" + ".cfg"
+    CONFIG_FILE = USER_HOME_DIR + "/av4vnstat" + ".cfg"
     
     # Defining configuration file section and option constant names
     SEC_VNSTAT = "VNSTAT"
@@ -61,6 +61,7 @@ class ConfigEnum(object):
     # Constants for JS data set chart names to be matched in the Javascript.
     HOURS_CHART_DATASET_NAME = "hourlyDataChart"
     DAYS_CHART_DATASET_NAME = "dailyDataChart"
+    MONTHS_CHART_DATASET_NAME = "monthlyDataChart"
         
 class ConfigInitializer(object):
     def __init__(self):
@@ -99,11 +100,11 @@ class ConfigReader(object):
             # Reading the vnstat executable from inside the config file
             return self.configParser.get(sectionName, optionName)
         except(NoSectionError):
-            self.logger.log("[Error] Section with name: " + sectionName +
+            self.logger.log("[Error] Section with name: " + sectionName + 
                             " not existing in configuration file.")
             exit(1)
         except(NoOptionError):
-            self.logger.log("[Error] Option with name: " + optionName +
+            self.logger.log("[Error] Option with name: " + optionName + 
                             " not existing in configuration file.")
             exit(1)
             
