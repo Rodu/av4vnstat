@@ -48,6 +48,9 @@ class Constants(object):
     CONFIG_FILE = USER_HOME_DIR + "/av4vnstat" + ".cfg"
     
     # Defining configuration file section and option constant names
+    SEC_JS_DATA = "JS_DATA"
+    OPT_JS_DATA_FILE_PATH = "js_data_file_path"
+    
     SEC_VNSTAT = "VNSTAT"
     OPT_VNSTAT_CMD = "vnstat_cmd"
     

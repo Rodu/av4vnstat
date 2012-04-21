@@ -15,10 +15,9 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from av4vnstat.generator.DataParser import DataParser
+from av4vnstat.util.Config import Constants, ConfigFileReader
 from av4vnstat.util.VnStatHandler import VnStatHandler
-import sys
 import datetime
-from av4vnstat.util.Config import Constants
 
 class JSDatasetGenerator(object):
     '''
@@ -130,4 +129,7 @@ class JSDatasetGenerator(object):
 
     def _openJSDataFile(self):
         if (self._jsDataFile == None):
-            self._jsDataFile = open(sys.path[0] + "/../../gen/data.js", 'w')
+            configFileReader = ConfigFileReader()
+            jsFilePath = configFileReader.read(Constants.SEC_JS_DATA,
+                                               Constants.OPT_JS_DATA_FILE_PATH)
+            self._jsDataFile = open(jsFilePath, 'w')
