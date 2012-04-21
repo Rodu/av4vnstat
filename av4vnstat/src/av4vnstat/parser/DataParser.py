@@ -35,7 +35,7 @@ class DataParser(object):
     # *************************************************************************
     def parse(self):
         print("parsing...")
-        print(self.parseMonthlyData())
+        print(self.parseTopTenDaysData())
         
     # *************************************************************************
     def parseHourlyData(self):
@@ -54,6 +54,12 @@ class DataParser(object):
         self._initVnStatDumpFile()
         return self._get_linear_data_array(Constants.MONTHS_CHART_DATASET_NAME,
                                            "^m;")
+    
+    # *************************************************************************
+    def parseTopTenDaysData(self):
+        self._initVnStatDumpFile()
+        return self._get_linear_data_array(Constants.TOP_TEN_DAYS_DATASET_NAME,
+                                           "^t;")
         
     # *************************************************************************
     #

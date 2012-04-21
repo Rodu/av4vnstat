@@ -62,6 +62,7 @@ class Constants(object):
     HOURS_CHART_DATASET_NAME = "hourlyDataChart"
     DAYS_CHART_DATASET_NAME = "dailyDataChart"
     MONTHS_CHART_DATASET_NAME = "monthlyDataChart"
+    TOP_TEN_DAYS_DATASET_NAME = "topTenDaysDataChart"
         
 # *************************************************************************
 #
