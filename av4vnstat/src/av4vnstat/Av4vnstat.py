@@ -15,6 +15,10 @@
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from av4vnstat.generator.JSDatasetGenerator import JSDatasetGenerator
+from av4vnstat.generator.DataParser import DataParser
+from av4vnstat.util.VnStatHandler import VnStatHandler
+from av4vnstatTest import Av4vnstatTest
+import av4vnstatTest
 
 class Av4vnstat(object):
     '''
@@ -41,9 +45,16 @@ class Av4vnstat(object):
         
     # *************************************************************************
     def main(self):
+        dataParser = DataParser()
+        dataParser.setVnStatHandler(VnStatHandler())
+        
         jsDataGenerator = JSDatasetGenerator()
-        jsDataGenerator.generateHourlyDataSet()
-        jsDataGenerator.generateDailyDataSet()
+        jsDataGenerator.setDataParser(dataParser)
+        
+        #jsDataGenerator.generateHourlyDataSet()
+        #jsDataGenerator.generateDailyDataSet()
+        
+        jsDataGenerator.generateMonthlyDataSet()
         jsDataGenerator.cleanup()
             
 if __name__ == '__main__':

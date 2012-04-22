@@ -29,13 +29,16 @@ class JSDatasetGenerator(object):
         '''
         Constructor
         '''
-        self.dataParser = DataParser()
-        self.dataParser.setVnStatHandler(VnStatHandler())
+        self._dataParser = None
         self._jsDataFile = None
         
     # *************************************************************************
+    def setDataParser(self, dataParser):
+        self._dataParser = dataParser
+        
+    # *************************************************************************
     def generateHourlyDataSet(self):
-        dataList = self.dataParser.parseHourlyData()
+        dataList = self._dataParser.parseHourlyData()
         arrTimeRef, arrRxMiB, arrTxMiB = self._generateChartData(dataList,
                                                                  self._buildBarChartTimeref)
         # Let's write results to file
@@ -44,12 +47,18 @@ class JSDatasetGenerator(object):
     
     # *************************************************************************
     def generateDailyDataSet(self):
-        dataList = self.dataParser.parseDailyData()
+        dataList = self._dataParser.parseDailyData()
         arrTimeRef, arrRxMiB, arrTxMiB = self._generateChartData(dataList,
                                                                  self._buildLineChartTimeref)
         # Let's write results to file
         self._writeLineChartJSDataObject(Constants.DAYS_CHART_DATASET_NAME,
                                     arrTimeRef, arrRxMiB, arrTxMiB)
+    
+    # *************************************************************************
+    def generateMonthlyDataSet(self):
+        dataList = self._dataParser.parseMonthlyData()
+        dataSet = self._generateSmallMultiplesData(dataList)
+    
     #def _generateBarChartData(self, chartDatasetName):
     #    return self._generateChartData(chartDatasetName, self._buildBarChartTimeref)
     
@@ -105,6 +114,84 @@ class JSDatasetGenerator(object):
             arrTxMiB.append(txMiB)
         
         return arrTimeRef, arrRxMiB, arrTxMiB
+    
+    # *************************************************************************
+    # To calculate percentages:
+    #
+    #    - Find the maxValue element of the month looking in both Tx and Rx
+    #     (the min will be zero). The maxValue will represent the 100%
+    #      and all the others will be calculated and drawn in respect to
+    #      this value (they will be a percentage of that)
+    #
+    #   - For each line (entry) generate an entry for the chart calculating:
+    #       - the percentage for the representative point (the top at the center)
+    #       - the percentages for the other points in relation to the ratio
+    #           those other points have with the top one
+    #   
+    #   - Write the entry that the chart will consume, representing a SM tail
+    #   
+    #   
+    #    Example of the data set:
+    #   
+    #    [ [ DateUTC(YYY, MM, DD), [Rx %] , [Tx %] ], 
+    #      [ DateUTC(YYY, MM, DD), [Rx %] , [Tx %] ], ...]
+    #
+    #    To create the desired shape this are the proportions:
+    #
+    #        [0, 50, 30, 100, 30, 50, 0 ]
+    #
+    #    where the 100 represent the central point to calculate while the
+    #    others need be calculated in respect of the 100 percent, and have to be
+    #    30%, 50% etc from the central value.
+    #
+    #    See testing class for what is expected.
+    #
+    def _generateSmallMultiplesData(self, dataList):
+        dataSet = []
+        
+        # This ratios will determine the shape of the chart
+        percentRatios = [0, 50, 30, 100, 30, 50, 0]
+        
+        # Field position in the dataList
+        DATETIME_FIELD, RX_MIB_FIELD, TX_MIB_FIELD = range(3)
+        
+        # Let's find the maxValue in both rx and tx entries
+        maxValue = 0
+        for entry in dataList:
+            entryMax = entry[RX_MIB_FIELD]
+            if (entry[RX_MIB_FIELD] < entry[TX_MIB_FIELD]):
+                entryMax = entry[TX_MIB_FIELD]
+                
+            if (entryMax > maxValue):
+                maxValue = entryMax
+        #print(str(maxValue))
+        
+        # Let's create the dataset calculating the value with respect to the maxValue
+        for entry in dataList:
+            dataSetEntry = []
+            rxData = []
+            txData = []
+            dateutc = datetime.datetime.utcfromtimestamp(float(entry[DATETIME_FIELD]))
+            # We add one hour because vnstat is measuring traffic at min 59
+            # leading to a wrong day indication on the chart in some cases.
+            dateutc += datetime.timedelta(hours = 1)
+            # Calling the pointed function passing the date object
+            timeref = self._buildLineChartTimeref(dateutc)
+            
+            # Calculating percentages
+            percRxVariation = (entry[RX_MIB_FIELD] / maxValue) * 100
+            percTxVariation = (entry[TX_MIB_FIELD] / maxValue) * 100
+            for ratio in percentRatios:
+                rxData.append(ratio * percRxVariation / 100)
+                txData.append(ratio * percTxVariation / 100)
+            
+            dataSetEntry.append(timeref)
+            dataSetEntry.append(rxData)
+            dataSetEntry.append(txData)
+            
+            dataSet.append(dataSetEntry)
+            
+        return dataSet
     
     # *************************************************************************
     # 
@@ -181,5 +268,6 @@ class JSDatasetGenerator(object):
     
     # *************************************************************************
     def _closeJSDataFile(self):
-        self._jsDataFile.close()
+        if (not self._jsDataFile == None):
+            self._jsDataFile.close()
     

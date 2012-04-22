@@ -29,7 +29,7 @@ class DataParserTest(unittest.TestCase):
     def setUp(self):
         self.vnStatHandler = VnStatHandler()
         # Here we need to open a file for testing!
-        vnStatDumpFile = open("../../dummy_vnstat_test_dump.txt", 'r')
+        vnStatDumpFile = open("../dummy_vnstat_test_dump.txt", 'r')
         self.vnStatHandler.setVnStatDumpFile(vnStatDumpFile)
         
         # The object under test
@@ -44,8 +44,8 @@ class DataParserTest(unittest.TestCase):
         parsedHourlyData = self.dataParser.parseHourlyData()
         expectedHourlyData = [[1334980780L, 1.0, 2.0],
                               [1334982490L, 2.0, 1.0]]
-        print(parsedHourlyData)
-        print(expectedHourlyData)
+        #print(parsedHourlyData)
+        #print(expectedHourlyData)
         self.assertEqual(parsedHourlyData, expectedHourlyData,
                          "The returned data differs from the expected ones!")
     
@@ -59,7 +59,3 @@ class DataParserTest(unittest.TestCase):
         #print(expectedHourlyData)
         self.assertEqual(parsedHourlyData, expectedHourlyData,
                          "The returned data differs from the expected ones!")
-
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testParseHourlyData']
-    unittest.main()
