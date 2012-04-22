@@ -118,11 +118,10 @@ class JSDatasetGenerator(object):
         
         arrSeriesRxMiB = []
         arrSeriesTxMiB = []
-        i = 0
-        while (i < len(arrTimeRef)):
+
+        for i in range(len(arrTimeRef)):
             arrSeriesRxMiB.append([arrTimeRef[i], arrRxMiB[i]])
             arrSeriesTxMiB.append([arrTimeRef[i], arrTxMiB[i]])
-            i += 1
         
         self._writeSeriesDataObject(arrSeriesRxMiB, arrSeriesTxMiB)
         
