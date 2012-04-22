@@ -51,8 +51,8 @@ class Av4vnstat(object):
         jsDataGenerator = JSDatasetGenerator()
         jsDataGenerator.setDataParser(dataParser)
         
-        #jsDataGenerator.generateHourlyDataSet()
-        #jsDataGenerator.generateDailyDataSet()
+        jsDataGenerator.generateHourlyDataSet()
+        jsDataGenerator.generateDailyDataSet()
         jsDataGenerator.generateMonthlyDataSet()
         
         jsDataGenerator.cleanup()

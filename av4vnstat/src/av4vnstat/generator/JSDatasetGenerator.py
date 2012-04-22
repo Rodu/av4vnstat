@@ -14,9 +14,7 @@
 #       You should have received a copy of the GNU General Public License
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from av4vnstat.generator.DataParser import DataParser
 from av4vnstat.util.Config import Constants, ConfigFileReader
-from av4vnstat.util.VnStatHandler import VnStatHandler
 import datetime
 
 class JSDatasetGenerator(object):
@@ -57,12 +55,12 @@ class JSDatasetGenerator(object):
     # *************************************************************************
     def generateMonthlyDataSet(self):
         dataList = self._dataParser.parseMonthlyData()
-        dataSet = self._generateSmallMultiplesData(dataList)
+        arrTimeRef, arrRxMiB, arrTxMiB = self._generateSmallMultiplesData(dataList)
         
-        self._writeSmallMultiplesJSDataObject(Constants.MONTHS_CHART_DATASET_NAME,
-                                              dataSet)
+        self._writeLineChartJSDataObject(Constants.MONTHS_CHART_DATASET_NAME,
+                                              arrTimeRef, arrRxMiB, arrTxMiB)
         # For testing the method
-        return dataSet
+        return [arrTimeRef, arrRxMiB, arrTxMiB]
     
     #def _generateBarChartData(self, chartDatasetName):
     #    return self._generateChartData(chartDatasetName, self._buildBarChartTimeref)
@@ -152,7 +150,7 @@ class JSDatasetGenerator(object):
     #    See testing class for what is expected.
     #
     def _generateSmallMultiplesData(self, dataList):
-        dataSet = []
+        #dataSet = []
         
         # This ratios will determine the shape of the chart
         percentRatios = [0, 50, 30, 100, 30, 50, 0]
@@ -170,10 +168,11 @@ class JSDatasetGenerator(object):
             if (entryMax > maxValue):
                 maxValue = entryMax
         #print(str(maxValue))
-        
+        arrTimeRef = []
+        arrRxMiB = []
+        arrTxMiB = []
         # Let's create the dataset calculating the value with respect to the maxValue
         for entry in dataList:
-            dataSetEntry = []
             rxData = []
             txData = []
             dateutc = datetime.datetime.utcfromtimestamp(float(entry[DATETIME_FIELD]))
@@ -190,17 +189,20 @@ class JSDatasetGenerator(object):
                 rxData.append(str(round(ratio * percRxVariation / 100, 2)))
                 txData.append(str(round(ratio * percTxVariation / 100, 2)))
             
-            dataSetEntry.append(timeref)
-            dataSetEntry.append(rxData)
-            dataSetEntry.append(txData)
+            arrTimeRef.append(timeref)
+            # I am converting to string because the array would be passed by
+            # reference and not by value...
+            arrRxMiB.append(str(rxData))
+            arrTxMiB.append(str(txData))
             
-            dataSet.append(dataSetEntry)
+            #dataSet.append(dataSetEntry)
             
-        return dataSet
+        return arrTimeRef, arrRxMiB, arrTxMiB
     
     # *************************************************************************
     # 
     def _writeBarChartJSObject(self, chartDatasetName, arrTimeRef, arrRxMiB, arrTxMiB):
+        self._openJSDataFile()
         self._openJSDataObject(chartDatasetName)
         
         self._writeCategoriesDataObject(arrTimeRef)
@@ -210,6 +212,7 @@ class JSDatasetGenerator(object):
     
     # *************************************************************************
     def _writeLineChartJSDataObject(self, chartDatasetName, arrTimeRef, arrRxMiB, arrTxMiB):
+        self._openJSDataFile()
         self._openJSDataObject(chartDatasetName)
         
         arrSeriesRxMiB = []
@@ -221,16 +224,6 @@ class JSDatasetGenerator(object):
         
         self._writeSeriesDataObject(arrSeriesRxMiB, arrSeriesTxMiB)
         
-        self._closeJSDataObject()
-    
-    # *************************************************************************
-    def _writeSmallMultiplesJSDataObject(self, chartDatasetName, dataSet):
-        self._openJSDataFile()
-        #print(dataSet)
-        self._openJSDataObject(chartDatasetName)
-        self._jsDataFile.write("\tsmallmultiples: ")
-        #for entry in dataSet:
-        self._jsDataFile.write(str(dataSet).replace("'", ""))
         self._closeJSDataObject()
     
     # *************************************************************************
@@ -251,12 +244,12 @@ class JSDatasetGenerator(object):
         # Download
         self._jsDataFile.write("\t\tname: 'Download',\n")
         self._jsDataFile.write("\t\tmarker: { symbol: 'square' },\n\t\tdata: ")
-        self._jsDataFile.write(str(arrRxMiB).replace("'", ""))
+        self._jsDataFile.write(str(arrRxMiB).replace("'", "").replace("\"", ""))
         self._jsDataFile.write("\n\t},{\n")
         # Upload
         self._jsDataFile.write("\t\tname: 'Upload',\n")
         self._jsDataFile.write("\t\tmarker: { symbol: 'diamond' },\n\t\tdata: ")
-        self._jsDataFile.write(str(arrTxMiB).replace("'", ""))
+        self._jsDataFile.write(str(arrTxMiB).replace("'", "").replace("\"", ""))
         self._jsDataFile.write("\n\t}],\n")
         
     # *************************************************************************
