@@ -65,6 +65,7 @@ class JSDataGeneratorTest(unittest.TestCase):
                             [[0.0, 6.25, 3.75, 12.5, 3.75, 6.25, 0.0], [0.0, 50.0, 30.0, 100.0, 30.0, 50.0, 0.0]],
                             [[0.0, 12.5, 7.5, 25.0, 7.5, 12.5, 0.0], [0.0, 25.0, 15.0, 50.0, 15.0, 25.0, 0.0]])
         
+        jsDatasetGenerator.setJSFilePath("/dev/null")
         calculatedDataSet = jsDatasetGenerator.generateMonthlyDataSet()
         
         expectedDataSet = str(expectedDataSet).replace("'", "").replace("\"", "")

@@ -33,6 +33,9 @@ class JSDatasetGenerator(object):
         '''
         self._dataParser = None
         self._jsDataFile = None
+        configFileReader = ConfigFileReader()
+        self._jsFilePath = configFileReader.read(Constants.SEC_JS_DATA,
+                                                 Constants.OPT_JS_DATA_FILE_PATH)
         
     # *************************************************************************
     def setDataParser(self, dataParser):
@@ -49,8 +52,7 @@ class JSDatasetGenerator(object):
     # *************************************************************************
     def generateDailyDataSet(self):
         dataList = self._dataParser.parseDailyData()
-        dataSet = self._generateChartData(dataList,
-                                                                 self._buildLineChartTimeref)
+        dataSet = self._generateChartData(dataList, self._buildLineChartTimeref)
         # Let's write results to file
         self._writeLineChartJSDataObject(Constants.DAYS_CHART_DATASET_NAME,
                                          dataSet)
@@ -265,6 +267,12 @@ class JSDatasetGenerator(object):
         self._jsDataFile.write("\n\t}],\n")
         
     # *************************************************************************
+    # For testing pourposes we want to be able to set this from outside
+    #
+    def setJSFilePath(self, jsFilePath):
+        self._jsFilePath = jsFilePath
+        
+    # *************************************************************************
     # Generates the Javascript data set expected by the bar chart type.
     # 
     def _writeCategoriesDataObject(self, arrTimeRef):
@@ -281,10 +289,7 @@ class JSDatasetGenerator(object):
     # *************************************************************************
     def _openJSDataFile(self):
         if (self._jsDataFile == None):
-            configFileReader = ConfigFileReader()
-            jsFilePath = configFileReader.read(Constants.SEC_JS_DATA,
-                                               Constants.OPT_JS_DATA_FILE_PATH)
-            self._jsDataFile = open(jsFilePath, 'w')
+            self._jsDataFile = open(self._jsFilePath, 'w')
     
     # *************************************************************************
     def _closeJSDataFile(self):
