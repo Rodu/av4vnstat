@@ -53,8 +53,8 @@ class Av4vnstat(object):
         
         #jsDataGenerator.generateHourlyDataSet()
         #jsDataGenerator.generateDailyDataSet()
-        
         jsDataGenerator.generateMonthlyDataSet()
+        
         jsDataGenerator.cleanup()
             
 if __name__ == '__main__':

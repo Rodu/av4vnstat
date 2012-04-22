@@ -58,6 +58,11 @@ class JSDatasetGenerator(object):
     def generateMonthlyDataSet(self):
         dataList = self._dataParser.parseMonthlyData()
         dataSet = self._generateSmallMultiplesData(dataList)
+        
+        self._writeSmallMultiplesJSDataObject(Constants.MONTHS_CHART_DATASET_NAME,
+                                              dataSet)
+        # For testing the method
+        return dataSet
     
     #def _generateBarChartData(self, chartDatasetName):
     #    return self._generateChartData(chartDatasetName, self._buildBarChartTimeref)
@@ -182,8 +187,8 @@ class JSDatasetGenerator(object):
             percRxVariation = (entry[RX_MIB_FIELD] / maxValue) * 100
             percTxVariation = (entry[TX_MIB_FIELD] / maxValue) * 100
             for ratio in percentRatios:
-                rxData.append(ratio * percRxVariation / 100)
-                txData.append(ratio * percTxVariation / 100)
+                rxData.append(str(round(ratio * percRxVariation / 100, 2)))
+                txData.append(str(round(ratio * percTxVariation / 100, 2)))
             
             dataSetEntry.append(timeref)
             dataSetEntry.append(rxData)
@@ -216,6 +221,16 @@ class JSDatasetGenerator(object):
         
         self._writeSeriesDataObject(arrSeriesRxMiB, arrSeriesTxMiB)
         
+        self._closeJSDataObject()
+    
+    # *************************************************************************
+    def _writeSmallMultiplesJSDataObject(self, chartDatasetName, dataSet):
+        self._openJSDataFile()
+        #print(dataSet)
+        self._openJSDataObject(chartDatasetName)
+        self._jsDataFile.write("\tsmallmultiples: ")
+        #for entry in dataSet:
+        self._jsDataFile.write(str(dataSet).replace("'", ""))
         self._closeJSDataObject()
     
     # *************************************************************************
