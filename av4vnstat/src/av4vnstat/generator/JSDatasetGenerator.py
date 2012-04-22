@@ -16,6 +16,7 @@
 #
 from av4vnstat.util.Config import Constants, ConfigFileReader
 import datetime
+from reportlab.graphics.charts.barcharts import dataSample5
 
 class JSDatasetGenerator(object):
     '''
@@ -23,6 +24,9 @@ class JSDatasetGenerator(object):
 
     @author: rob
     '''
+    # Field position in the dataList
+    DATETIME_FIELD, RX_MIB_FIELD, TX_MIB_FIELD = range(3)
+    
     def __init__(self):
         '''
         Constructor
@@ -37,30 +41,29 @@ class JSDatasetGenerator(object):
     # *************************************************************************
     def generateHourlyDataSet(self):
         dataList = self._dataParser.parseHourlyData()
-        arrTimeRef, arrRxMiB, arrTxMiB = self._generateChartData(dataList,
-                                                                 self._buildBarChartTimeref)
+        dataSet = self._generateChartData(dataList, self._buildBarChartTimeref)
         # Let's write results to file
         self._writeBarChartJSObject(Constants.HOURS_CHART_DATASET_NAME,
-                                    arrTimeRef, arrRxMiB, arrTxMiB)
+                                    dataSet)
     
     # *************************************************************************
     def generateDailyDataSet(self):
         dataList = self._dataParser.parseDailyData()
-        arrTimeRef, arrRxMiB, arrTxMiB = self._generateChartData(dataList,
+        dataSet = self._generateChartData(dataList,
                                                                  self._buildLineChartTimeref)
         # Let's write results to file
         self._writeLineChartJSDataObject(Constants.DAYS_CHART_DATASET_NAME,
-                                    arrTimeRef, arrRxMiB, arrTxMiB)
+                                         dataSet)
     
     # *************************************************************************
     def generateMonthlyDataSet(self):
         dataList = self._dataParser.parseMonthlyData()
-        arrTimeRef, arrRxMiB, arrTxMiB = self._generateSmallMultiplesData(dataList)
+        dataSet = self._generateSmallMultiplesData(dataList)
         
         self._writeLineChartJSDataObject(Constants.MONTHS_CHART_DATASET_NAME,
-                                              arrTimeRef, arrRxMiB, arrTxMiB)
+                                         dataSet)
         # For testing the method
-        return [arrTimeRef, arrRxMiB, arrTxMiB]
+        return dataSet
     
     #def _generateBarChartData(self, chartDatasetName):
     #    return self._generateChartData(chartDatasetName, self._buildBarChartTimeref)
@@ -93,8 +96,6 @@ class JSDatasetGenerator(object):
     def _generateChartData(self, dataList, timerefFunc):
         self._openJSDataFile()
         
-        # Field position in the dataList
-        DATETIME_FIELD, RX_MIB_FIELD, TX_MIB_FIELD = range(3)
         arrTimeRef = []
         arrRxMiB = []
         arrTxMiB = []
@@ -102,21 +103,21 @@ class JSDatasetGenerator(object):
         txMiB = ""
         
         for data in dataList:
-            dateutc = datetime.datetime.utcfromtimestamp(float(data[DATETIME_FIELD]))
+            dateutc = datetime.datetime.utcfromtimestamp(float(data[JSDatasetGenerator.DATETIME_FIELD]))
             # We add one hour because vnstat is measuring traffic at min 59
             # leading to a wrong day indication on the chart in some cases.
             dateutc += datetime.timedelta(hours = 1)
             # Calling the pointed function passing the date object
             timeref = timerefFunc(dateutc)
             # Rounding down to two decimal places value calculated for MiBs
-            rxMiB = str(round(data[RX_MIB_FIELD], 2))
-            txMiB = str(round(data[TX_MIB_FIELD], 2))
+            rxMiB = str(round(data[JSDatasetGenerator.RX_MIB_FIELD], 2))
+            txMiB = str(round(data[JSDatasetGenerator.TX_MIB_FIELD], 2))
             
             arrTimeRef.append(timeref)
             arrRxMiB.append(rxMiB)
             arrTxMiB.append(txMiB)
         
-        return arrTimeRef, arrRxMiB, arrTxMiB
+        return [arrTimeRef, arrRxMiB, arrTxMiB]
     
     # *************************************************************************
     # To calculate percentages:
@@ -155,15 +156,12 @@ class JSDatasetGenerator(object):
         # This ratios will determine the shape of the chart
         percentRatios = [0, 50, 30, 100, 30, 50, 0]
         
-        # Field position in the dataList
-        DATETIME_FIELD, RX_MIB_FIELD, TX_MIB_FIELD = range(3)
-        
         # Let's find the maxValue in both rx and tx entries
         maxValue = 0
         for entry in dataList:
-            entryMax = entry[RX_MIB_FIELD]
-            if (entry[RX_MIB_FIELD] < entry[TX_MIB_FIELD]):
-                entryMax = entry[TX_MIB_FIELD]
+            entryMax = entry[JSDatasetGenerator.RX_MIB_FIELD]
+            if (entry[JSDatasetGenerator.RX_MIB_FIELD] < entry[JSDatasetGenerator.TX_MIB_FIELD]):
+                entryMax = entry[JSDatasetGenerator.TX_MIB_FIELD]
                 
             if (entryMax > maxValue):
                 maxValue = entryMax
@@ -175,7 +173,7 @@ class JSDatasetGenerator(object):
         for entry in dataList:
             rxData = []
             txData = []
-            dateutc = datetime.datetime.utcfromtimestamp(float(entry[DATETIME_FIELD]))
+            dateutc = datetime.datetime.utcfromtimestamp(float(entry[JSDatasetGenerator.DATETIME_FIELD]))
             # We add one hour because vnstat is measuring traffic at min 59
             # leading to a wrong day indication on the chart in some cases.
             dateutc += datetime.timedelta(hours = 1)
@@ -183,8 +181,8 @@ class JSDatasetGenerator(object):
             timeref = self._buildLineChartTimeref(dateutc)
             
             # Calculating percentages
-            percRxVariation = (entry[RX_MIB_FIELD] / maxValue) * 100
-            percTxVariation = (entry[TX_MIB_FIELD] / maxValue) * 100
+            percRxVariation = (entry[JSDatasetGenerator.RX_MIB_FIELD] / maxValue) * 100
+            percTxVariation = (entry[JSDatasetGenerator.TX_MIB_FIELD] / maxValue) * 100
             for ratio in percentRatios:
                 rxData.append(str(round(ratio * percRxVariation / 100, 2)))
                 txData.append(str(round(ratio * percTxVariation / 100, 2)))
@@ -201,28 +199,42 @@ class JSDatasetGenerator(object):
     
     # *************************************************************************
     # 
-    def _writeBarChartJSObject(self, chartDatasetName, arrTimeRef, arrRxMiB, arrTxMiB):
+    def _writeBarChartJSObject(self, chartDatasetName, dataSet):
         self._openJSDataFile()
         self._openJSDataObject(chartDatasetName)
         
-        self._writeCategoriesDataObject(arrTimeRef)
-        self._writeSeriesDataObject(arrRxMiB, arrTxMiB)
+        self._writeCategoriesDataObject(dataSet[JSDatasetGenerator.DATETIME_FIELD])
+        self._writeSeriesDataObject(dataSet[JSDatasetGenerator.RX_MIB_FIELD],
+                                    dataSet[JSDatasetGenerator.TX_MIB_FIELD])
             
         self._closeJSDataObject()
     
     # *************************************************************************
-    def _writeLineChartJSDataObject(self, chartDatasetName, arrTimeRef, arrRxMiB, arrTxMiB):
+    def _writeLineChartJSDataObject(self, chartDatasetName, dataSet):
         self._openJSDataFile()
         self._openJSDataObject(chartDatasetName)
         
-        arrSeriesRxMiB = []
-        arrSeriesTxMiB = []
-
-        for i in range(len(arrTimeRef)):
-            arrSeriesRxMiB.append([arrTimeRef[i], arrRxMiB[i]])
-            arrSeriesTxMiB.append([arrTimeRef[i], arrTxMiB[i]])
-        
-        self._writeSeriesDataObject(arrSeriesRxMiB, arrSeriesTxMiB)
+        arrSeriesRx = []
+        arrSeriesTx = []
+        #
+        # We have the data set as a multidimensional array that can be thought
+        # as being a table like:
+        #
+        #    DATETIME    RX_MIB    TX_MIB
+        #    1234        123.44    53.33
+        #
+        # In the case of the small multiples the RX_MIB and TX_MIB
+        # are array of percentages themselves.
+        #
+        # We use the DATETIME_FIELD to loop the rows but any of the three would do
+        #
+        for row in range(len(dataSet[JSDatasetGenerator.DATETIME_FIELD])):
+            arrSeriesRx.append([dataSet[JSDatasetGenerator.DATETIME_FIELD][row],
+                                dataSet[JSDatasetGenerator.RX_MIB_FIELD][row]])
+            arrSeriesTx.append([dataSet[JSDatasetGenerator.DATETIME_FIELD][row],
+                                dataSet[JSDatasetGenerator.TX_MIB_FIELD][row]])
+                
+        self._writeSeriesDataObject(arrSeriesRx, arrSeriesTx)
         
         self._closeJSDataObject()
     
