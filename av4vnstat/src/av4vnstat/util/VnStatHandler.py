@@ -70,6 +70,7 @@ class VnStatHandler(object):
     # *************************************************************************
     def _closeVnStatDumpFile(self):
         self._vnStatDumpFile.close()
+        #self._vnStatDumpFile = None
         
     # *************************************************************************
     def setVnStatDumpFile(self, vnStatDumpFile):
@@ -78,8 +79,13 @@ class VnStatHandler(object):
     # *************************************************************************
     def getVnStatDbFile(self):
         if (self._vnStatDumpFile == None):
-            # First of all we will refresh the file on running the program
+            # First of all we will refresh the data file on running the program
             self._createVnStatDumpFile()
+        # Now we want to use the file in read only
+        if (self._vnStatDumpFile.closed):
             self._openVnStatDumpFile('r')
+        else:
+            # The file was opened. We need to rewind the file...
+            self._vnStatDumpFile.seek(0)
             
         return self._vnStatDumpFile

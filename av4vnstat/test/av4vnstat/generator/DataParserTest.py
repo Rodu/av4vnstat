@@ -42,19 +42,19 @@ class DataParserTest(unittest.TestCase):
 
     def testParseHourlyData(self):
         parsedHourlyData = self.dataParser.parseHourlyData()
-        expectedHourlyData = [[1334980780L, (1.0, 2.0)],
-                              [1334982490L, (2.0, 1.0)]]
-        #print(parsedHourlyData)
-        #print(expectedHourlyData)
+        expectedHourlyData = [[1334980780L, 1.0, 2.0],
+                              [1334982490L, 2.0, 1.0]]
+        print(parsedHourlyData)
+        print(expectedHourlyData)
         self.assertEqual(parsedHourlyData, expectedHourlyData,
                          "The returned data differs from the expected ones!")
     
     def testParseDailyData(self):
         parsedHourlyData = self.dataParser.parseDailyData()
-        expectedHourlyData = [[1334703620L, (2.0, 2.0)],
-                              [1334796662L, (1.0, 1.0)],
-                              [1334876424L, (7.0, 7.0)],
-                              [1334977960L, (11.0, 11.0)]]
+        expectedHourlyData = [[1334703620L, 2.0, 2.0],
+                              [1334796662L, 1.0, 1.0],
+                              [1334876424L, 7.0, 7.0],
+                              [1334977960L, 11.0, 11.0]]
         #print(parsedHourlyData)
         #print(expectedHourlyData)
         self.assertEqual(parsedHourlyData, expectedHourlyData,

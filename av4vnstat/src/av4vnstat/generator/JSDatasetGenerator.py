@@ -33,10 +33,48 @@ class JSDatasetGenerator(object):
         self.dataParser.setVnStatHandler(VnStatHandler())
         self._jsDataFile = None
         
+    # *************************************************************************
     def generateHourlyDataSet(self):
-        self._generateBarChartData(Constants.HOURS_CHART_DATASET_NAME)
+        dataList = self.dataParser.parseHourlyData()
+        arrTimeRef, arrRxMiB, arrTxMiB = self._generateChartData(dataList,
+                                                                 self._buildBarChartTimeref)
+        # Let's write results to file
+        self._writeBarChartJSObject(Constants.HOURS_CHART_DATASET_NAME,
+                                    arrTimeRef, arrRxMiB, arrTxMiB)
+    
+    # *************************************************************************
+    def generateDailyDataSet(self):
+        dataList = self.dataParser.parseDailyData()
+        arrTimeRef, arrRxMiB, arrTxMiB = self._generateChartData(dataList,
+                                                                 self._buildLineChartTimeref)
+        # Let's write results to file
+        self._writeLineChartJSDataObject(Constants.DAYS_CHART_DATASET_NAME,
+                                    arrTimeRef, arrRxMiB, arrTxMiB)
+    #def _generateBarChartData(self, chartDatasetName):
+    #    return self._generateChartData(chartDatasetName, self._buildBarChartTimeref)
+    
+    #def _generateLineChartData(self, chartDatasetName):
+    #    return self._generateChartData(chartDatasetName, self._buildLineChartTimeref)
+    
+    # *************************************************************************
+    def _buildBarChartTimeref(self, dateutc):
+        # We are only interested in the hours
+        return dateutc.hour
+    
+    # *************************************************************************
+    def _buildLineChartTimeref(self, dateutc):
+        timeref = "Date.UTC(" + str(dateutc.year) + ","
+        # Months are one based but we want them zero based
+        timeref = timeref + str(dateutc.month - 1) + ","
+        timeref = timeref + str(dateutc.day) + ","
+        timeref = timeref + str(dateutc.hour) + ","
+        timeref = timeref + str(dateutc.minute) + ","
+        timeref = timeref + str(dateutc.second) + ")"
         
-    def _generateBarChartData(self, chartDatasetName):
+        return timeref
+    
+    # *************************************************************************
+    def _generateChartData(self, dataList, timerefFunc):
         self._openJSDataFile()
         
         # Field position in the dataList
@@ -47,24 +85,13 @@ class JSDatasetGenerator(object):
         rxMiB = ""
         txMiB = ""
         
-        dataList = self.dataParser.parseHourlyData()
         for data in dataList:
             dateutc = datetime.datetime.utcfromtimestamp(float(data[DATETIME_FIELD]))
             # We add one hour because vnstat is measuring traffic at min 59
             # leading to a wrong day indication on the chart in some cases.
             dateutc += datetime.timedelta(hours = 1)
-            #if (chartDatasetName == HOURS_CHART_DATASET_NAME):
-            # We are only interested in the hours
-            timeref = dateutc.hour
-            #elif (chartDatasetName == DAYS_CHART_DATASET_NAME):
-            #    timeref = "Date.UTC(" + str(dateutc.year) + ","
-            #    # Months are one based but we want them zero based
-            #    timeref = timeref + str(dateutc.month - 1) + ","
-            #    timeref = timeref + str(dateutc.day) + ","
-            #    timeref = timeref + str(dateutc.hour) + ","
-            #    timeref = timeref + str(dateutc.minute) + ","
-            #    timeref = timeref + str(dateutc.second) + ")"
-            
+            # Calling the pointed function passing the date object
+            timeref = timerefFunc(dateutc)
             # Rounding down to two decimal places value calculated for MiBs
             rxMiB = str(round(data[RX_MIB_FIELD], 2))
             txMiB = str(round(data[TX_MIB_FIELD], 2))
@@ -73,11 +100,9 @@ class JSDatasetGenerator(object):
             arrRxMiB.append(rxMiB)
             arrTxMiB.append(txMiB)
         
-        # Let's write results to file
-        self._writeBarChartJSObject(chartDatasetName, arrTimeRef, arrRxMiB, arrTxMiB)
+        return arrTimeRef, arrRxMiB, arrTxMiB
     
-    # **********************************************************************
-    # Calls respective generator functions depending on the chartType param.
+    # *************************************************************************
     # 
     def _writeBarChartJSObject(self, chartDatasetName, arrTimeRef, arrRxMiB, arrTxMiB):
         self._openJSDataObject(chartDatasetName)
@@ -86,8 +111,24 @@ class JSDatasetGenerator(object):
         self._writeSeriesDataObject(arrRxMiB, arrTxMiB)
             
         self._closeJSDataObject()
+    
+    # *************************************************************************
+    def _writeLineChartJSDataObject(self, chartDatasetName, arrTimeRef, arrRxMiB, arrTxMiB):
+        self._openJSDataObject(chartDatasetName)
         
-    # **********************************************************************
+        arrSeriesRxMiB = []
+        arrSeriesTxMiB = []
+        i = 0
+        while (i < len(arrTimeRef)):
+            arrSeriesRxMiB.append([arrTimeRef[i], arrRxMiB[i]])
+            arrSeriesTxMiB.append([arrTimeRef[i], arrTxMiB[i]])
+            i += 1
+        
+        self._writeSeriesDataObject(arrSeriesRxMiB, arrSeriesTxMiB)
+        
+        self._closeJSDataObject()
+    
+    # *************************************************************************
     # Writes the opening of a Javascript literal using the chartDatasetName
     # as the name of the literal.
     #
@@ -96,7 +137,7 @@ class JSDatasetGenerator(object):
         self._jsDataFile.write(chartDatasetName)
         self._jsDataFile.write(" = {\n")
 
-    # **********************************************************************
+    # *************************************************************************
     # Generates the Javascript data set expected by the linear chart type.
     # 
     def _writeSeriesDataObject(self, arrRxMiB, arrTxMiB):
@@ -113,7 +154,7 @@ class JSDatasetGenerator(object):
         self._jsDataFile.write(str(arrTxMiB).replace("'", ""))
         self._jsDataFile.write("\n\t}],\n")
         
-    # **********************************************************************
+    # *************************************************************************
     # Generates the Javascript data set expected by the bar chart type.
     # 
     def _writeCategoriesDataObject(self, arrTimeRef):
@@ -121,12 +162,13 @@ class JSDatasetGenerator(object):
         self._jsDataFile.write(str(arrTimeRef))
         self._jsDataFile.write(",\n")
     
-    # **********************************************************************
+    # *************************************************************************
     # Writes the closing of a Javascript literal
     #
     def _closeJSDataObject(self):
         self._jsDataFile.write("\n};\n")
 
+    # *************************************************************************
     def _openJSDataFile(self):
         if (self._jsDataFile == None):
             configFileReader = ConfigFileReader()

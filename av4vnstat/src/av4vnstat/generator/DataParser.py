@@ -14,7 +14,6 @@
 #       You should have received a copy of the GNU General Public License
 #       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from av4vnstat.util.Config import Constants
 import operator
 import re
 
@@ -39,29 +38,21 @@ class DataParser(object):
         return self._vnStatHandler
     
     # *************************************************************************
-    def parse(self):
-        print("parsing...")
-        print(self.parseTopTenDaysData())
-        
-    # *************************************************************************
     def parseHourlyData(self):
-        return self._getLinearDataArray(Constants.HOURS_CHART_DATASET_NAME,
-                                           "^h;")
+        return self._getLinearDataArray("^h;", self._readHourlyRxTxData)
 
     # *************************************************************************
     def parseDailyData(self):
-        return self._getLinearDataArray(Constants.DAYS_CHART_DATASET_NAME,
-                                           "^d;")
+        return self._getLinearDataArray("^d;", self._readDMTlyRxTxData)
         
     # *************************************************************************
     def parseMonthlyData(self):
-        return self._getLinearDataArray(Constants.MONTHS_CHART_DATASET_NAME,
-                                           "^m;")
+        return self._getLinearDataArray("^m;", self._readDMTlyRxTxData)
     
     # *************************************************************************
     def parseTopTenDaysData(self):
-        return self._getLinearDataArray(Constants.TOP_TEN_DAYS_DATASET_NAME,
-                                           "^t;")
+        return self._getLinearDataArray("^t;", self._readDMTlyRxTxData)
+        
     # *************************************************************************
     # In dealing with the vnstat database format we need to do some adjustments
     # to the data in order to be consumed by the chart library.
@@ -69,19 +60,11 @@ class DataParser(object):
     # We need to sort them in ascending order and we will remove entries
     # with no data at all.
     #
-    def _getLinearDataArray(self, chartName, timePattern):
+    def _getLinearDataArray(self, timePattern, dataReaderFnc):
         data = []
         rxMiB = txMiB = 0.0
-        
         # This index matches the datetime field position in the vnstat db dump
         DATETIME_FIELD = 2
-        
-        # Holding pointer to function
-        dataReaderFnc = None
-        if (chartName == Constants.HOURS_CHART_DATASET_NAME):
-            dataReaderFnc = self._readHourlyRxTxData
-        else:
-            dataReaderFnc = self._readDMTlyRxTxData
         
         for line in self._vnStatHandler.getVnStatDbFile():
             m = re.match(timePattern, line)

@@ -43,6 +43,7 @@ class Av4vnstat(object):
     def main(self):
         jsDataGenerator = JSDatasetGenerator()
         jsDataGenerator.generateHourlyDataSet()
+        jsDataGenerator.generateDailyDataSet()
             
 if __name__ == '__main__':
     
