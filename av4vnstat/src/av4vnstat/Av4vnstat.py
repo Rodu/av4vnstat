@@ -44,6 +44,7 @@ class Av4vnstat(object):
         jsDataGenerator = JSDatasetGenerator()
         jsDataGenerator.generateHourlyDataSet()
         jsDataGenerator.generateDailyDataSet()
+        jsDataGenerator.cleanup()
             
 if __name__ == '__main__':
     

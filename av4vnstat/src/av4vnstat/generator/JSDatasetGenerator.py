@@ -57,6 +57,10 @@ class JSDatasetGenerator(object):
     #    return self._generateChartData(chartDatasetName, self._buildLineChartTimeref)
     
     # *************************************************************************
+    def cleanup(self):
+        self._closeJSDataFile()
+        
+    # *************************************************************************
     def _buildBarChartTimeref(self, dateutc):
         # We are only interested in the hours
         return dateutc.hour
@@ -174,3 +178,8 @@ class JSDatasetGenerator(object):
             jsFilePath = configFileReader.read(Constants.SEC_JS_DATA,
                                                Constants.OPT_JS_DATA_FILE_PATH)
             self._jsDataFile = open(jsFilePath, 'w')
+    
+    # *************************************************************************
+    def _closeJSDataFile(self):
+        self._jsDataFile.close()
+    
