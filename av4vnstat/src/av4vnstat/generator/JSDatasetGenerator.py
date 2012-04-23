@@ -16,7 +16,6 @@
 #
 from av4vnstat.util.Config import Constants, ConfigFileReader
 import datetime
-from reportlab.graphics.charts.barcharts import dataSample5
 
 class JSDatasetGenerator(object):
     '''
@@ -264,7 +263,7 @@ class JSDatasetGenerator(object):
         self._jsDataFile.write("\t\tname: 'Upload',\n")
         self._jsDataFile.write("\t\tmarker: { symbol: 'diamond' },\n\t\tdata: ")
         self._jsDataFile.write(str(arrTxMiB).replace("'", "").replace("\"", ""))
-        self._jsDataFile.write("\n\t}],\n")
+        self._jsDataFile.write("\n\t}]\n")
         
     # *************************************************************************
     # For testing pourposes we want to be able to set this from outside
