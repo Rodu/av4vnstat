@@ -68,7 +68,7 @@ DIV {
 }
 
 .chartContainer {
-   
+   margin-left: 200px;
 }
 
 .chart {
@@ -77,6 +77,26 @@ DIV {
     display: none;
 }
 
+.smallMultiples {
+	width: 800px;
+    display: none;
+    border: solid 1px #000000;
+}
+
+.smallMultiplesTail {
+    width: 200px;
+    height: 200px;
+    border: solid 1px #000000;
+    float: left;
+    display: inline;
+}
+
+.smallMultiplesRow {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+	
 #footer {
     clear: both;
     height: 80px;

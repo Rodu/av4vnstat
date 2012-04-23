@@ -27,8 +27,10 @@ if (!RODU.namespaceConflict){
     // here will save instances that need to be shared among multiple objects
     RODU.vnstat.singleton = {};
     RODU.vnstat.util = {};
-    RODU.vnstat.chart = {};
     RODU.vnstat.data = {};
+    RODU.vnstat.vis = {};
+    RODU.vnstat.vis.chart = {};
+    RODU.vnstat.vis.smallmultiples = {};
     
     RODU.vnstat.constants = {
         // Set this to true to see error messages in the browser web console
@@ -188,7 +190,7 @@ if (!RODU.namespaceConflict){
                     RODU.vnstat.singleton.widgetManager.showChart(
                         RODU.vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART);
                     // Draws the chart
-                    new RODU.vnstat.chart.HourlyDataChart;
+                    new RODU.vnstat.vis.chart.HourlyDataChart;
                 })
         );
     };
@@ -206,7 +208,7 @@ if (!RODU.namespaceConflict){
                     RODU.vnstat.singleton.widgetManager.showChart(
                         RODU.vnstat.constants.ELEMENT_ID.CHARTS.DAILY_DATA_CHART);
                     // Draws the chart
-                    new RODU.vnstat.chart.DailyDataChart;
+                    new RODU.vnstat.vis.chart.DailyDataChart;
                 })
         );
     };
@@ -220,7 +222,12 @@ if (!RODU.namespaceConflict){
                 "Months",
                 "Shows the data traffic by month",
                 function(){ 
-                    RODU.vnstat.util.debug("Executing command name ShowMonthlyChartCommand"); 
+                    RODU.vnstat.util.debug("Executing command name ShowMonthlyChartCommand");
+                    RODU.vnstat.singleton.widgetManager.showChart(
+                            RODU.vnstat.constants.ELEMENT_ID.CHARTS.MONTHLY_DATA_CHART);
+                        // Draws the chart
+                        var sm = new RODU.vnstat.vis.smallmultiples.SmallMultiples;
+                        sm.render();
                 })
         );
     };
@@ -256,7 +263,7 @@ if (!RODU.namespaceConflict){
     /**
      * Defined a HourlyDataChart object.
      */
-    RODU.vnstat.chart.HourlyDataChart = function(){
+    RODU.vnstat.vis.chart.HourlyDataChart = function(){
           new Highcharts.Chart({
              chart: {
                 renderTo: RODU.vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART,
@@ -287,7 +294,7 @@ if (!RODU.namespaceConflict){
     /**
      * Defined a DailyDataChart object.
      */
-    RODU.vnstat.chart.DailyDataChart = function(){
+    RODU.vnstat.vis.chart.DailyDataChart = function(){
           new Highcharts.Chart({
             chart: {
                 renderTo: RODU.vnstat.constants.ELEMENT_ID.CHARTS.DAILY_DATA_CHART,
@@ -315,6 +322,97 @@ if (!RODU.namespaceConflict){
             },
             series: RODU.vnstat.data.dailyDataChart.series
           });
+    };
+    
+    /*
+     * SmallMultiples visualization
+     * 
+     * It is composed of Tails and as many of them will be created, depending on
+     * the data.
+     * 
+     */
+    RODU.vnstat.vis.smallmultiples.SmallMultiples = function(){
+    	var self = this,
+    	// The container for the whole visualization
+    	_renderTo = RODU.vnstat.constants.ELEMENT_ID.CHARTS.MONTHLY_DATA_CHART,
+    	tailContainer,
+    	// How many columns per row 
+    	NUM_COLUMNS = 3,
+    	lastColumnNumber = 0,
+    	smRow = null,
+    	// Private method
+    	// Appends a tail to the visualization according to configuration
+    	// constraints
+    	appendTail = function(tail){
+    		if (smRow === null || lastColumnNumber >= NUM_COLUMNS){
+    			lastColumnNumber = 0;
+    			
+    			smRow = document.createElement("UL");
+    			smRow.setAttribute("class", "smallMultiplesRow");
+    			
+    			document.getElementById(_renderTo).appendChild(smRow);
+    		}
+    		
+    		tailContainer = document.createElement("LI");
+    		tailContainer.appendChild(tail.render());
+    		smRow.appendChild(tailContainer);
+    		
+    		lastColumnNumber++;
+    	};
+    	
+    	/*
+    	 * The render method will draw the visualization on the screen in the
+    	 * proper place and should be called on the first time to show the vis.
+    	 */
+    	this.render = function(){
+    		var	tail, rxSeries, rxSeriesData, txSeries, txSeriesData, tailData, i;
+    		var DOWNLOAD_SERIES = 0, UPLOAD_SERIES = 1,
+    			DATE_FIELD = 0, MIB_FIELD = 1;
+    		RODU.vnstat.util.debug("rendering small multiples...");
+    		// Reading the data series from the data.js (0: Download, 1: Upload)
+    		rxSeries = RODU.vnstat.data.monthlyDataChart.series[DOWNLOAD_SERIES];
+    		txSeries = RODU.vnstat.data.monthlyDataChart.series[UPLOAD_SERIES];
+    		rxSeriesData = rxSeries.data;
+    		txSeriesData = txSeries.data;
+    		// Looping the series in the data to create the tail data
+    		for (i = 0; i < rxSeriesData.length; i++){
+    		//for (i = 0; i < 3; i++){
+    			tail = new RODU.vnstat.vis.smallmultiples.Tail;
+    			tailData = [];
+    			tailData.push(rxSeriesData[DATE_FIELD]);
+    			// download data (rx)
+    			tailData.push(rxSeriesData[MIB_FIELD]);
+    			// upload data (tx)
+    			tailData.push(txSeriesData[MIB_FIELD]);
+    			tail.setData("testing data: " + tailData);
+    			appendTail(tail);
+    		}
+    	};
+    };
+    
+    /**
+     * Represents the SmallMultiples single Tail that will be repeated n times
+     * according to the data set.
+     * 
+     */
+    RODU.vnstat.vis.smallmultiples.Tail = function(){
+    	var _data = null,
+    		self = this;
+    	/*
+    	 * Set the data needed to draw the single tail.
+    	 */
+    	this.setData = function(data){
+    		self._data = data;
+    	};
+    	
+    	// dev purposes!
+    	this.render = function(){
+    		RODU.vnstat.util.debug("creating tail...");
+	    	var tail = document.createElement("DIV");
+	    	tail.setAttribute("class", "smallMultiplesTail");
+	    	tail.appendChild(document.createTextNode("tail"));
+	    	return tail;
+    	};
     };
     
     /**
@@ -387,7 +485,7 @@ if (!RODU.namespaceConflict){
             this.show(elementId);
         };
         
-        // The method hides all the chart containers and only shows the one
+        // Hides all the chart containers and only shows the one
         // matching the received id
         this.showChart = function(elementId){
             // First we hide all the other charts
