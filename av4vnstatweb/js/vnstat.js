@@ -344,13 +344,12 @@ if (!RODU.namespaceConflict){
     	// Appends a tail to the visualization according to configuration
     	// constraints
     	appendTail = function(tail){
-    		if (smRow === null || lastColumnNumber >= NUM_COLUMNS){
-    			lastColumnNumber = 0;
-    			
+    		if (smRow === null || lastColumnNumber === NUM_COLUMNS){
     			smRow = document.createElement("UL");
     			smRow.setAttribute("class", "smallMultiplesRow");
     			
     			document.getElementById(_renderTo).appendChild(smRow);
+    			lastColumnNumber = 0;
     		}
     		
     		tailContainer = document.createElement("LI");
@@ -365,10 +364,13 @@ if (!RODU.namespaceConflict){
     	 * proper place and should be called on the first time to show the vis.
     	 */
     	this.render = function(){
-    		var	tail, rxSeries, rxSeriesData, txSeries, txSeriesData, tailData, i;
+    		var	tail, rxSeries, rxSeriesData, txSeries, txSeriesData, tailData,
+    			i, renderContainer;
     		var DOWNLOAD_SERIES = 0, UPLOAD_SERIES = 1,
     			DATE_FIELD = 0, MIB_FIELD = 1;
     		RODU.vnstat.util.debug("rendering small multiples...");
+    		// Removing all the previously appended tails for a new rendering
+    		renderContainer = document.getElementById(_renderTo).innerHTML = "";
     		// Reading the data series from the data.js (0: Download, 1: Upload)
     		rxSeries = RODU.vnstat.data.monthlyDataChart.series[DOWNLOAD_SERIES];
     		txSeries = RODU.vnstat.data.monthlyDataChart.series[UPLOAD_SERIES];
