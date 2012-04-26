@@ -84,7 +84,6 @@ html, body {
 .smallMultiplesTail {
     width: 200px;
     height: 200px;
-    border: solid 1px #000000;
     float: left;
     margin: 4px;
 }

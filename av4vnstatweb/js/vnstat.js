@@ -339,7 +339,9 @@ if (!RODU.namespaceConflict){
     	// How many columns per row 
     	NUM_COLUMNS = 3,
     	lastColumnNumber = 0,
+    	lastRowNumber = 0,
     	smRow = null,
+    	tailId,
     	// Private method
     	// Appends a tail to the visualization according to configuration
     	// constraints
@@ -350,12 +352,15 @@ if (!RODU.namespaceConflict){
     			
     			document.getElementById(_renderTo).appendChild(smRow);
     			lastColumnNumber = 0;
+    			lastRowNumber += 1;
     		}
     		
     		tailContainer = document.createElement("LI");
-    		tailContainer.appendChild(tail.render());
+    		tailId = "t_" + lastRowNumber + "_" + lastColumnNumber;
+    		tailContainer.appendChild(tail.create(tailId));
     		smRow.appendChild(tailContainer);
     		
+    		tail.render();
     		lastColumnNumber++;
     	};
     	
@@ -377,16 +382,18 @@ if (!RODU.namespaceConflict){
     		rxSeriesData = rxSeries.data;
     		txSeriesData = txSeries.data;
     		// Looping the series in the data to create the tail data
-    		for (i = 0; i < rxSeriesData.length; i++){
-    		//for (i = 0; i < 3; i++){
+    		//for (i = 0; i < rxSeriesData.length; i++){
+    		for (i = 0; i < 2; i++){
     			tail = new RODU.vnstat.vis.smallmultiples.Tail;
-    			tailData = [];
-    			tailData.push(rxSeriesData[DATE_FIELD]);
+    			tailData = {};
+    			// timestamp
+    			tailData.datetime = rxSeriesData[i][DATE_FIELD];
     			// download data (rx)
-    			tailData.push(rxSeriesData[MIB_FIELD]);
+    			tailData.rx = rxSeriesData[i][MIB_FIELD];
     			// upload data (tx)
-    			tailData.push(txSeriesData[MIB_FIELD]);
-    			tail.setData("testing data: " + tailData);
+    			tailData.tx = txSeriesData[i][MIB_FIELD];
+    			
+    			tail.setData(tailData);
     			appendTail(tail);
     		}
     	};
@@ -398,7 +405,7 @@ if (!RODU.namespaceConflict){
      * 
      */
     RODU.vnstat.vis.smallmultiples.Tail = function(){
-    	var _data = null,
+    	var _data = null, _id = null,
     		self = this;
     	/*
     	 * Set the data needed to draw the single tail.
@@ -407,13 +414,71 @@ if (!RODU.namespaceConflict){
     		self._data = data;
     	};
     	
+    	this.create = function(tailId){
+    		RODU.vnstat.util.debug("creating tail...");
+	    	var tail;
+	    	self._id = tailId;
+	    	tail = document.createElement("DIV");
+	    	tail.setAttribute("id", tailId);
+	    	tail.setAttribute("class", "smallMultiplesTail");
+	    	
+	    	return tail;
+    	};
+    	
     	// dev purposes!
     	this.render = function(){
-    		RODU.vnstat.util.debug("creating tail...");
-	    	var tail = document.createElement("DIV");
-	    	tail.setAttribute("class", "smallMultiplesTail");
-	    	tail.appendChild(document.createTextNode("tail"));
-	    	return tail;
+    		RODU.vnstat.util.debug("rendering tail " + self._id);
+    		RODU.vnstat.util.debug("datetime: " + self._data.datetime);
+    		RODU.vnstat.util.debug("rx: " + self._data.rx);
+    		RODU.vnstat.util.debug("tx: " + self._data.tx);
+    		
+	    	new Highcharts.Chart({
+	            chart: {
+	                renderTo: self._id,
+	                type: 'area'
+	            },
+	            title: {
+	                text: self._data.datetime
+	            },
+	            xAxis: {
+	                labels: {
+	                    enabled: false
+	                }
+	            },
+	            yAxis: {
+	                title: {
+	                    text: ''
+	                },
+	                labels: {
+	                    enabled: false
+	                },
+	                min: 0, max: 100,
+	                tickInterval: 100, tickColor: '#ffffff'
+	            },
+	            tooltip: {
+	                enabled: false
+	            },
+	            plotOptions: {
+	                area: {
+	                    pointStart: 1940,
+	                    marker: {
+	                        enabled: false,
+	                        states: {
+	                            hover: {
+	                                enabled: false
+	                            }
+	                        }
+	                    }
+	                }
+	            },
+	            series: [{
+	                name: "Download",
+	                data: self._data.rx
+	            }, {
+	                name: "Upload",
+	                data: self._data.tx
+	            }]
+	        });
     	};
     };
     
