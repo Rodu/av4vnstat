@@ -46,8 +46,10 @@ class Constants(object):
     # user needs to have an easy access to.
     # (Not use _PROGRAM_NAME here to not hide the file from the user).
     CONFIG_FILE_NAME = "av4vnstat.cfg"
+    # Passing a list of possible locations where the configuration file can be found
     CONFIG_FILE_PATH = [USER_HOME_DIR + "/" + CONFIG_FILE_NAME,
-                        "../../../" + CONFIG_FILE_NAME]
+                        "../../../" + CONFIG_FILE_NAME,
+                        "../../" + CONFIG_FILE_NAME]
     
     # Defining configuration file section and option constant names
     SEC_MAIN = "MAIN"
