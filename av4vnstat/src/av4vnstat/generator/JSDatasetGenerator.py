@@ -24,7 +24,11 @@ class JSDatasetGenerator(object):
     @author: rob
     '''
     # Field position in the dataList
-    DATETIME_FIELD, RX_MIB_FIELD, TX_MIB_FIELD = range(3)
+    DATETIME_FIELD = 0
+    RX_MIB_FIELD = 1
+    TX_MIB_FIELD = 2
+    RX_PERC_FIELD = 3
+    TX_PERC_FIELD = 4
     
     def __init__(self):
         '''
@@ -61,7 +65,7 @@ class JSDatasetGenerator(object):
         dataList = self._dataParser.parseMonthlyData()
         dataSet = self._generateSmallMultiplesData(dataList)
         
-        self._writeLineChartJSDataObject(Constants.MONTHS_CHART_DATASET_NAME,
+        self._writeSmallMultiplesJSDataObject(Constants.MONTHS_CHART_DATASET_NAME,
                                          dataSet)
         # For testing the method
         return dataSet
@@ -170,10 +174,12 @@ class JSDatasetGenerator(object):
         arrTimeRef = []
         arrRxMiB = []
         arrTxMiB = []
+        arrRxPerc = []
+        arrTxPerc = []
         # Let's create the dataset calculating the value with respect to the maxValue
         for entry in dataList:
-            rxData = []
-            txData = []
+            rxDataPerc = []
+            txDataPerc = []
             dateutc = datetime.datetime.utcfromtimestamp(float(entry[JSDatasetGenerator.DATETIME_FIELD]))
             # We add one hour because vnstat is measuring traffic at min 59
             # leading to a wrong day indication on the chart in some cases.
@@ -181,22 +187,24 @@ class JSDatasetGenerator(object):
             # Calling the pointed function passing the date object
             timeref = self._buildLineChartTimeref(dateutc)
             
+            # Appending traffic data in MiB
+            arrRxMiB.append(str(round(entry[JSDatasetGenerator.RX_MIB_FIELD], 2)))
+            arrTxMiB.append(str(round(entry[JSDatasetGenerator.TX_MIB_FIELD], 2)))
+            
             # Calculating percentages
             percRxVariation = (entry[JSDatasetGenerator.RX_MIB_FIELD] / maxValue) * 100
             percTxVariation = (entry[JSDatasetGenerator.TX_MIB_FIELD] / maxValue) * 100
             for ratio in percentRatios:
-                rxData.append(str(round(ratio * percRxVariation / 100, 2)))
-                txData.append(str(round(ratio * percTxVariation / 100, 2)))
+                rxDataPerc.append(str(round(ratio * percRxVariation / 100, 2)))
+                txDataPerc.append(str(round(ratio * percTxVariation / 100, 2)))
             
             arrTimeRef.append(timeref)
             # I am converting to string because the array would be passed by
             # reference and not by value...
-            arrRxMiB.append(str(rxData))
-            arrTxMiB.append(str(txData))
+            arrRxPerc.append(str(rxDataPerc))
+            arrTxPerc.append(str(txDataPerc))
             
-            #dataSet.append(dataSetEntry)
-            
-        return arrTimeRef, arrRxMiB, arrTxMiB
+        return [arrTimeRef, arrRxMiB, arrTxMiB, arrRxPerc, arrTxPerc]
     
     # *************************************************************************
     # 
@@ -240,6 +248,40 @@ class JSDatasetGenerator(object):
         self._closeJSDataObject()
     
     # *************************************************************************
+    def _writeSmallMultiplesJSDataObject(self, chartDatasetName, dataSet):
+        self._openJSDataFile()
+        self._openJSDataObject(chartDatasetName)
+        
+        # Dataset fields received:
+        #     arrTimeRef, arrRxMiB, arrTxMiB, arrRxPerc, arrTxPerc
+        
+        arrSeriesRx = []
+        arrSeriesTx = []
+        #
+        # We have the data set as a multidimensional array that can be thought
+        # as being a table like:
+        #
+        #    DATETIME    RX_MIB    TX_MIB    RX_PERC        TX_PERC
+        #    1234        123.44    53.33     [0,35,50,..]   [0,12,20,...]
+        #
+        # In the case of the small multiples the RX_MIB and TX_MIB
+        # are array of percentages themselves.
+        #
+        # We use the DATETIME_FIELD to loop the rows but any of the three would do
+        #
+        for row in range(len(dataSet[JSDatasetGenerator.DATETIME_FIELD])):
+            arrSeriesRx.append([dataSet[JSDatasetGenerator.DATETIME_FIELD][row],
+                                dataSet[JSDatasetGenerator.RX_PERC_FIELD][row]])
+            arrSeriesTx.append([dataSet[JSDatasetGenerator.DATETIME_FIELD][row],
+                                dataSet[JSDatasetGenerator.TX_PERC_FIELD][row]])
+                
+        self._writeSmallMultiplesSeriesDataObject(dataSet[JSDatasetGenerator.RX_MIB_FIELD],
+                                                  dataSet[JSDatasetGenerator.TX_MIB_FIELD],
+                                                  arrSeriesRx, arrSeriesTx,)
+        
+        self._closeJSDataObject()
+    
+    # *************************************************************************
     # Writes the opening of a Javascript literal using the chartDatasetName
     # as the name of the literal.
     #
@@ -263,6 +305,27 @@ class JSDatasetGenerator(object):
         self._jsDataFile.write("\t\tname: 'Upload',\n")
         self._jsDataFile.write("\t\tmarker: { symbol: 'diamond' },\n\t\tdata: ")
         self._jsDataFile.write(str(arrTxMiB).replace("'", "").replace("\"", ""))
+        self._jsDataFile.write("\n\t}]\n")
+    
+    # *************************************************************************
+    # Generates the Javascript data set expected by the linear chart type.
+    # 
+    def _writeSmallMultiplesSeriesDataObject(self, arrRxMiB, arrTxMiB, arrRxPerc, arrTxPerc):
+        # Opening the series filed
+        self._jsDataFile.write("\tseries: [{\n")
+        # Download
+        self._jsDataFile.write("\t\tname: '',\n")
+        self._jsDataFile.write("\t\ttraffic: ")
+        self._jsDataFile.write(str(arrRxMiB).replace("'", "").replace("\"", ""))
+        self._jsDataFile.write(",\n\t\tdata: ")
+        self._jsDataFile.write(str(arrRxPerc).replace("'", "").replace("\"", ""))
+        self._jsDataFile.write("\n\t},{\n")
+        # Upload
+        self._jsDataFile.write("\t\tname: '',\n")
+        self._jsDataFile.write("\t\ttraffic: ")
+        self._jsDataFile.write(str(arrTxMiB).replace("'", "").replace("\"", ""))
+        self._jsDataFile.write(",\n\t\tdata: ")
+        self._jsDataFile.write(str(arrTxPerc).replace("'", "").replace("\"", ""))
         self._jsDataFile.write("\n\t}]\n")
         
     # *************************************************************************

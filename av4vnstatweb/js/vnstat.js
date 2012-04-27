@@ -382,16 +382,23 @@ if (!RODU.namespaceConflict){
     		rxSeriesData = rxSeries.data;
     		txSeriesData = txSeries.data;
     		// Looping the series in the data to create the tail data
-    		//for (i = 0; i < rxSeriesData.length; i++){
-    		for (i = 0; i < 3; i++){
+    		for (i = 0; i < rxSeriesData.length; i++){
+    		//for (i = 0; i < 3; i++){
     			tail = new RODU.vnstat.vis.smallmultiples.Tail;
     			tailData = {};
+    			tailData.rxName = rxSeries.name;
+    			tailData.txName = txSeries.name;
     			// timestamp
     			tailData.datetime = rxSeriesData[i][DATE_FIELD];
+    			// download percentages (rx)
+    			tailData.rxPerc = rxSeriesData[i][MIB_FIELD];
     			// download data (rx)
-    			tailData.rx = rxSeriesData[i][MIB_FIELD];
+    			tailData.rxMiB = rxSeries.traffic[i];
     			// upload data (tx)
-    			tailData.tx = txSeriesData[i][MIB_FIELD];
+    			tailData.txMiB = txSeries.traffic[i];
+    			// upload percentages (tx)
+    			tailData.txPerc = txSeriesData[i][MIB_FIELD];
+    			tailData.total = Math.round(rxSeries.traffic[i] + txSeries.traffic[i]);
     			
     			tail.setData(tailData);
     			appendTail(tail);
@@ -452,6 +459,9 @@ if (!RODU.namespaceConflict){
 	            title: {
 	                text: _getMonthNameFromUTC(self._data.datetime)
 	            },
+	            subtitle: {
+	                text: "Total " + self._data.total + " MiB"
+	            },
 	            xAxis: {
 	                labels: {
 	                    enabled: false
@@ -484,11 +494,11 @@ if (!RODU.namespaceConflict){
 	                }
 	            },
 	            series: [{
-	                name: "Download",
-	                data: self._data.rx
+	                name: "" + self._data.rxName + self._data.rxMiB,
+	                data: self._data.rxPerc
 	            }, {
-	                name: "Upload",
-	                data: self._data.tx
+	            	name: "" + self._data.txName + self._data.txMiB,
+	                data: self._data.txPerc
 	            }]
 	        });
     	};
