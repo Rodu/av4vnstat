@@ -24,39 +24,48 @@ To show the data grabbed so far you can give from the terminal the command:
 
 $ vnstat -i eth1
 
-Now you can change the configuration for the Python program in the file:
+Now you can change the configuration in the file: 
 
 av4vnstat.cfg
 
 that comes with the download.
 
+In there you need to give a valid value for the INSTALL_FOLDER.
+This is an indication needed for the program to work.
 
-You need to change the value 'eth1' indicated at the line:
+Also you need to change the value for the network card you are monitoring
+under the section NETWORK_CARD, and give the proper name (eg. eth0 or eth1)
+The indication you give here for the network card to be used must match the
+indication you gave above to vnstat, during the initialization phase.
 
-network_card = "eth1"
+Note:
+    This version the program can handle only one network card to show
+    data for. In the future the support for more cards can be added to be used
+    together.
 
-to the one you gave to vnstat above during the initialization, if you are monitoring
-a different network interface.
 
 Once vnstat is installed and enough data have been collected (to be returned)
 you can execute the python script 'dsbuilder.py' to let it create the JS dataset.
 
-Alternatively, you can create a cron entry to run the python script on a scheduled time interval.
-To do this an entry in the crontab can be created where the script is executed each 15 minutes.
+Alternatively, you can create a cron entry to run the python script on a schedule
+time interval. To do this you can create an entry in the crontab where the script
+is executed on the first minute for every hour.
 
 $ crontab -e
 
 will open the cron editor and in there you can add a line like:
 
-15 * * * * /home/pluto/run/dsbuilder.py
+1 * * * * /home/pluto/run/dsbuilder.py
 
 Note the path needs to be changed to point to the python script properly.
 In the example we assume to have a folder named run under the pluto's home.
 
+For more info about crontab synstax: $ man 5 crontab
+
 Once all this is done and vnstat has enough data to show (after a while) you can run
-the av4vnstat.html and see the results in the Stacked Bars visualization.
+the av4vnstat.html (under the folder av4vnstatweb) and see the results.
 
-You can also launch the example.html in the browser to see what the result could look like.
+You can also launch the example.html in the browser to see what the result could
+look like.
 
-This is a simple project but things can become more interesting as the data collected
-grows with time and more features can be added for experimental pourposes.
+
