@@ -383,7 +383,7 @@ if (!RODU.namespaceConflict){
     		txSeriesData = txSeries.data;
     		// Looping the series in the data to create the tail data
     		//for (i = 0; i < rxSeriesData.length; i++){
-    		for (i = 0; i < 2; i++){
+    		for (i = 0; i < 3; i++){
     			tail = new RODU.vnstat.vis.smallmultiples.Tail;
     			tailData = {};
     			// timestamp
@@ -406,7 +406,19 @@ if (!RODU.namespaceConflict){
      */
     RODU.vnstat.vis.smallmultiples.Tail = function(){
     	var _data = null, _id = null,
-    		self = this;
+    		self = this,
+    	
+    	_getMonthNameFromUTC = function(utcDate){
+    		var months = ["Jan.", "Feb.", "Mar.", "Apr.", "May.", "Jun.",
+    		              "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
+    		
+    		var date = new Date(utcDate);
+    		var month = months[date.getUTCMonth()];
+    		var year = date.getUTCFullYear();
+    		
+    		return month + " " + year; 
+    	};
+    	
     	/*
     	 * Set the data needed to draw the single tail.
     	 */
@@ -438,7 +450,7 @@ if (!RODU.namespaceConflict){
 	                type: 'area'
 	            },
 	            title: {
-	                text: self._data.datetime
+	                text: _getMonthNameFromUTC(self._data.datetime)
 	            },
 	            xAxis: {
 	                labels: {
