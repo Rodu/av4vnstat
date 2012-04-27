@@ -17,8 +17,8 @@
 
 from ConfigParser import ConfigParser, NoSectionError, NoOptionError
 from av4vnstat.util import Logging
-from stat import S_ISDIR, ST_MODE
 import os
+from stat import ST_MODE
 
 class Constants(object):
     '''
@@ -35,21 +35,23 @@ class Constants(object):
     
     # This will be a folder (possibly) hidden that will contain file needed by
     # the program, that the user will not have need (normally) to access.
-    #AV4VNSTAT_WORK_DIR = USER_HOME_DIR + "/." + _PROGRAM_NAME
-    AV4VNSTAT_WORK_DIR = USER_HOME_DIR + "/" + _PROGRAM_NAME
+    AV4VNSTAT_WORK_DIR = USER_HOME_DIR + "/." + _PROGRAM_NAME
+    #AV4VNSTAT_WORK_DIR = USER_HOME_DIR + "/" + _PROGRAM_NAME
     
     # Defines the name for the log file that will be used to store some messages
     # for easier debug.
-    LOG_FILE_NAME = USER_HOME_DIR + "/" + _PROGRAM_NAME + ".log"
+    LOG_FILE_NAME = AV4VNSTAT_WORK_DIR + "/" + _PROGRAM_NAME + ".log"
     
     # Represent the path to the file containing configurable options that the
     # user needs to have an easy access to.
     # (Not use _PROGRAM_NAME here to not hide the file from the user).
-    CONFIG_FILE = USER_HOME_DIR + "/av4vnstat" + ".cfg"
+    CONFIG_FILE_NAME = "av4vnstat.cfg"
+    CONFIG_FILE_PATH = [USER_HOME_DIR + "/" + CONFIG_FILE_NAME,
+                        "../../../" + CONFIG_FILE_NAME]
     
     # Defining configuration file section and option constant names
-    SEC_JS_DATA = "JS_DATA"
-    OPT_JS_DATA_FILE_PATH = "js_data_file_path"
+    SEC_MAIN = "MAIN"
+    OPT_INSTALL_FOLDER = "install_folder"
     
     SEC_VNSTAT = "VNSTAT"
     OPT_VNSTAT_CMD = "vnstat_cmd"
@@ -59,7 +61,11 @@ class Constants(object):
     
     # This file is used to dump the content of vnstat so that it can be
     # successively parsed by the parser
-    VNSTAT_DUMP_FILE_NAME = USER_HOME_DIR + "/" + _PROGRAM_NAME + "/vnstat_dbdump.txt"
+    VNSTAT_DUMP_FILE_NAME = AV4VNSTAT_WORK_DIR + "/vnstat_dbdump.txt"
+    
+    # Constant used together with the INSTALL_FOLDER configuration parameter
+    # declared in the external config file
+    JS_DATA_FILE_REL_PATH = "/av4vnstatweb/js/data.js"
     
     # Constants for JS data set chart names to be matched in the Javascript.
     HOURS_CHART_DATASET_NAME = "hourlyDataChart"
@@ -76,9 +82,9 @@ class ConfigFileReader(object):
         
         # Let's check if the directory for containing the program data already
         # exists
-        mode = os.stat(Constants.AV4VNSTAT_WORK_DIR)[ST_MODE]
-        #print(S_ISDIR(mode))
-        if (not S_ISDIR(mode)):
+        try:
+            os.stat(Constants.AV4VNSTAT_WORK_DIR)[ST_MODE]
+        except(OSError):
             try:
                 os.mkdir(Constants.AV4VNSTAT_WORK_DIR)
             except(OSError):
@@ -88,7 +94,7 @@ class ConfigFileReader(object):
                 exit(1)
         
         self.configParser = ConfigParser()
-        self.configParser.read(Constants.CONFIG_FILE)
+        self.configParser.read(Constants.CONFIG_FILE_PATH)
         
     # *************************************************************************
     def read(self, sectionName, optionName):

@@ -5,24 +5,31 @@ On a Debian based Linux distribution this is done with a:
 
 $ sudo apt-get install vnstat
 
-Next you need to initialize the vnstat db and inform vnstat about the network card you want to record the traffic from.
+Next you need to initialize the vnstat db and inform vnstat about the network
+card you want to record the traffic from.
 
 Note: We are not talking about network traffic sniffing!
-      See the vnstat manual for details or visit the vnStat project home page at http://humdi.net/vnstat/
+      See the vnstat manual for details or visit the vnStat project home page at
+      http://humdi.net/vnstat/
 
-Assuming you want to monitor the eth1 (any interface can be monitored giving the proper name)
-you need to issue:
+Assuming you want to monitor the eth1 (any interface can be monitored giving the
+proper name) you need to issue:
 
 $ sudo vnstat -u -i eth1
 
-At this point vnstat will start to monitor the network interface at regular intervals and
-will build its own data file.
+At this point vnstat will start to monitor the network interface at regular
+intervals and will build its own data file.
+
 To show the data grabbed so far you can give from the terminal the command:
 
 $ vnstat -i eth1
 
-Now you need to indicate in the python script 'dsbuilder.py' the same network interface
-at the line where the script calls vnstat to get the data output.
+Now you can change the configuration for the Python program in the file:
+
+av4vnstat.cfg
+
+that comes with the download.
+
 
 You need to change the value 'eth1' indicated at the line:
 

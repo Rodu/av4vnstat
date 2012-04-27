@@ -37,8 +37,9 @@ class JSDatasetGenerator(object):
         self._dataParser = None
         self._jsDataFile = None
         configFileReader = ConfigFileReader()
-        self._jsFilePath = configFileReader.read(Constants.SEC_JS_DATA,
-                                                 Constants.OPT_JS_DATA_FILE_PATH)
+        self._jsFilePath = configFileReader.read(Constants.SEC_MAIN,
+                                                 Constants.OPT_INSTALL_FOLDER)
+        self._jsFilePath += Constants.JS_DATA_FILE_REL_PATH
         
     # *************************************************************************
     def setDataParser(self, dataParser):

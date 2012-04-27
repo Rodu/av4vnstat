@@ -2,18 +2,21 @@ README
 
 av4vnstat - Another Viewer for vnstat
 
-Visualizing vnstat data using the d3 data visualization library.
-The simple project is an experiment with the d3 (http://mbostock.github.com/d3/)
-data visualization library.
+Visualizing vnstat data using the Highcharts Javascript library:
+http://www.highcharts.com
 
-Starting from the code contained in the Stacked Bars example in the d3 library distribution
-(version 2.1.3) the visualization uses the data registered by vnstat, network traffic monitor
-tool that can be used on a Linux machine, to show the amount of traffic in download and upload
-related to a specific network interface.
+The application allows to visualize the data collected by vnstat, network traffic
+monitor tool.
+Vnstat can be used on a Linux machine, to register the amount of traffic in
+download and upload for a specific network interface.
 
-The idea is to have a cron job running a python script that reads the vnstat data and creates
-a javascript data set to be used in the web page containing the chart.
+The Av4vnstat uses a Python program to parse those data and create specific
+datasets to be consumed in the Javascript web app.
 
-Using the d3 library the Stacked Bars visualization will be drawn using SVG.
+The idea is to have a cron job running the python script to read the vnstat data
+and update the Javascript dataset at regular intervals.
+
+Using the Highchart library basic charts and some visualizations will show
+the data.
 
 For setup instructions see the SETUP file.
