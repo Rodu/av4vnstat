@@ -16,13 +16,8 @@
 #
 from av4vnstat.Av4vnstat import Av4vnstat
 
-'''
-This script can be used from the command line to run the program main.
 
-Created on 27 Apr 2012
+# This script can be used from the command line to run the program main.
 
-@author: Rodu
-
-'''
 if __name__ == '__main__':
     Av4vnstat().main()

@@ -18,17 +18,15 @@ from av4vnstat.util.VnStatHandler import VnStatHandler
 from av4vnstat.generator.DataParser import DataParser
 from av4vnstat.generator.JSDatasetGenerator import JSDatasetGenerator
 
-'''
-Created on 22 Apr 2012
-
-@author: Rodu
-'''
 import unittest
 
 
 class JSDataGeneratorTest(unittest.TestCase):
-
-
+    '''
+    Created on 22 Apr 2012
+    
+    @author: Rodu
+    '''
     def setUp(self):
         self.vnStatHandler = VnStatHandler()
         # Here we need to open a file for testing!
