@@ -24,7 +24,6 @@ if (!RODU.namespaceConflict){
     
     /* defining additional namespaces */
     RODU.vnstat.command = {};
-    // here will save instances that need to be shared among multiple objects
     RODU.vnstat.singleton = {};
     RODU.vnstat.util = {};
     RODU.vnstat.data = {};
@@ -32,6 +31,7 @@ if (!RODU.namespaceConflict){
     RODU.vnstat.vis.chart = {};
     RODU.vnstat.vis.smallmultiples = {};
     
+    // here will save instances that need to be shared among multiple objects
     RODU.vnstat.constants = {
         // Set this to true to see error messages in the browser web console
         DEBUG: true,
@@ -39,6 +39,7 @@ if (!RODU.namespaceConflict){
         // Mapping of document elements ids to (pseudo) constants
         ELEMENT_ID: {
             CONTAINERS: {
+                HOME: "home",
                 BASIC_DATA_CHARTS: "basicDataCharts",
                 ADVANCED_MONITORING_CHARTS: "advancedMonitoringCharts"
             },
@@ -129,6 +130,7 @@ if (!RODU.namespaceConflict){
         // associating the command name to the command instance.
         this.commandMap = {
             mainCommandMap: {
+                ShowHomePageCommand: new RODU.vnstat.command.ShowHomePageCommand,
                 ShowBasicDataCommand: new RODU.vnstat.command.ShowBasicDataCommand,
                 ShowAdvancedDataCommand: new RODU.vnstat.command.ShowAdvancedDataCommand
             },
@@ -144,6 +146,21 @@ if (!RODU.namespaceConflict){
                 ShowDataLeftCommand: new RODU.vnstat.command.ShowDataLeftCommand
             }
         };
+    };
+    
+    /**
+     * Define the command used to show the home page.
+     */
+    RODU.vnstat.command.ShowHomePageCommand = function(){
+        return (
+            new RODU.vnstat.command.Command("ShowHomePageCommand",
+                "Home",
+                "",
+                function(){ 
+                    RODU.vnstat.util.debug("Executing command name ShowHomePageCommand");
+                    RODU.vnstat.singleton.widgetManager.showContainer(
+                        RODU.vnstat.constants.ELEMENT_ID.CONTAINERS.HOME);
+                }));
     };
     
     /**
@@ -266,6 +283,7 @@ if (!RODU.namespaceConflict){
     RODU.vnstat.vis.chart.HourlyDataChart = function(){
           new Highcharts.Chart({
              chart: {
+                backgroundColor: '#fde7e7',
                 renderTo: RODU.vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART,
                 type: 'column'
              },
@@ -297,6 +315,7 @@ if (!RODU.namespaceConflict){
     RODU.vnstat.vis.chart.DailyDataChart = function(){
           new Highcharts.Chart({
             chart: {
+                backgroundColor: '#fde7e7',
                 renderTo: RODU.vnstat.constants.ELEMENT_ID.CHARTS.DAILY_DATA_CHART,
                 type: 'spline'
             },
@@ -453,6 +472,7 @@ if (!RODU.namespaceConflict){
     		
 	    	new Highcharts.Chart({
 	            chart: {
+                    backgroundColor: '#fde7e7',
 	                renderTo: self._id,
 	                type: 'area'
 	            },
