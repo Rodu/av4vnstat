@@ -22,6 +22,7 @@ html, body {
 #logoContainer {
     height: 70px;
     padding-left:20px;
+    padding-top: 5px;
 }
 
 #updateTimeContainer {
@@ -66,7 +67,7 @@ html, body {
 
 #home {
     padding: 50px;
-    height: 500px;
+    height: 400px;
     background-color: #fde7e7;
 }
 
@@ -150,6 +151,19 @@ html, body {
 	
 #footer {
     clear: both;
-    height: 80px;
+    height: 30px;
     border: solid 1px #AAAAAA;
+    background-color: #888784;
+    text-align: right;
+    padding-right: 20px;
+    padding-top: 50px;
+}
+
+#footerContent {
+    font-size:.8em;
+    color: #DADADA;
+}
+
+#footerContent A {
+    color: #DADADA;
 }
