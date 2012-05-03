@@ -1,3 +1,8 @@
+RODU.vnstat.data.updateTime = {
+
+	data: "2012-04-27 16:58:07"
+
+};
 RODU.vnstat.data.hourlyDataChart = {
 
 	categories: [12, 13, 14, 15, 16, 17],
