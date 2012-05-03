@@ -44,6 +44,10 @@ if (!RODU.namespaceConflict){
                 ADVANCED_MONITORING_CHARTS: "advancedMonitoringCharts"
             },
             
+            TEXT_CONTAINERS: {
+            	UPDATE_TIME: "updateTime"
+            },
+            
             CHARTS: {
                 HOURLY_DATA_CHART: "hourlyDataChart",
                 DAILY_DATA_CHART: "dailyDataChart",
@@ -74,6 +78,12 @@ if (!RODU.namespaceConflict){
         var wl = RODU.vnstat.singleton.widgetList = new RODU.vnstat.WidgetList();
         var widgetRenderer = new RODU.vnstat.WidgetRenderer();
         
+        // Setting content for last update time
+        //TODO: this operation may be centralized with a different execution flow including all such operations
+        var updateTimeText = "Last update at: " + RODU.vnstat.data.updateTime.data;
+        var updateTimeContainer = document.getElementById(RODU.vnstat.constants.ELEMENT_ID.TEXT_CONTAINERS.UPDATE_TIME);
+        updateTimeContainer.innerHTML = updateTimeText;
+                
         widgetRenderer.renderCommandList({
             containerId: "verticalTabContainer",
             commandMapName: "mainCommandMap",

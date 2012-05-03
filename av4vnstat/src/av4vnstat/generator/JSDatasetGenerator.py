@@ -46,6 +46,27 @@ class JSDatasetGenerator(object):
         self._dataParser = dataParser
         
     # *************************************************************************
+    def generateUpdateTimeRecord(self):
+        '''
+        Generates an entry in the Javascript data set to identify the last time
+        the vnstat data were updated.
+        '''
+        dateutc = self._dataParser.parseUpdateTime()
+        if (dateutc != 0):
+            dateutc = datetime.datetime.utcfromtimestamp(dateutc)
+        else:
+            dateutc = "Not readable"
+        
+        self._openJSDataFile()
+        self._openJSDataObject(Constants.UPDATE_TIME_DATASET_NAME)
+        self._jsDataFile.write("\n\tdata: \"")
+        self._jsDataFile.write(str(dateutc))
+        self._jsDataFile.write("\"\n")
+        self._closeJSDataObject()
+        
+        
+    
+    # *************************************************************************
     def generateHourlyDataSet(self):
         dataList = self._dataParser.parseHourlyData()
         dataSet = self._generateChartData(dataList, self._buildBarChartTimeref)

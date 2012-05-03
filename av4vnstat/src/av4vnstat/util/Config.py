@@ -70,6 +70,7 @@ class Constants(object):
     JS_DATA_FILE_REL_PATH = "/av4vnstatweb/js/data.js"
     
     # Constants for JS data set chart names to be matched in the Javascript.
+    UPDATE_TIME_DATASET_NAME = "updateTime"
     HOURS_CHART_DATASET_NAME = "hourlyDataChart"
     DAYS_CHART_DATASET_NAME = "dailyDataChart"
     MONTHS_CHART_DATASET_NAME = "monthlyDataChart"

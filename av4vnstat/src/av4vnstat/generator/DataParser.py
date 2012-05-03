@@ -38,6 +38,19 @@ class DataParser(object):
         return self._vnStatHandler
     
     # *************************************************************************
+    def parseUpdateTime(self):
+        dateutc = 0
+        for line in self._vnStatHandler.getVnStatDbFile():
+            m = re.match("^(updated)", line)
+            if (m is not None):
+                # here I have a data line to read
+                dataEntry = line.split(';')
+                dateutc = long(dataEntry[1])
+                break
+        
+        return dateutc
+    
+    # *************************************************************************
     def parseHourlyData(self):
         return self._getLinearDataArray("^h;", self._readHourlyRxTxData)
 
