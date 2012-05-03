@@ -78,12 +78,6 @@ if (!RODU.namespaceConflict){
         var wl = RODU.vnstat.singleton.widgetList = new RODU.vnstat.WidgetList();
         var widgetRenderer = new RODU.vnstat.WidgetRenderer();
         
-        // Setting content for last update time
-        //TODO: this operation may be centralized with a different execution flow including all such operations
-        var updateTimeText = "Last update at: " + RODU.vnstat.data.updateTime.data;
-        var updateTimeContainer = document.getElementById(RODU.vnstat.constants.ELEMENT_ID.TEXT_CONTAINERS.UPDATE_TIME);
-        updateTimeContainer.innerHTML = updateTimeText;
-                
         widgetRenderer.renderCommandList({
             containerId: "verticalTabContainer",
             commandMapName: "mainCommandMap",
@@ -101,6 +95,21 @@ if (!RODU.namespaceConflict){
             commandMapName: "advancedChartsCommandMap",
             listCssClass: "horizontalTabList",
             listItemCssClass: "horizontalTabItem"});
+        
+        /*
+         * This function will be called automatically when the VNStat object is
+         * initialised.
+         * It is used to update the value for the last time the vnstat db was
+         * updated.
+         */
+        (function refteshLastUpdateTime(){
+        	RODU.vnstat.util.debug("Setting content for last update time.");
+            //TODO: this operation may be centralized with a different execution flow including all such operations
+            var updateTimeText = "Last update at: " + RODU.vnstat.data.updateTime.data;
+            var updateTimeContainer = document.getElementById(RODU.vnstat.constants.ELEMENT_ID.TEXT_CONTAINERS.UPDATE_TIME);
+            // Setting content for last update time
+            updateTimeContainer.innerHTML = updateTimeText;
+        }());
     };
 
     /**
