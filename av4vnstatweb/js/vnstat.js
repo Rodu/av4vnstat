@@ -277,7 +277,10 @@ if (!RODU.namespaceConflict){
                 "Top 10 days",
                 "Shows the top 10 days data traffic",
                 function(){ 
-                    RODU.vnstat.util.debug("Executing command name ShowTopTenChartCommand"); 
+                    RODU.vnstat.util.debug("Executing command name ShowTopTenChartCommand");
+                    RODU.vnstat.singleton.widgetManager.showChart(
+                            RODU.vnstat.constants.ELEMENT_ID.CHARTS.TOP_TEN_DATA_CHART);
+                    new RODU.vnstat.vis.chart.TopTenDaysChart;
                 })
         );
     };
@@ -360,6 +363,58 @@ if (!RODU.namespaceConflict){
             },
             series: RODU.vnstat.data.dailyDataChart.series
           });
+    };
+    
+    /**
+     * Defined a DailyDataChart object.
+     */
+    RODU.vnstat.vis.chart.TopTenDaysChart = function(){
+    	new Highcharts.Chart({
+	            chart: {
+	            	backgroundColor: '#fde7e7',
+	            	renderTo: RODU.vnstat.constants.ELEMENT_ID.CHARTS.TOP_TEN_DATA_CHART,
+	                type: 'scatter',
+	                zoomType: 'xy'
+	            },
+	            title: {
+	                text: 'All Times Top Ten Days usage'
+	            },
+	            xAxis: {
+	            	
+	            },
+	            yAxis: {
+	                title: {
+	                    text: 'Traffic in MiB'
+	                }
+	            },
+	            tooltip: {
+	                formatter: function() {
+	                        return ''+
+	                        this.x +', '+ this.y +' MiB';
+	                }
+	            },
+	            plotOptions: {
+	                scatter: {
+	                    marker: {
+	                        radius: 5,
+	                        states: {
+	                            hover: {
+	                                enabled: true,
+	                                lineColor: 'rgb(100,100,100)'
+	                            }
+	                        }
+	                   },
+	                   states: {
+	                        hover: {
+	                            marker: {
+	                                enabled: false
+	                            }
+	                        }
+	                    }
+	                }
+	            },
+	            series: RODU.vnstat.data.topTenDaysDataChart.series
+	        });
     };
     
     /*
