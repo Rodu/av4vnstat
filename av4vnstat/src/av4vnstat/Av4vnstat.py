@@ -53,6 +53,7 @@ class Av4vnstat(object):
         jsDataGenerator.generateHourlyDataSet()
         jsDataGenerator.generateDailyDataSet()
         jsDataGenerator.generateMonthlyDataSet()
+        jsDataGenerator.generateTopTenDaysDataSet()
         
         jsDataGenerator.cleanup()
             

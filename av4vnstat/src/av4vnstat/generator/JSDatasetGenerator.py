@@ -92,12 +92,13 @@ class JSDatasetGenerator(object):
         # For testing the method
         return dataSet
     
-    #def _generateBarChartData(self, chartDatasetName):
-    #    return self._generateChartData(chartDatasetName, self._buildBarChartTimeref)
-    
-    #def _generateLineChartData(self, chartDatasetName):
-    #    return self._generateChartData(chartDatasetName, self._buildLineChartTimeref)
-    
+    # *************************************************************************
+    def generateTopTenDaysDataSet(self):
+        dataList = self._dataParser.parseTopTenDaysData()
+        dataSet = self._generateChartData(dataList, self._buildLineChartTimeref)
+        
+        self._writeTopTenChartJSObject(Constants.TOP_TEN_DAYS_DATASET_NAME,
+                                       dataSet)
     # *************************************************************************
     def cleanup(self):
         self._closeJSDataFile()
@@ -236,7 +237,9 @@ class JSDatasetGenerator(object):
         
         self._writeCategoriesDataObject(dataSet[JSDatasetGenerator.DATETIME_FIELD])
         self._writeSeriesDataObject(dataSet[JSDatasetGenerator.RX_MIB_FIELD],
-                                    dataSet[JSDatasetGenerator.TX_MIB_FIELD])
+                                    "\t\tmarker: { symbol: 'square' },\n",
+                                    dataSet[JSDatasetGenerator.TX_MIB_FIELD],
+                                    "\t\tmarker: { symbol: 'diamond' },\n")
             
         self._closeJSDataObject()
     
@@ -265,7 +268,10 @@ class JSDatasetGenerator(object):
             arrSeriesTx.append([dataSet[JSDatasetGenerator.DATETIME_FIELD][row],
                                 dataSet[JSDatasetGenerator.TX_MIB_FIELD][row]])
                 
-        self._writeSeriesDataObject(arrSeriesRx, arrSeriesTx)
+        self._writeSeriesDataObject(arrSeriesRx,
+                                    "\t\tmarker: { symbol: 'square' },\n",
+                                    arrSeriesTx,
+                                    "\t\tmarker: { symbol: 'diamond' },\n")
         
         self._closeJSDataObject()
     
@@ -304,6 +310,20 @@ class JSDatasetGenerator(object):
         self._closeJSDataObject()
     
     # *************************************************************************
+    # 
+    def _writeTopTenChartJSObject(self, chartDatasetName, dataSet):
+        self._openJSDataFile()
+        self._openJSDataObject(chartDatasetName)
+        
+        self._writeCategoriesDataObject(str(dataSet[JSDatasetGenerator.DATETIME_FIELD]).replace("'", ""))
+        self._writeSeriesDataObject(dataSet[JSDatasetGenerator.RX_MIB_FIELD],
+                                    "\t\tcolor: 'rgba(223, 83, 83, .5)',\n",
+                                    dataSet[JSDatasetGenerator.TX_MIB_FIELD],
+                                    "\t\tcolor: 'rgba(119, 152, 191, .5)',\n")
+            
+        self._closeJSDataObject()
+        
+    # *************************************************************************
     # Writes the opening of a Javascript literal using the chartDatasetName
     # as the name of the literal.
     #
@@ -315,17 +335,19 @@ class JSDatasetGenerator(object):
     # *************************************************************************
     # Generates the Javascript data set expected by the linear chart type.
     # 
-    def _writeSeriesDataObject(self, arrRxMiB, arrTxMiB):
+    def _writeSeriesDataObject(self, arrRxMiB, rxAttrs, arrTxMiB, txAttrs):
         # Opening the series filed
         self._jsDataFile.write("\tseries: [{\n")
         # Download
         self._jsDataFile.write("\t\tname: 'Download',\n")
-        self._jsDataFile.write("\t\tmarker: { symbol: 'square' },\n\t\tdata: ")
+        self._jsDataFile.write(rxAttrs)
+        self._jsDataFile.write("\t\tdata: ")
         self._jsDataFile.write(str(arrRxMiB).replace("'", "").replace("\"", ""))
         self._jsDataFile.write("\n\t},{\n")
         # Upload
         self._jsDataFile.write("\t\tname: 'Upload',\n")
-        self._jsDataFile.write("\t\tmarker: { symbol: 'diamond' },\n\t\tdata: ")
+        self._jsDataFile.write(txAttrs)
+        self._jsDataFile.write("\t\tdata: ")
         self._jsDataFile.write(str(arrTxMiB).replace("'", "").replace("\"", ""))
         self._jsDataFile.write("\n\t}]\n")
     
