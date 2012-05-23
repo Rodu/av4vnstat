@@ -45,7 +45,10 @@ if (!RODU.namespaceConflict){
             },
             
             TEXT_CONTAINERS: {
-            	UPDATE_TIME: "updateTime",
+            	UPDATE_TIME: "updateTime"
+            },
+            
+            CHARTS_DESCRIPTIONS: {
             	BASIC_CHARTS_DESCRIPTION: "basicChartDescription",
             	ADVANCED_CHARTS_DESCRIPTION: "advancedChartDescription"
             },
@@ -197,7 +200,7 @@ if (!RODU.namespaceConflict){
                     RODU.vnstat.singleton.widgetManager.showContainer(
                         RODU.vnstat.constants.ELEMENT_ID.CONTAINERS.BASIC_DATA_CHARTS);
                     RODU.vnstat.singleton.widgetManager.show(
-                    		RODU.vnstat.constants.ELEMENT_ID.TEXT_CONTAINERS.BASIC_CHARTS_DESCRIPTION);
+                    		RODU.vnstat.constants.ELEMENT_ID.CHARTS_DESCRIPTIONS.BASIC_CHARTS_DESCRIPTION);
                 }));
     };
     
@@ -214,7 +217,7 @@ if (!RODU.namespaceConflict){
                     RODU.vnstat.singleton.widgetManager.showContainer(
                         RODU.vnstat.constants.ELEMENT_ID.CONTAINERS.ADVANCED_MONITORING_CHARTS);
                     RODU.vnstat.singleton.widgetManager.show(
-                    		RODU.vnstat.constants.ELEMENT_ID.TEXT_CONTAINERS.ADVANCED_CHARTS_DESCRIPTION);
+                    		RODU.vnstat.constants.ELEMENT_ID.CHARTS_DESCRIPTIONS.ADVANCED_CHARTS_DESCRIPTION);
                 })
         );
     };
@@ -675,7 +678,7 @@ if (!RODU.namespaceConflict){
         // matching the received id
         this.showContainer = function(elementId){
             // First we hide all the containers
-        	hideAll(RODU.vnstat.constants.ELEMENT_ID.TEXT_CONTAINERS);
+        	hideAll(RODU.vnstat.constants.ELEMENT_ID.CHARTS_DESCRIPTIONS);
             hideAll(RODU.vnstat.constants.ELEMENT_ID.CONTAINERS);
             hideAll(RODU.vnstat.constants.ELEMENT_ID.CHARTS);
             // Showing the container by id
@@ -686,7 +689,7 @@ if (!RODU.namespaceConflict){
         // matching the received id
         this.showChart = function(elementId){
             // First we hide all the other charts
-        	hideAll(RODU.vnstat.constants.ELEMENT_ID.TEXT_CONTAINERS);
+        	hideAll(RODU.vnstat.constants.ELEMENT_ID.CHARTS_DESCRIPTIONS);
         	hideAll(RODU.vnstat.constants.ELEMENT_ID.CHARTS);
             this.show(elementId);
         };
