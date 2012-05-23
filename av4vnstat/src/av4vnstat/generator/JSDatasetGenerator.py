@@ -315,10 +315,17 @@ class JSDatasetGenerator(object):
         self._openJSDataFile()
         self._openJSDataObject(chartDatasetName)
         
-        self._writeCategoriesDataObject(str(dataSet[JSDatasetGenerator.DATETIME_FIELD]).replace("'", ""))
-        self._writeSeriesDataObject(dataSet[JSDatasetGenerator.RX_MIB_FIELD],
+        arrSeriesRx = []
+        arrSeriesTx = []
+        for row in range(len(dataSet[JSDatasetGenerator.DATETIME_FIELD])):
+            arrSeriesRx.append([dataSet[JSDatasetGenerator.DATETIME_FIELD][row],
+                                dataSet[JSDatasetGenerator.RX_MIB_FIELD][row]])
+            arrSeriesTx.append([dataSet[JSDatasetGenerator.DATETIME_FIELD][row],
+                                dataSet[JSDatasetGenerator.TX_MIB_FIELD][row]])
+            
+        self._writeSeriesDataObject(arrSeriesRx,
                                     "\t\tcolor: 'rgba(223, 83, 83, .5)',\n",
-                                    dataSet[JSDatasetGenerator.TX_MIB_FIELD],
+                                    arrSeriesTx,
                                     "\t\tcolor: 'rgba(119, 152, 191, .5)',\n")
             
         self._closeJSDataObject()

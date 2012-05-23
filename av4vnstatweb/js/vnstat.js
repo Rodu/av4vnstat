@@ -380,7 +380,13 @@ if (!RODU.namespaceConflict){
 	                text: 'All Times Top Ten Days usage'
 	            },
 	            xAxis: {
-	            	
+	            	type: 'datetime',
+	                dateTimeLabelFormats: {
+	                    day: '%e. %b'
+	                },
+		            startOnTick: true,
+	                endOnTick: true,
+	                showLastLabel: true
 	            },
 	            yAxis: {
 	                title: {
@@ -390,7 +396,7 @@ if (!RODU.namespaceConflict){
 	            tooltip: {
 	                formatter: function() {
 	                        return ''+
-	                        this.x +', '+ this.y +' MiB';
+	                        Highcharts.dateFormat('%e %b', this.x) +', '+ this.y +' MiB';
 	                }
 	            },
 	            plotOptions: {
