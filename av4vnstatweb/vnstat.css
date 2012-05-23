@@ -87,7 +87,8 @@ html, body {
     list-style-type: none;
     line-height: 40px;
     margin: 0;
-    padding: 0;
+    padding: 5px;
+    
 }
 
 .horizontalTabList {
@@ -106,8 +107,8 @@ html, body {
     text-decoration: none;
 }
 
-.verticalTabItem {
-    text-decoration: none;
+.verticalTabItem A {
+    text-decoration: none;    
 }
 
 .topTabContainer {

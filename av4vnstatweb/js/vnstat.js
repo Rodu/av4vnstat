@@ -34,7 +34,7 @@ if (!RODU.namespaceConflict){
     // here will save instances that need to be shared among multiple objects
     RODU.vnstat.constants = {
         // Set this to true to see error messages in the browser web console
-        DEBUG: true,
+        DEBUG: false,
         
         // Mapping of document elements ids to (pseudo) constants
         ELEMENT_ID: {
