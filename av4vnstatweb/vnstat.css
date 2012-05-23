@@ -71,7 +71,8 @@ html, body {
     background-color: #fde7e7;
 }
 
-.chartsContainer {
+.chartsContainer,
+.chartsDescription {
     display: none;
     height: 500px;
 }
