@@ -402,7 +402,14 @@ class JSDatasetGenerator(object):
     # *************************************************************************
     def _openJSDataFile(self):
         if (self._jsDataFile == None):
-            self._jsDataFile = open(self._jsFilePath, 'w')
+            try:
+                self._jsDataFile = open(self._jsFilePath, 'w')
+            except(IOError):
+                print "Wrong configuration parameters!"
+                print "\nCheck the 'install_folder' value given in the av4vnstat.cfg."
+                print "The 'install_folder' must match the root folder containing the program."
+                print "Execution terminated."
+                exit(1)
     
     # *************************************************************************
     def _closeJSDataFile(self):
