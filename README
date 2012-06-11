@@ -7,6 +7,7 @@ http://www.highcharts.com
 
 The application allows to visualize the data collected by vnstat, network traffic
 monitor tool.
+
 Vnstat can be used on a Linux machine, to register the amount of traffic in
 download and upload for a specific network interface.
 
@@ -19,4 +20,11 @@ and update the Javascript dataset at regular intervals.
 Using the Highchart library basic charts and some visualizations will show
 the data.
 
-For setup instructions see the SETUP file.
+To see an example of the running web interface you can open the file:
+
+av4vnstatweb/example.html
+
+
+For setup instructions in order to collect and visualize your network usage
+see the SETUP.txt file.
+

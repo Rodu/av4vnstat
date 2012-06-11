@@ -59,7 +59,7 @@ Note:
 ------------------------------------------------------------------------
 GENERATING THE JAVASCRIPT DATA
 
-Once vnstat is installed and enough data have been collected (to be used)
+Once vnstat is installed and enough data have been collected (to be shown)
 you can execute the Python script to create the JS dataset.
 
 From the command line move to the 'src' folder under your install path:
@@ -81,13 +81,14 @@ To open the Javascript web app you need to open in a browser the file:
 
 At this point you should be able to see your data.
 
-To make sure the application is working you can also run the
-'av4vnstat_example.html' that you will find there.
+You can also launch the example.html in the browser to see what the result could
+look like.
+
 
 ------------------------------------------------------------------------
 AUTOMATING THE DATA GENERATION
 
-Alternatively, you can create a cron entry to run the python script on a schedule
+You can create a cron entry to run the python script on a schedule
 time interval. To do this you can create an entry in the crontab where the script
 is executed on the first minute for every hour.
 
@@ -102,11 +103,8 @@ In the example we assume to have a folder named run under the pluto's home.
 
 For more info about crontab synstax: $ man 5 crontab
 
-Once all this is done and vnstat has enough data to show (after a while) you can run
+Once all this is done and vnstat has enough data to show you can run
 the av4vnstat.html (under the folder av4vnstatweb) and see the results.
-
-You can also launch the example.html in the browser to see what the result could
-look like.
 
 Note:
     A working folder is created when running the program under the user
@@ -116,4 +114,16 @@ Note:
         - a log file in case of errors
         - the vnstat db dump to be parsed
 
+
+If something goes wrong you can enable debug messages in the browser console by
+changing the value of the DEBUG constant in the Javascript to true.
+
+find:
+
+// Set this to true to see error messages in the browser web console
+DEBUG: false,
+
+in:
+
+av4vnstatweb/js/vnstat.js
 

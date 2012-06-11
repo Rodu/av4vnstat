@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Av4vnstat</title>
+    <link type="text/css" rel="stylesheet" href="vnstat.css"/>
+    <script src="lib/jquery.min.js" type="text/javascript"></script>
+    <script src="lib/highcharts.js" type="text/javascript"></script>
+    <script src="js/vnstat.js" type="text/javascript"></script>
+    <script src="js/data.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <div id="mainContainer">
+        <div id="header">
+            <div id="logoContainer"><span id="logo">Av4vnstat</span><br/><span id="slug">Network traffic information</span></div>
+            <div id="updateTimeContainer"><span id="updateTime">Last update: Wed 2 May 2012 at 13:23</span></div>
+        </div>
+        <div id="contents">
+            <div id="verticalTabContainer"></div>
+            <div id="chartsContents">
+                <div id="home">
+                <p>This web interface allows you to visualize
+                the data collected with vnstat - network traffic monitor -
+                using a combination of different charts.</p>
+                <p>On top right you can see the date for the last update
+                done on the dataset used in this front end.<br/>
+                You may want to run the Python script in order to update
+                the dataset if you think it is is outdated by now.</p>
+                <p>For more information refer to the README and SETUP.txt
+                files that you should have received with the project files.</p>
+                </div>
+                <div id="basicDataCharts" class="chartsContainer">
+                    <div id="basicTabContainer" class="topTabContainer"></div>
+                    <div id="basicChartContainer" class="chartContainer">
+                        <div id="basicChartDescription" class="chartsDescription">
+                        <p>The Basic Data section shows the data as collected by
+                        the basic vnStat functionalities.</p>
+                        <p>In this section, traffic information is available on a
+                        Hour, Day and Month basis. The top ten days data are also
+                        shown.</p>
+                        </div>
+                        <div id="hourlyDataChart" class="chart"></div>
+                        <div id="dailyDataChart" class="chart"></div>
+                        <div id="monthlyDataChart" class="smallMultiples"></div>
+                        <div id="topTenDataChart" class="chart"></div>
+                    </div>
+                </div>
+                <div id="advancedMonitoringCharts" class="chartsContainer">
+                    <div id="advancedTabContainer" class="topTabContainer"></div>
+                    <div id="advancedChartContainer" class="chartContainer">
+                        <div id="advancedChartDescription" class="chartsDescription">
+                        <p>To be developed. Will show more statistical data in order
+                        to evaluate the remaining traffic available and the trend
+                        of traffic over a period of time.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            <span id="footerContent">Av4vnstat is <a href="https://github.com/Rodu/av4vnstat">released on GitHub</a> - For reading about the project see the <a href="http://rodublog.wordpress.com/2011/09/07/visualizing-amount-of-network-traffic-using-vnstat/">blog entry on Rodublog</a></span>
+        </div>
+    </div>
+  </body>
+</html>
