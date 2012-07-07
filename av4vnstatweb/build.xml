@@ -26,7 +26,7 @@
             <echo message="Preparing whole file @{destfile}" />
             <concat destfile="@{destdir}/@{destfile}">
                 <path>
-                    <fileset dir="${dir.src}/RODU" includes="**/*.js" />
+                    <fileset dir="${dir.src}/${app.rootNS}" includes="**/*.js" />
                 </path>
             </concat>
         </sequential>
@@ -38,7 +38,7 @@
             <echo message="Preparing whole Jasmine tests file ${file.dist.test}" />
             <concat destfile="${dir.dist}/test/${file.dist.test}">
                 <path>
-                    <fileset dir="${dir.test}/RODU" includes="**/*.js" />
+                    <fileset dir="${dir.test}/${app.rootNS}" includes="**/*.js" />
                 </path>
             </concat>
             <copy todir="${dir.dist}/test/lib">
@@ -203,9 +203,9 @@
 		
         <echo message="Validating with JSLint" />
 		<jslint options="vars,nomen,white,browser,plusplus">
-            <predef>jQuery,$,$$,RODU,Ext,Worker</predef>
+            <predef>jQuery,$,$$,RODU</predef>
 			<formatter type="plain" />
-			<fileset dir="${dir.src}/RODU">
+			<fileset dir="${dir.src}/${app.rootNS}">
                 <include name="**/*.js" />
                 <exclude name="**/DataSet.js" />
             </fileset>
