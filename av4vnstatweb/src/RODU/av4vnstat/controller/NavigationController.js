@@ -5,4 +5,6 @@
  * Time: 14:01
  * To change this template use File | Settings | File Templates.
  */
-RODU.av4vnstat.controller.NavigationController = function(){};
+RODU.av4vnstat.controller.NavigationController = function(){
+    'use strict';
+};
