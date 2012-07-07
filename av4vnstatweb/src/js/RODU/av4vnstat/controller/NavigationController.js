@@ -1,0 +1,8 @@
+/**
+ * Created with JetBrains WebStorm.
+ * User: rob
+ * Date: 07/07/12
+ * Time: 14:01
+ * To change this template use File | Settings | File Templates.
+ */
+RODU.av4vnstat.controller.NavigationController = function(){};

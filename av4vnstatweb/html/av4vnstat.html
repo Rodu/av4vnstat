@@ -14,8 +14,14 @@
             <div id="logoContainer"><span id="logo">Av4vnstat</span><br/><span id="slug">Network traffic information</span></div>
             <div id="updateTimeContainer"><span id="updateTime">Last update: Wed 2 May 2012 at 13:23</span></div>
         </div>
-        <div id="contents">
-            <div id="verticalTabContainer"></div>
+        <div id="contents" ng-controller="navigationController">
+            <div id="verticalTabContainer">
+                <ul class="verticalTabList">
+                    <li class="verticalTabItem"><a href="" ng-click="">Home</a></li>
+                    <li class="verticalTabItem"><a href="" ng-click="">Basic Data</a></li>
+                    <li class="verticalTabItem"><a href="" ng-click="">Advanced Monitoring</a></li>
+                </ul>
+            </div>
             <div id="chartsContents">
                 <div id="home">
                 <p>This web interface allows you to visualize
