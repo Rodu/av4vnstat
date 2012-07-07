@@ -35,8 +35,8 @@
     <macrodef name="m-generate-whole-tests"
         description="Creates Jasmine tests whole file.">
         <sequential>
-            <echo message="Preparing whole Jasmine tests file ${file.dist.test}" />
-            <concat destfile="${dir.dist}/test/${file.dist.test}">
+            <echo message="Preparing whole Jasmine tests file ${app.name}-test.js" />
+            <concat destfile="${dir.dist}/test/${app.name}-test.js">
                 <path>
                     <fileset dir="${dir.test}/${app.rootNS}" includes="**/*.js" />
                 </path>
@@ -94,6 +94,10 @@
                     failonerror="true"
                     output="@{destdir}/main.js">
                 <arg value="@{debug}" />
+                <arg value="${libs.dependencies}" />
+                <arg value="${app.rootNS}" />
+                <arg value="${app.name}" />
+                <arg value="${app.mainClass}" />
             </exec>
             <echo message="Requires OK" />
         </sequential>
@@ -156,7 +160,7 @@
 	<target name="test" depends="clean"
         description="Executes automated tests">
         
-        <m-generate-whole-app destdir="${dir.dist}/js" destfile="${file.dist}" />
+        <m-generate-whole-app destdir="${dir.dist}/js" destfile="${app.name}.js" />
         <m-generate-whole-tests />
         
         <copy todir="${dir.dist}/test">
@@ -192,7 +196,6 @@
         <m-copy-assets destdir="${dir.debug}" />
         <m-copy-libs destdir="${dir.debug}/js/lib" />
         <m-generate-requires destdir="${dir.debug}/js" debug="true" />
-        
 	</target>
 	
     <!--
@@ -203,7 +206,7 @@
 		
         <echo message="Validating with JSLint" />
 		<jslint options="vars,nomen,white,browser,plusplus">
-            <predef>jQuery,$,$$,RODU</predef>
+            <predef>jQuery,$,$$,${app.rootNS}</predef>
 			<formatter type="plain" />
 			<fileset dir="${dir.src}/${app.rootNS}">
                 <include name="**/*.js" />
@@ -218,7 +221,7 @@
         <m-copy-assets destdir="${dir.dist}" />
         
         <echo message="Minifying" />
-		<jsmin srcfile="${dir.dist}/js/${file.dist}" suffix="true" />
+		<jsmin srcfile="${dir.dist}/js/${app.name}.js" suffix="true" />
         <echo message="Minify OK" />
 	</target>
     

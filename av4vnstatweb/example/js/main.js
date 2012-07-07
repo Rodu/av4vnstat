@@ -1,8 +1,8 @@
-require(['jquery', 'lib/extjs/ext-all', 'lib/rodulib',
-'musicexplorer.min',
+require([
+'jquery',
+'av4vnstat.min',
 ], function($) {
     $(function() {
-        RODU.util.debug("Creating MusicExplorer instance");
-        new RODU.musicexplorer.MusicExplorer();
+        new RODU.av4vnstat.Av4VnStat();
     });
 });

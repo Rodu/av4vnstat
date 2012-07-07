@@ -19,19 +19,27 @@ import os
 import sys
 
 try:
-    DEBUG_FLAG = sys.argv[1] # This will be passed as an argument
+    DEBUG_FLAG = sys.argv[1]
+    DEPENDENCIES = sys.argv[2]
+    APP_ROOT_NS = sys.argv[3]
+    APP_NAME = sys.argv[4]
+    APP_MAIN_CLASS = sys.argv[5]
 except(IndexError):
-    exit("Missing argument (true | false) to indicate if debug or dist.")
+    exit("Wrong arguments.")
 
-print("require(['jquery', 'lib/extjs/ext-all', 'lib/rodulib',")
+print("require([")
+
+if (DEPENDENCIES != ""):
+ print(DEPENDENCIES + ",")
+ 
 if (DEBUG_FLAG == "true"):
     os.chdir("./src")
-    for root, dirs, files in os.walk("./RODU"):
+    for root, dirs, files in os.walk("./" + APP_ROOT_NS):
         for file in files:
             print("'" + root + "/" + file[0:len(file)-3] + "',")
 
 elif (DEBUG_FLAG == "false"):
-    print("'musicexplorer.min',")
+    print("'" + APP_NAME + ".min',")
 
 else:
     strExit = "Unrecognized parameter " + DEBUG_FLAG + "\n"
@@ -40,8 +48,8 @@ else:
 
 print("], function($) {")
 print("    $(function() {")
-print("        RODU.util.debug(\"Creating MusicExplorer instance\");")
-print("        new RODU.musicexplorer.MusicExplorer();")
+print("        angular.bootstrap(document);")
+print("        new " + APP_ROOT_NS + "." + APP_NAME + "." + APP_MAIN_CLASS + "();")
 print("    });")
 print("});")
 

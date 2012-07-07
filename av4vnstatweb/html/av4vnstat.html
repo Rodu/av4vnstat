@@ -1,12 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:ng="http://angularjs.org">
   <head>
     <title>Av4vnstat</title>
     <link type="text/css" rel="stylesheet" href="vnstat.css"/>
-    <script src="lib/jquery.min.js" type="text/javascript"></script>
-    <script src="lib/highcharts.js" type="text/javascript"></script>
-    <script src="js/vnstat.js" type="text/javascript"></script>
-    <script src="js/data.js" type="text/javascript"></script>
   </head>
   <body>
     <div id="mainContainer">
@@ -14,13 +10,14 @@
             <div id="logoContainer"><span id="logo">Av4vnstat</span><br/><span id="slug">Network traffic information</span></div>
             <div id="updateTimeContainer"><span id="updateTime">Last update: Wed 2 May 2012 at 13:23</span></div>
         </div>
-        <div id="contents" ng-controller="navigationController">
+        <div id="contents" ng-controller="RODU.av4vnstat.controller.NavigationController">
             <div id="verticalTabContainer">
                 <ul class="verticalTabList">
                     <li class="verticalTabItem"><a href="" ng-click="">Home</a></li>
                     <li class="verticalTabItem"><a href="" ng-click="">Basic Data</a></li>
                     <li class="verticalTabItem"><a href="" ng-click="">Advanced Monitoring</a></li>
                 </ul>
+                <span>{{test}}</span>
             </div>
             <div id="chartsContents">
                 <div id="home">
@@ -66,5 +63,6 @@
             <span id="footerContent">Av4vnstat is <a href="https://github.com/Rodu/av4vnstat">released on GitHub</a> - For reading about the project see the <a href="http://rodublog.wordpress.com/2011/09/07/visualizing-amount-of-network-traffic-using-vnstat/">blog entry on Rodublog</a></span>
         </div>
     </div>
+    <script data-main="js/main" src="js/lib/require-jquery.js"></script>
   </body>
 </html>
