@@ -4,3 +4,4 @@ av4vnstatweb/js/data.js
 .project
 .pydevproject
 *.pyc
+.idea/
