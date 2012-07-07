@@ -47,7 +47,8 @@ else:
     exit(strExit)
 
 print("], function($) {")
-print("    $(function() {")
+#print("    $(function() {")
+print("     angular.element(document).ready(function() {")
 print("        angular.bootstrap(document);")
 print("        new " + APP_ROOT_NS + "." + APP_NAME + "." + APP_MAIN_CLASS + "();")
 print("    });")

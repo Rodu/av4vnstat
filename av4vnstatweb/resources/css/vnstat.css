@@ -63,18 +63,13 @@ html, body {
 	width: 80%;
     float: left;
     background-color: #fde7e7;
+    height: 500px;
 }
 
 #home {
     padding: 50px;
     height: 400px;
     background-color: #fde7e7;
-}
-
-.chartsContainer,
-.chartsDescription {
-    display: none;
-    height: 500px;
 }
 
 #verticalTabContainer {
@@ -149,6 +144,14 @@ html, body {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
+}
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
 }
 	
 #footer {

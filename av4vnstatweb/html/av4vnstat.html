@@ -2,7 +2,7 @@
 <html xmlns:ng="http://angularjs.org">
   <head>
     <title>Av4vnstat</title>
-    <link type="text/css" rel="stylesheet" href="vnstat.css"/>
+    <link type="text/css" rel="stylesheet" href="resources/css/vnstat.css"/>
   </head>
   <body>
     <div id="mainContainer">
@@ -13,14 +13,14 @@
         <div id="contents" ng-controller="RODU.av4vnstat.controller.NavigationController">
             <div id="verticalTabContainer">
                 <ul class="verticalTabList">
-                    <li class="verticalTabItem"><a href="" ng-click="">Home</a></li>
-                    <li class="verticalTabItem"><a href="" ng-click="">Basic Data</a></li>
-                    <li class="verticalTabItem"><a href="" ng-click="">Advanced Monitoring</a></li>
+                    <li class="verticalTabItem"><a href="" ng-click="showSection('home')">Home</a></li>
+                    <li class="verticalTabItem"><a href="" ng-click="showSection('basic')">Basic Data</a></li>
+                    <li class="verticalTabItem"><a href="" ng-click="showSection('advanced')">Advanced Monitoring</a></li>
                 </ul>
                 <span>{{test}}</span>
             </div>
             <div id="chartsContents">
-                <div id="home">
+                <div id="home" class="{{section.home.visible}}">
                 <p>This web interface allows you to visualize
                 the data collected with vnstat - network traffic monitor -
                 using a combination of different charts.</p>
@@ -31,7 +31,7 @@
                 <p>For more information refer to the README and SETUP.txt
                 files that you should have received with the project files.</p>
                 </div>
-                <div id="basicDataCharts" class="chartsContainer">
+                <div id="basicDataCharts" class="{{section.basic.visible}}">
                     <div id="basicTabContainer" class="topTabContainer"></div>
                     <div id="basicChartContainer" class="chartContainer">
                         <div id="basicChartDescription" class="chartsDescription">
@@ -47,7 +47,7 @@
                         <div id="topTenDataChart" class="chart"></div>
                     </div>
                 </div>
-                <div id="advancedMonitoringCharts" class="chartsContainer">
+                <div id="advancedMonitoringCharts" class="{{section.advanced.visible}}">
                     <div id="advancedTabContainer" class="topTabContainer"></div>
                     <div id="advancedChartContainer" class="chartContainer">
                         <div id="advancedChartDescription" class="chartsDescription">
