@@ -10,17 +10,17 @@
             <div id="logoContainer"><span id="logo">Av4vnstat</span><br/><span id="slug">Network traffic information</span></div>
             <div id="updateTimeContainer"><span id="updateTime">Last update: Wed 2 May 2012 at 13:23</span></div>
         </div>
-        <div id="contents" ng-controller="RODU.av4vnstat.controller.NavigationController">
+        <div id="contents" ng-controller="RODU.av4vnstat.controller.SectionController">
             <div id="verticalTabContainer">
                 <ul class="verticalTabList">
-                    <li class="verticalTabItem"><a href="" ng-click="showSection('home')">Home</a></li>
-                    <li class="verticalTabItem"><a href="" ng-click="showSection('basic')">Basic Data</a></li>
-                    <li class="verticalTabItem"><a href="" ng-click="showSection('advanced')">Advanced Monitoring</a></li>
+                    <li class="verticalTabItem"><a href="" ng-click="showHome()">Home</a></li>
+                    <li class="verticalTabItem"><a href="" ng-click="showBasic()">Basic Data</a></li>
+                    <li class="verticalTabItem"><a href="" ng-click="showAdvanced()">Advanced Monitoring</a></li>
                 </ul>
                 <span>{{test}}</span>
             </div>
             <div id="chartsContents">
-                <div id="home" class="{{section.home.visible}}">
+                <div id="home" style="display: {{section.home.visible}}">
                 <p>This web interface allows you to visualize
                 the data collected with vnstat - network traffic monitor -
                 using a combination of different charts.</p>
@@ -31,23 +31,27 @@
                 <p>For more information refer to the README and SETUP.txt
                 files that you should have received with the project files.</p>
                 </div>
-                <div id="basicDataCharts" class="{{section.basic.visible}}">
-                    <div id="basicTabContainer" class="topTabContainer"></div>
+                <div id="basicDataCharts" style="display: {{section.basic.visible}}" ng-controller="RODU.av4vnstat.controller.BasicChartController">
+                    <div id="basicTabContainer" class="topTabContainer">
+                        <ul class="horizontalTabList">
+                            <li class="horizontalTabItem"><a href="" ng-click="showHourlyChart()">Hourly data</a></li>
+                        </ul>
+                    </div>
                     <div id="basicChartContainer" class="chartContainer">
-                        <div id="basicChartDescription" class="chartsDescription">
+                        <div id="basicChartDescription" class="chartsDescription" style="display: {{chart.description.visible}}">
                         <p>The Basic Data section shows the data as collected by
                         the basic vnStat functionalities.</p>
                         <p>In this section, traffic information is available on a
                         Hour, Day and Month basis. The top ten days data are also
                         shown.</p>
                         </div>
-                        <div id="hourlyDataChart" class="chart"></div>
-                        <div id="dailyDataChart" class="chart"></div>
-                        <div id="monthlyDataChart" class="smallMultiples"></div>
-                        <div id="topTenDataChart" class="chart"></div>
+                        <div id="hourlyDataChart" class="chart" style="display: {{chart.hourlyChart.visible}}"></div>
+                        <div id="dailyDataChart" class="chart" style="display: {{chart.dailyChart.visible}}"></div>
+                        <div id="monthlyDataChart" class="smallMultiples" style="display: {{chart.monthlyChart.visible}}"></div>
+                        <div id="topTenDataChart" class="chart" style="display: {{chart.toptenChart.visible}}"></div>
                     </div>
                 </div>
-                <div id="advancedMonitoringCharts" class="{{section.advanced.visible}}">
+                <div id="advancedMonitoringCharts" style="display: {{section.advanced.visible}}">
                     <div id="advancedTabContainer" class="topTabContainer"></div>
                     <div id="advancedChartContainer" class="chartContainer">
                         <div id="advancedChartDescription" class="chartsDescription">

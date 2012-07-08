@@ -36,6 +36,7 @@ if (!RODU.av4vnstat) {
 
     // Definition of application packages
     RODU.av4vnstat.controller = {};
+    RODU.av4vnstat.data = {};
 
     // Definition of configuration parameters
     RODU.av4vnstat.config = {
