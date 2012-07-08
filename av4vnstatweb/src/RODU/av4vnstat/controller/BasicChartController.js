@@ -33,33 +33,7 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
 
         if (!$scope.chart.hourlyChart.bound)
         {
-            new Highcharts.Chart({
-                chart: {
-                    backgroundColor: '#fde7e7',
-                    renderTo: RODU.av4vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART,
-                    type: 'column'
-                },
-                title: {
-                    text: 'Last 24 Hours Usage'
-                },
-                xAxis: {
-
-                    categories: RODU.av4vnstat.data.hourlyDataChart.categories
-                },
-                yAxis: {
-                    title: {
-                        text: 'Traffic in MiB'
-                    }
-                },
-                tooltip: {
-                    formatter: function() {
-                        return '<b>'+ this.series.name +'</b><br/>'+
-                            this.x + ' hrs - ' + this.y + ' MiB';
-                    }
-                },
-                series: RODU.av4vnstat.data.hourlyDataChart.series
-            });
-
+            new RODU.av4vnstat.visualization.HourlyChart();
             $scope.chart.hourlyChart.bound = true;
         }
     };
@@ -69,46 +43,19 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
         
         if (!$scope.chart.dailyChart.bound)
         {
-            new Highcharts.Chart({
-                chart: {
-                    backgroundColor: '#fde7e7',
-                    renderTo: RODU.av4vnstat.constants.ELEMENT_ID.CHARTS.DAILY_DATA_CHART,
-                    type: 'spline'
-                },
-                title: {
-                    text: 'Last 30 Days Usage'
-                },
-                xAxis: {
-                    type: 'datetime',
-                    dateTimeLabelFormats: {
-                        day: '%e. %b'
-                    }
-                },
-                yAxis: {
-                    title: {
-                       text: 'Traffic in MiB'
-                    }
-                },
-                tooltip: {
-                    formatter: function() {
-                            return '<b>'+ this.series.name +'</b><br/>'+
-                            Highcharts.dateFormat('%e %b', this.x) +' - '+ this.y + ' MiB';
-                    }
-                },
-                series: RODU.av4vnstat.data.dailyDataChart.series
-            });
-          
+            new RODU.av4vnstat.visualization.DailyChart();
             $scope.chart.dailyChart.bound = true;
         }
     };
     
-    $scope.showMonthlyChartChart = function () {
+    $scope.showMonthlyChart = function () {
+        var monthlyChart;
         show('monthlyChart');
         
-        if (!$scope.chart.dailyChart.bound)
+        if (!$scope.chart.monthlyChart.bound)
         {
-            
-            
+            monthlyChart = new RODU.av4vnstat.visualization.MonthlyChart();
+            monthlyChart.render();
             $scope.chart.monthlyChart.bound = true;
         }
     };

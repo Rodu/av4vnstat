@@ -55,7 +55,7 @@ describe("BasicChartControllerTest", function () {
             // Simulating bound because test automation fails with Highchart in the way... :/
             scope.chart.monthlyChart.bound = true;
 
-            scope.showMonthlyChartChart();
+            scope.showMonthlyChart();
 
             expect(scope.chart.monthlyChart.visible).toEqual(VISIBILITY.SHOW);
         });
