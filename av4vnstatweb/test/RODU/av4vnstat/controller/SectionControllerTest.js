@@ -9,6 +9,7 @@ describe("SectionControllerTest", function () {
 
     var sectionController;
     var scope;
+    var VISIBILITY = RODU.av4vnstat.constants.VISIBILITY;
 
     beforeEach(function () {
         scope = {};
@@ -24,14 +25,14 @@ describe("SectionControllerTest", function () {
         it("Should have Home set to SHOW", function () {
             scope.showHome();
 
-            expect(scope.section.home.visible).toEqual('block');
+            expect(scope.section.home.visible).toEqual(VISIBILITY.SHOW);
         });
 
         it("Should have the other sections set to HIDE", function () {
             scope.showHome();
 
-            expect(scope.section.basic.visible).toEqual('none');
-            expect(scope.section.advanced.visible).toEqual('none');
+            expect(scope.section.basic.visible).toEqual(VISIBILITY.HIDE);
+            expect(scope.section.advanced.visible).toEqual(VISIBILITY.HIDE);
         }); //*/
     });
 
@@ -40,14 +41,14 @@ describe("SectionControllerTest", function () {
         it("Should have Basic set to SHOW", function () {
             scope.showBasic();
 
-            expect(scope.section.basic.visible).toEqual('block');
+            expect(scope.section.basic.visible).toEqual(VISIBILITY.SHOW);
         });
 
         it("Should have the other sections set to HIDE", function () {
             scope.showBasic();
 
-            expect(scope.section.home.visible).toEqual('none');
-            expect(scope.section.advanced.visible).toEqual('none');
+            expect(scope.section.home.visible).toEqual(VISIBILITY.HIDE);
+            expect(scope.section.advanced.visible).toEqual(VISIBILITY.HIDE);
         }); //*/
     });
 
@@ -56,14 +57,14 @@ describe("SectionControllerTest", function () {
         it("Should have Advanced set to SHOW", function () {
             scope.showAdvanced();
 
-            expect(scope.section.advanced.visible).toEqual('block');
+            expect(scope.section.advanced.visible).toEqual(VISIBILITY.SHOW);
         });
 
         it("Should have the other sections set to HIDE", function () {
             scope.showAdvanced();
 
-            expect(scope.section.home.visible).toEqual('none');
-            expect(scope.section.basic.visible).toEqual('none');
+            expect(scope.section.home.visible).toEqual(VISIBILITY.HIDE);
+            expect(scope.section.basic.visible).toEqual(VISIBILITY.HIDE);
         }); //*/
     });
 

@@ -7,14 +7,12 @@
  */
 RODU.av4vnstat.controller.SectionController = function ($scope) {
     'use strict';
-    var SHOW = 'block',
-        HIDE = 'none',
-
-        visibleSection = 'home',
+    var visibleSection = 'home',
+        VISIBILITY = RODU.av4vnstat.constants.VISIBILITY,
 
         show = function (id) {
-            $scope.section[visibleSection].visible = HIDE;
-            $scope.section[id].visible = SHOW;
+            $scope.section[visibleSection].visible = VISIBILITY.HIDE;
+            $scope.section[id].visible = VISIBILITY.SHOW;
             visibleSection = id;
         };
 
@@ -22,9 +20,9 @@ RODU.av4vnstat.controller.SectionController = function ($scope) {
     $scope.test = "test";
 
     $scope.section = {
-        home: {visible:SHOW},
-        basic: {visible:HIDE},
-        advanced: {visible:HIDE}
+        home: {visible:VISIBILITY.SHOW},
+        basic: {visible:VISIBILITY.HIDE},
+        advanced: {visible:VISIBILITY.HIDE}
     };
 
 

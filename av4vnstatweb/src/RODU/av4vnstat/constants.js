@@ -10,6 +10,11 @@ RODU.av4vnstat.constants = {
     // Set this to true to see error messages in the browser web console
     DEBUG: false,
 
+    VISIBILITY: {
+        SHOW: 'block',
+        HIDE: 'none'
+    },
+
     // Mapping of document elements ids to (pseudo) constants
     ELEMENT_ID: {
         CONTAINERS: {

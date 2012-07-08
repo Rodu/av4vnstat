@@ -7,22 +7,21 @@
  */
 RODU.av4vnstat.controller.BasicChartController = function ($scope) {
     'use strict';
-    var SHOW = 'block',
-        HIDE = 'none',
-        visibleChart = 'description',
+    var visibleChart = 'description',
+        VISIBILITY = RODU.av4vnstat.constants.VISIBILITY,
 
         show = function (id) {
-            $scope.chart[visibleChart].visible = HIDE;
-            $scope.chart[id].visible = SHOW;
+            $scope.chart[visibleChart].visible = VISIBILITY.HIDE;
+            $scope.chart[id].visible = VISIBILITY.SHOW;
             visibleChart = id;
         };
 
     $scope.chart = {
-        description: {visible:SHOW},
-        hourlyChart: {visible:HIDE},
-        dailyChart: {visible:HIDE},
-        monthlyChart: {visible:HIDE},
-        toptenChart: {visible:HIDE}
+        description: {visible:VISIBILITY.SHOW},
+        hourlyChart: {visible:VISIBILITY.HIDE, bound: false},
+        dailyChart: {visible:VISIBILITY.HIDE, bound: false},
+        monthlyChart: {visible:VISIBILITY.HIDE, bound: false},
+        toptenChart: {visible:VISIBILITY.HIDE, bound: false}
     };
 
     $scope.showDescription = function () {
@@ -32,31 +31,36 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
     $scope.showHourlyChart = function () {
         show('hourlyChart');
 
-        new Highcharts.Chart({
-            chart: {
-                backgroundColor: '#fde7e7',
-                renderTo: RODU.av4vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART,
-                type: 'column'
-            },
-            title: {
-                text: 'Last 24 Hours Usage'
-            },
-            xAxis: {
-
-                categories: RODU.av4vnstat.data.hourlyDataChart.categories
-            },
-            yAxis: {
+        if (!$scope.chart.hourlyChart.bound)
+        {
+            new Highcharts.Chart({
+                chart: {
+                    backgroundColor: '#fde7e7',
+                    renderTo: RODU.av4vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART,
+                    type: 'column'
+                },
                 title: {
-                    text: 'Traffic in MiB'
-                }
-            },
-            tooltip: {
-                formatter: function() {
-                    return '<b>'+ this.series.name +'</b><br/>'+
-                        this.x + ' hrs - ' + this.y + ' MiB';
-                }
-            },
-            series: RODU.av4vnstat.data.hourlyDataChart.series
-        });
-    };
+                    text: 'Last 24 Hours Usage'
+                },
+                xAxis: {
+
+                    categories: RODU.av4vnstat.data.hourlyDataChart.categories
+                },
+                yAxis: {
+                    title: {
+                        text: 'Traffic in MiB'
+                    }
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                            this.x + ' hrs - ' + this.y + ' MiB';
+                    }
+                },
+                series: RODU.av4vnstat.data.hourlyDataChart.series
+            });
+
+            $scope.chart.hourlyChart.bound = true;
+        }
+    }
 };
