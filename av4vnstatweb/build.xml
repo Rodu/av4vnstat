@@ -206,7 +206,7 @@
 		
         <echo message="Validating with JSLint" />
 		<jslint options="vars,nomen,white,browser,plusplus">
-            <predef>jQuery,$,$$,${app.rootNS}</predef>
+            <predef>jQuery,$,$$,${app.rootNS},Highcharts</predef>
 			<formatter type="plain" />
 			<fileset dir="${dir.src}/${app.rootNS}">
                 <include name="**/*.js" />

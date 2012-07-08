@@ -4,6 +4,7 @@
  * 
  */
 RODU.av4vnstat.visualization.MonthlyChartTail = function(){
+    'use strict';
     var _data = null, _id = null,
         self = this,
     
@@ -26,7 +27,6 @@ RODU.av4vnstat.visualization.MonthlyChartTail = function(){
     };
     
     this.create = function(tailId){
-        //RODU.vnstat.util.debug("creating tail...");
         var tail;
         self._id = tailId;
         tail = document.createElement("DIV");
@@ -38,12 +38,7 @@ RODU.av4vnstat.visualization.MonthlyChartTail = function(){
     
     // dev purposes!
     this.render = function(){
-        //RODU.vnstat.util.debug("rendering tail " + self._id);
-        //RODU.vnstat.util.debug("datetime: " + self._data.datetime);
-        //RODU.vnstat.util.debug("rx: " + self._data.rx);
-        //RODU.vnstat.util.debug("tx: " + self._data.tx);
-        
-        new Highcharts.Chart({
+        var monthlyChartTail = new Highcharts.Chart({
             chart: {
                 backgroundColor: '#fde7e7',
                 renderTo: self._id,
@@ -87,10 +82,10 @@ RODU.av4vnstat.visualization.MonthlyChartTail = function(){
                 }
             },
             series: [{
-                name: "" + self._data.rxName + self._data.rxMiB,
+                name: self._data.rxName + self._data.rxMiB,
                 data: self._data.rxPerc
             }, {
-                name: "" + self._data.txName + self._data.txMiB,
+                name: self._data.txName + self._data.txMiB,
                 data: self._data.txPerc
             }]
         });

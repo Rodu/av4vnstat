@@ -1,5 +1,6 @@
 RODU.av4vnstat.visualization.HourlyChart = function () {
-    new Highcharts.Chart({
+    'use strict';
+    var hourlyChart = new Highcharts.Chart({
         chart: {
             backgroundColor: '#fde7e7',
             renderTo: RODU.av4vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART,

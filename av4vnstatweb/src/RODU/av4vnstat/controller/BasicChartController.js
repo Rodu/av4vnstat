@@ -29,21 +29,23 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
     };
 
     $scope.showHourlyChart = function () {
+        var hourlyChart;
         show('hourlyChart');
 
         if (!$scope.chart.hourlyChart.bound)
         {
-            new RODU.av4vnstat.visualization.HourlyChart();
+            hourlyChart = new RODU.av4vnstat.visualization.HourlyChart();
             $scope.chart.hourlyChart.bound = true;
         }
     };
     
     $scope.showDailyChart = function () {
+        var dailyChart;
         show('dailyChart');
         
         if (!$scope.chart.dailyChart.bound)
         {
-            new RODU.av4vnstat.visualization.DailyChart();
+            dailyChart = new RODU.av4vnstat.visualization.DailyChart();
             $scope.chart.dailyChart.bound = true;
         }
     };
@@ -61,11 +63,12 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
     };
     
     $scope.showTopTenChart = function () {
+        var topTenChart;
         show('topTenChart');
         
         if (!$scope.chart.topTenChart.bound)
         {
-            new RODU.av4vnstat.visualization.TopTenChart();
+            topTenChart = new RODU.av4vnstat.visualization.TopTenChart();
             $scope.chart.topTenChart.bound = true;
         }
     };

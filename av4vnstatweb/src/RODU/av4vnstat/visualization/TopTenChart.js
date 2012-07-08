@@ -1,5 +1,6 @@
 RODU.av4vnstat.visualization.TopTenChart = function () {
-    new Highcharts.Chart({
+    'use strict';
+    var topTenChart = new Highcharts.Chart({
         chart: {
             backgroundColor: '#fde7e7',
             renderTo: RODU.av4vnstat.constants.ELEMENT_ID.CHARTS.TOP_TEN_DATA_CHART,
@@ -25,8 +26,7 @@ RODU.av4vnstat.visualization.TopTenChart = function () {
         },
         tooltip: {
             formatter: function() {
-                    return ''+
-                    Highcharts.dateFormat('%e %b', this.x) +', '+ this.y +' MiB';
+                    return Highcharts.dateFormat('%e %b', this.x) +', '+ this.y +' MiB';
             }
         },
         plotOptions: {
