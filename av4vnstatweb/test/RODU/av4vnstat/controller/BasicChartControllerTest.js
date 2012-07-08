@@ -49,4 +49,15 @@ describe("BasicChartControllerTest", function () {
             expect(scope.chart.dailyChart.visible).toEqual(VISIBILITY.SHOW);
         });
     });
+    
+    describe("When MonthlyChart is shown", function () {
+        it("Should have MonthlyChart visibility set to SHOW", function () {
+            // Simulating bound because test automation fails with Highchart in the way... :/
+            scope.chart.monthlyChart.bound = true;
+
+            scope.showMonthlyChartChart();
+
+            expect(scope.chart.monthlyChart.visible).toEqual(VISIBILITY.SHOW);
+        });
+    });
 });

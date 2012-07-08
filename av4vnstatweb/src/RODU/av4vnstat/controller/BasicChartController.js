@@ -101,4 +101,15 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
             $scope.chart.dailyChart.bound = true;
         }
     };
+    
+    $scope.showMonthlyChartChart = function () {
+        show('monthlyChart');
+        
+        if (!$scope.chart.dailyChart.bound)
+        {
+            
+            
+            $scope.chart.monthlyChart.bound = true;
+        }
+    };
 };
