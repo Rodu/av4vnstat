@@ -63,7 +63,6 @@ html, body {
 	width: 80%;
     float: left;
     background-color: #fde7e7;
-    height: 500px;
 }
 
 #home {
@@ -113,6 +112,11 @@ html, body {
     background-color: #f39256;
     background-image: url('../images/tabs_background.gif');
     padding-left: 3%;
+}
+
+.chartsContainer,
+.chartsDescription {
+    height: 500px;
 }
 
 .chartContainer {
