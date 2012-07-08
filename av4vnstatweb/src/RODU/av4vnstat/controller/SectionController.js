@@ -16,15 +16,11 @@ RODU.av4vnstat.controller.SectionController = function ($scope) {
             visibleSection = id;
         };
 
-
-    $scope.test = "test";
-
     $scope.section = {
         home: {visible:VISIBILITY.SHOW},
         basic: {visible:VISIBILITY.HIDE},
         advanced: {visible:VISIBILITY.HIDE}
     };
-
 
     $scope.showHome = function () {
         show('home');
@@ -37,6 +33,4 @@ RODU.av4vnstat.controller.SectionController = function ($scope) {
     $scope.showAdvanced = function () {
         show('advanced');
     };
-
-
 };

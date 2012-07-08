@@ -21,7 +21,7 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
         hourlyChart: {visible:VISIBILITY.HIDE, bound: false},
         dailyChart: {visible:VISIBILITY.HIDE, bound: false},
         monthlyChart: {visible:VISIBILITY.HIDE, bound: false},
-        toptenChart: {visible:VISIBILITY.HIDE, bound: false}
+        topTenChart: {visible:VISIBILITY.HIDE, bound: false}
     };
 
     $scope.showDescription = function () {
@@ -57,6 +57,16 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
             monthlyChart = new RODU.av4vnstat.visualization.MonthlyChart();
             monthlyChart.render();
             $scope.chart.monthlyChart.bound = true;
+        }
+    };
+    
+    $scope.showTopTenChart = function () {
+        show('topTenChart');
+        
+        if (!$scope.chart.topTenChart.bound)
+        {
+            new RODU.av4vnstat.visualization.TopTenChart();
+            $scope.chart.topTenChart.bound = true;
         }
     };
 };

@@ -17,7 +17,6 @@
                     <li class="verticalTabItem"><a href="" ng-click="showBasic()">Basic Data</a></li>
                     <li class="verticalTabItem"><a href="" ng-click="showAdvanced()">Advanced Monitoring</a></li>
                 </ul>
-                <span>{{test}}</span>
             </div>
             <div id="chartsContents">
                 <div id="home" style="display: {{section.home.visible}}">
@@ -37,6 +36,7 @@
                             <li class="horizontalTabItem"><a href="" ng-click="showHourlyChart()">Hourly data</a></li>
                             <li class="horizontalTabItem"><a href="" ng-click="showDailyChart()">Daily data</a></li>
                             <li class="horizontalTabItem"><a href="" ng-click="showMonthlyChart()">Monthly data</a></li>
+                            <li class="horizontalTabItem"><a href="" ng-click="showTopTenChart()">Top Ten Days</a></li>
                         </ul>
                     </div>
                     <div id="basicChartContainer" class="chartContainer">
@@ -50,7 +50,7 @@
                         <div id="hourlyDataChart" class="chart" style="display: {{chart.hourlyChart.visible}}"></div>
                         <div id="dailyDataChart" class="chart" style="display: {{chart.dailyChart.visible}}"></div>
                         <div id="monthlyDataChart" class="smallMultiples" style="display: {{chart.monthlyChart.visible}}"></div>
-                        <div id="topTenDataChart" class="chart" style="display: {{chart.toptenChart.visible}}"></div>
+                        <div id="topTenDataChart" class="chart" style="display: {{chart.topTenChart.visible}}"></div>
                     </div>
                 </div>
                 <div id="advancedMonitoringCharts" style="display: {{section.advanced.visible}}">

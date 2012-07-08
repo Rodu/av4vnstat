@@ -60,4 +60,15 @@ describe("BasicChartControllerTest", function () {
             expect(scope.chart.monthlyChart.visible).toEqual(VISIBILITY.SHOW);
         });
     });
+    
+    describe("When TopTenChart is shown", function () {
+        it("Should have TopTenChart visibility set to SHOW", function () {
+            // Simulating bound because test automation fails with Highchart in the way... :/
+            scope.chart.topTenChart.bound = true;
+
+            scope.showTopTenChart();
+
+            expect(scope.chart.topTenChart.visible).toEqual(VISIBILITY.SHOW);
+        });
+    });
 });
