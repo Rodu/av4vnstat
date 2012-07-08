@@ -5,10 +5,10 @@
     <link type="text/css" rel="stylesheet" href="resources/css/vnstat.css"/>
   </head>
   <body>
-    <div id="mainContainer">
+    <div id="mainContainer" ng-controller="RODU.av4vnstat.controller.MainController">
         <div id="header">
             <div id="logoContainer"><span id="logo">Av4vnstat</span><br/><span id="slug">Network traffic information</span></div>
-            <div id="updateTimeContainer"><span id="updateTime">Last update: Wed 2 May 2012 at 13:23</span></div>
+            <div id="updateTimeContainer"><span id="updateTime">{{updateTimeText}}</span></div>
         </div>
         <div id="contents" ng-controller="RODU.av4vnstat.controller.SectionController">
             <div id="verticalTabContainer">

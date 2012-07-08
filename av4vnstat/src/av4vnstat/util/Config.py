@@ -67,7 +67,7 @@ class Constants(object):
     
     # Constant used together with the INSTALL_FOLDER configuration parameter
     # declared in the external config file
-    JS_DATA_FILE_REL_PATH = "/av4vnstatweb/js/data.js"
+    JS_DATA_FILE_REL_PATH = "/av4vnstatweb/src/RODU/av4vnstat/data/data.js"
     
     # Constants for JS data set chart names to be matched in the Javascript.
     UPDATE_TIME_DATASET_NAME = "updateTime"

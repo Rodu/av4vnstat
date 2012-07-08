@@ -335,7 +335,7 @@ class JSDatasetGenerator(object):
     # as the name of the literal.
     #
     def _openJSDataObject(self, chartDatasetName):
-        self._jsDataFile.write("RODU.vnstat.data.")
+        self._jsDataFile.write("RODU.av4vnstat.data.")
         self._jsDataFile.write(chartDatasetName)
         self._jsDataFile.write(" = {\n")
 
