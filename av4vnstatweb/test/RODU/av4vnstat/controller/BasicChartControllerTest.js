@@ -29,7 +29,6 @@ describe("BasicChartControllerTest", function () {
     });
 
     describe("When HourlyChart is shown", function () {
-
         it("Should have HourlyChart visibility set to SHOW", function () {
             // Simulating bound because test automation fails with Highchart in the way... :/
             scope.chart.hourlyChart.bound = true;
@@ -37,6 +36,17 @@ describe("BasicChartControllerTest", function () {
             scope.showHourlyChart();
 
             expect(scope.chart.hourlyChart.visible).toEqual(VISIBILITY.SHOW);
+        });
+    });
+    
+    describe("When DailyChart is shown", function () {
+        it("Should have DailyChart visibility set to SHOW", function () {
+            // Simulating bound because test automation fails with Highchart in the way... :/
+            scope.chart.dailyChart.bound = true;
+
+            scope.showDailyChart();
+
+            expect(scope.chart.dailyChart.visible).toEqual(VISIBILITY.SHOW);
         });
     });
 });
