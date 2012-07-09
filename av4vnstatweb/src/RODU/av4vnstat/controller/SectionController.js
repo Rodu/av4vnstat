@@ -8,7 +8,7 @@
 RODU.av4vnstat.controller.SectionController = function ($scope) {
     'use strict';
     var visibleSection = 'home',
-        VISIBILITY = RODU.av4vnstat.constants.VISIBILITY,
+        VISIBILITY = RODU.av4vnstat.CONFIG.VISIBILITY,
 
         show = function (id) {
             $scope.section[visibleSection].visible = VISIBILITY.HIDE;

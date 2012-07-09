@@ -3,7 +3,7 @@ RODU.av4vnstat.visualization.HourlyChart = function () {
     var hourlyChart = new Highcharts.Chart({
         chart: {
             backgroundColor: '#fde7e7',
-            renderTo: RODU.av4vnstat.constants.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART,
+            renderTo: RODU.av4vnstat.CONFIG.ELEMENT_ID.CHARTS.HOURLY_DATA_CHART,
             type: 'column'
         },
         title: {

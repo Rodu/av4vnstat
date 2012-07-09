@@ -3,7 +3,7 @@ RODU.av4vnstat.visualization.DailyChart = function () {
     var dailyChart = new Highcharts.Chart({
         chart: {
             backgroundColor: '#fde7e7',
-            renderTo: RODU.av4vnstat.constants.ELEMENT_ID.CHARTS.DAILY_DATA_CHART,
+            renderTo: RODU.av4vnstat.CONFIG.ELEMENT_ID.CHARTS.DAILY_DATA_CHART,
             type: 'spline'
         },
         title: {

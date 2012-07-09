@@ -3,7 +3,7 @@ RODU.av4vnstat.visualization.TopTenChart = function () {
     var topTenChart = new Highcharts.Chart({
         chart: {
             backgroundColor: '#fde7e7',
-            renderTo: RODU.av4vnstat.constants.ELEMENT_ID.CHARTS.TOP_TEN_DATA_CHART,
+            renderTo: RODU.av4vnstat.CONFIG.ELEMENT_ID.CHARTS.TOP_TEN_DATA_CHART,
             type: 'scatter',
             zoomType: 'xy'
         },

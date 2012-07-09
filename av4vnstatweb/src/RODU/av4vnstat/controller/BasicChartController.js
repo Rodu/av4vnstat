@@ -8,7 +8,7 @@
 RODU.av4vnstat.controller.BasicChartController = function ($scope) {
     'use strict';
     var visibleChart = 'description',
-        VISIBILITY = RODU.av4vnstat.constants.VISIBILITY,
+        VISIBILITY = RODU.av4vnstat.CONFIG.VISIBILITY,
 
         show = function (id) {
             $scope.chart[visibleChart].visible = VISIBILITY.HIDE;

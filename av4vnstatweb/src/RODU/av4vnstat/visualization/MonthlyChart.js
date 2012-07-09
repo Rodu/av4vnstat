@@ -1,7 +1,7 @@
 RODU.av4vnstat.visualization.MonthlyChart = function () {
     'use strict';
         // The container for the whole visualization
-    var _renderTo = RODU.av4vnstat.constants.ELEMENT_ID.CHARTS.MONTHLY_DATA_CHART,
+    var _renderTo = RODU.av4vnstat.CONFIG.ELEMENT_ID.CHARTS.MONTHLY_DATA_CHART,
         tailContainer,
         // How many columns per row 
         NUM_COLUMNS = 3,

@@ -9,7 +9,7 @@ describe("BasicChartControllerTest", function () {
 
     var controller;
     var scope;
-    var VISIBILITY = RODU.av4vnstat.constants.VISIBILITY;
+    var VISIBILITY = RODU.av4vnstat.CONFIG.VISIBILITY;
 
     beforeEach(function () {
         scope = {};
