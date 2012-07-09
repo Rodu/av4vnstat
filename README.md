@@ -10,7 +10,7 @@ The Av4vnstat uses a Python program to parse the data that vnstat collects and c
 
 To see an example of the running web interface you can open the file:
 
-    av4vnstatweb/example.html
+    av4vnstatweb/example/av4vnstat.html
 
 It would be reccommended to serve the application via a webserver in order to have proper HTTP support.
 
