@@ -10,7 +10,6 @@ RODU.av4vnstat.visualization.HourlyChart = function () {
             text: 'Last 24 Hours Usage'
         },
         xAxis: {
-
             categories: RODU.av4vnstat.data.hourlyDataChart.categories
         },
         yAxis: {

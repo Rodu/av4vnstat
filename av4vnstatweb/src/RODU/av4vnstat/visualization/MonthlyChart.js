@@ -29,13 +29,13 @@ RODU.av4vnstat.visualization.MonthlyChart = function () {
             
             tail.render();
             lastColumnNumber++;
-        };
+        },
         
         /*
          * The render method will draw the visualization on the screen in the
          * proper place and should be called on the first time to show the vis.
          */
-        this.render = function(){
+        render = function(){
             var tail, rxSeries, rxSeriesData, txSeries, txSeriesData, tailData,
                 i, renderContainer;
             var DOWNLOAD_SERIES = 0, UPLOAD_SERIES = 1,
@@ -70,4 +70,8 @@ RODU.av4vnstat.visualization.MonthlyChart = function () {
                 appendTail(tail);
             }
         };
+        
+        (function(){
+            render();
+        }());
 };

@@ -9,11 +9,29 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
     'use strict';
     var visibleChart = 'description',
         VISIBILITY = RODU.av4vnstat.CONFIG.VISIBILITY,
+        DELAY = 150, // milliseconds
 
         show = function (id) {
             $scope.chart[visibleChart].visible = VISIBILITY.HIDE;
             $scope.chart[id].visible = VISIBILITY.SHOW;
             visibleChart = id;
+        },
+        
+        bindChart = function (chart, ChartClass) {
+            /*
+             * This delay is necessary because HighChart wont see the
+             * DOM manupulated by AngualrJS and there will be errors
+             * in measuring the elements containing the charts without
+             * this delay.
+             */
+            window.setTimeout(function(){
+                var instance; // to make JSLint happy...
+                if (!chart.bound)
+                {
+                    instance = new ChartClass();
+                    chart.bound = true;
+                }
+            }, DELAY);
         };
 
     $scope.chart = {
@@ -29,24 +47,22 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
     };
 
     $scope.showHourlyChart = function () {
-        var hourlyChart;
         show('hourlyChart');
-
+        
         if (!$scope.chart.hourlyChart.bound)
         {
-            hourlyChart = new RODU.av4vnstat.visualization.HourlyChart();
-            $scope.chart.hourlyChart.bound = true;
+            bindChart($scope.chart.hourlyChart, 
+                      RODU.av4vnstat.visualization.HourlyChart);
         }
     };
     
     $scope.showDailyChart = function () {
-        var dailyChart;
         show('dailyChart');
         
         if (!$scope.chart.dailyChart.bound)
         {
-            dailyChart = new RODU.av4vnstat.visualization.DailyChart();
-            $scope.chart.dailyChart.bound = true;
+            bindChart($scope.chart.dailyChart, 
+                      RODU.av4vnstat.visualization.DailyChart);
         }
     };
     
@@ -56,9 +72,8 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
         
         if (!$scope.chart.monthlyChart.bound)
         {
-            monthlyChart = new RODU.av4vnstat.visualization.MonthlyChart();
-            monthlyChart.render();
-            $scope.chart.monthlyChart.bound = true;
+            bindChart($scope.chart.monthlyChart, 
+                      RODU.av4vnstat.visualization.MonthlyChart);
         }
     };
     
@@ -68,8 +83,8 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
         
         if (!$scope.chart.topTenChart.bound)
         {
-            topTenChart = new RODU.av4vnstat.visualization.TopTenChart();
-            $scope.chart.topTenChart.bound = true;
+            bindChart($scope.chart.topTenChart, 
+                      RODU.av4vnstat.visualization.TopTenChart);
         }
     };
 };
