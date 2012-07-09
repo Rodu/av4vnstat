@@ -6,7 +6,7 @@
 //
 // Av4VnStat
 //      
-// Copyright 2011 Roberto S. <greenheron@rocketmail.com>
+// Copyright 2012 Roberto S. <greenheron@rocketmail.com>
 //      
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,24 +23,9 @@
 //
 var RODU = RODU || {};
 
-// TODO: implement some require method to load RODU lib module
+RODU.av4vnstat = {};
 
-// Definition for package: RODU.av4vnstat
-if (!RODU.av4vnstat) {
-    /**
-     * Package containing...
-     * 
-     * @namespace
-     */
-    RODU.av4vnstat = {};
-
-    // Definition of application packages
-    RODU.av4vnstat.controller = {};
-    RODU.av4vnstat.data = {};
-    RODU.av4vnstat.visualization = {};
-
-    // Definition of configuration parameters
-    RODU.av4vnstat.config = {
-
-    };
-}
+// Definition of application packages
+RODU.av4vnstat.controller = {};
+RODU.av4vnstat.data = {};
+RODU.av4vnstat.visualization = {};
