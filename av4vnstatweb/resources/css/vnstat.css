@@ -116,18 +116,18 @@ html, body {
 
 .chartsContainer,
 .chartsDescription {
-    width: 97%;
     height: 500px;
 }
 
 .chartContainer {
+    width: 97%;
     padding-left: 3%;
     padding-top: 50px;
 }
 
 .chart {
-    width: 500px;
-    height: 500px;
+    width: 600px;
+    height: 400px;
     display: none;
 }
 
