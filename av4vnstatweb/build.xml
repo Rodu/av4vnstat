@@ -1,7 +1,7 @@
 <!DOCTYPE project>
 <project name="MusicExplorer" default="all" basedir=".">
 	<description>
-        MusicExplorer Build File
+        Av4VnStat Build File
     </description>
     
     <property file="build.properties" />

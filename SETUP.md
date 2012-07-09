@@ -1,7 +1,6 @@
-SETUP INSTRUCTIONS
+#Setup instructions
 
-------------------------------------------------------------------------
-INSTALLING AND INITIALIZING vnstat
+##Installing and initializing vnstat
 
 First of all it is necessary to install vnstat.
 On a Debian based Linux distribution (like Ubuntu is) this is done with:
@@ -27,8 +26,8 @@ To show the data grabbed so far you can give from the terminal the command:
 
 $ vnstat -i eth1
 
-------------------------------------------------------------------------
-CONFIGURATION
+
+##Configuration
 
 You should update the program configuration in the file that comes with
 the download:
@@ -56,8 +55,8 @@ Note:
     This version the program can handle only one network card to show
     data for. In the future the support for more cards can be added.
 
-------------------------------------------------------------------------
-GENERATING THE JAVASCRIPT DATA
+
+##Generating the javascript data
 
 Once vnstat is installed and enough data have been collected (to be shown)
 you can execute the Python script to create the JS dataset.
@@ -72,8 +71,8 @@ $ python av4vnstat_run.py
 
 This will generate a javascript file but you wont see any output now.
 
-------------------------------------------------------------------------
-OPENING THE APPLICATION
+
+##Opening the application
 
 To open the Javascript web app you need to open in a browser the file:
 
@@ -85,8 +84,7 @@ You can also launch the example.html in the browser to see what the result could
 look like.
 
 
-------------------------------------------------------------------------
-AUTOMATING THE DATA GENERATION
+##Automating the data generation
 
 You can create a cron entry to run the python script on a schedule
 time interval. To do this you can create an entry in the crontab where the script
