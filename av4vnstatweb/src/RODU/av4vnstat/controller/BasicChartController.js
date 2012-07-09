@@ -18,20 +18,22 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
         },
         
         bindChart = function (chart, ChartClass) {
-            /*
-             * This delay is necessary because HighChart wont see the
-             * DOM manupulated by AngualrJS and there will be errors
-             * in measuring the elements containing the charts without
-             * this delay.
-             */
-            window.setTimeout(function(){
-                var instance; // to make JSLint happy...
-                if (!chart.bound)
-                {
-                    instance = new ChartClass();
-                    chart.bound = true;
-                }
-            }, DELAY);
+            if (!chart.bound) {
+                /*
+                 * This delay is necessary because HighChart wont see the
+                 * DOM manupulated by AngualrJS and there will be errors
+                 * in measuring the elements containing the charts without
+                 * this delay.
+                 */
+                window.setTimeout(function(){
+                    var instance; // to make JSLint happy...
+                    if (!chart.bound)
+                    {
+                        instance = new ChartClass();
+                        chart.bound = true;
+                    }
+                }, DELAY);
+            }
         };
 
     $scope.chart = {
@@ -47,44 +49,26 @@ RODU.av4vnstat.controller.BasicChartController = function ($scope) {
     };
 
     $scope.showHourlyChart = function () {
-        show('hourlyChart');
-        
-        if (!$scope.chart.hourlyChart.bound)
-        {
-            bindChart($scope.chart.hourlyChart, 
-                      RODU.av4vnstat.visualization.HourlyChart);
-        }
+        show('hourlyChart');        
+        bindChart($scope.chart.hourlyChart, 
+                  RODU.av4vnstat.visualization.HourlyChart);
     };
     
     $scope.showDailyChart = function () {
         show('dailyChart');
-        
-        if (!$scope.chart.dailyChart.bound)
-        {
-            bindChart($scope.chart.dailyChart, 
-                      RODU.av4vnstat.visualization.DailyChart);
-        }
+        bindChart($scope.chart.dailyChart, 
+                  RODU.av4vnstat.visualization.DailyChart);
     };
     
     $scope.showMonthlyChart = function () {
-        var monthlyChart;
         show('monthlyChart');
-        
-        if (!$scope.chart.monthlyChart.bound)
-        {
-            bindChart($scope.chart.monthlyChart, 
-                      RODU.av4vnstat.visualization.MonthlyChart);
-        }
+        bindChart($scope.chart.monthlyChart, 
+                  RODU.av4vnstat.visualization.MonthlyChart);
     };
     
     $scope.showTopTenChart = function () {
-        var topTenChart;
         show('topTenChart');
-        
-        if (!$scope.chart.topTenChart.bound)
-        {
-            bindChart($scope.chart.topTenChart, 
-                      RODU.av4vnstat.visualization.TopTenChart);
-        }
+        bindChart($scope.chart.topTenChart, 
+                  RODU.av4vnstat.visualization.TopTenChart);
     };
 };
