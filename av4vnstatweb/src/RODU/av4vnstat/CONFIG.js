@@ -11,8 +11,8 @@ RODU.av4vnstat.CONFIG = {
     DEBUG: false,
 
     VISIBILITY: {
-        SHOW: 'block',
-        HIDE: 'none'
+        SHOW: 'show',
+        HIDE: 'hide'
     },
 
     // Mapping of document elements ids to (pseudo) constants
