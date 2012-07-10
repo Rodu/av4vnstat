@@ -1,10 +1,3 @@
-/**
- * Created with JetBrains WebStorm.
- * User: rob
- * Date: 08/07/12
- * Time: 14:35
- * To change this template use File | Settings | File Templates.
- */
 describe("SectionControllerTest", function () {
 
     var sectionController;
@@ -20,53 +13,39 @@ describe("SectionControllerTest", function () {
         expect(typeof sectionController).toEqual('object');
     }); //*/
 
-    describe("When Home section is shown", function () {
-
-        it("Should have Home set to SHOW", function () {
+    describe("When Home section is shown after more transitions", function () {
+        beforeEach(function () {
+            scope.showBasic();
+            scope.showAdvanced();
             scope.showHome();
-
+        });
+        
+        it("Should have Home set to SHOW", function () {
             expect(scope.section.home.visible).toEqual(VISIBILITY.SHOW);
         });
 
-        it("Should have the other sections set to HIDE", function () {
-            scope.showHome();
-
+        it("Should have basic set to HIDE", function () {
             expect(scope.section.basic.visible).toEqual(VISIBILITY.HIDE);
+        });
+        
+        it("Should have advanced set to HIDE", function () {
             expect(scope.section.advanced.visible).toEqual(VISIBILITY.HIDE);
         }); //*/
     });
 
     describe("When Basic section is shown", function () {
-
         it("Should have Basic set to SHOW", function () {
             scope.showBasic();
 
             expect(scope.section.basic.visible).toEqual(VISIBILITY.SHOW);
         });
-
-        it("Should have the other sections set to HIDE", function () {
-            scope.showBasic();
-
-            expect(scope.section.home.visible).toEqual(VISIBILITY.HIDE);
-            expect(scope.section.advanced.visible).toEqual(VISIBILITY.HIDE);
-        }); //*/
     });
 
     describe("When Advanced section is shown", function () {
-
         it("Should have Advanced set to SHOW", function () {
             scope.showAdvanced();
 
             expect(scope.section.advanced.visible).toEqual(VISIBILITY.SHOW);
         });
-
-        it("Should have the other sections set to HIDE", function () {
-            scope.showAdvanced();
-
-            expect(scope.section.home.visible).toEqual(VISIBILITY.HIDE);
-            expect(scope.section.basic.visible).toEqual(VISIBILITY.HIDE);
-        }); //*/
     });
-
-
 });
