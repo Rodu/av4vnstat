@@ -1,18 +1,27 @@
 #av4vnstat - Another Viewer for vnstat
 
-The application allows to visualize the data collected by vnstat, network traffic information tool visualizing vnstat data using the [Highcharts](http://www.highcharts.com) Javascript library.
+The application allows to visualize the data collected by vnstat, network traffic information tool, using the [Highcharts](http://www.highcharts.com) Javascript library.
 
-[AngularJS](http://angularjs.org) is being introduced to manage the interaction with the application and at the moment some features are used.
+[AngularJS](http://angularjs.org) is being introduced to manage the interaction with the application.
 
-Vnstat can be used on a Linux machine, to register the amount of traffic in download and upload for a specific network interface.
+Vnstat can be used on a Linux machine to register the amount of traffic in download and upload for a specific network interface card.
 
-The Av4vnstat uses a Python program to parse the data that vnstat collects and create specific datasets to be consumed in the Javascript web app.
+The Av4vnstat uses a Python program to parse the data that vnstat collects, and create specific datasets to be consumed in the Javascript front-end.
 
 To see an example of the running web interface you can open the file:
 
     av4vnstatweb/example/av4vnstat.html
 
-It would be reccommended to serve the application via a webserver in order to have proper HTTP support.
+It would be better to serve the application via a web server, in order to have proper HTTP support.
+If you don't have a web server installed and don't want to bother, then open a console and change directory to:
+
+    av4vnstatweb/example
+
+From there, run the Python web server:
+
+    $ python -m SimpleHTTPServer
+
+Now open your web browser at the url [http://localhost:8000](http://localhost:8000) and click av4vnstat.html. You can terminate the web server from the keyboard with a (^C) CTRL-C.
 
 For setup instructions to collect and visualize your network usage see the SETUP.md file.
 
@@ -20,17 +29,17 @@ For setup instructions to collect and visualize your network usage see the SETUP
 
 The project uses Ant together with a bunch of other tools to validate, test, organize, document, and minify the Javascript source.
 
-Just type:
+To see the available Ant tasks just type:
 
-    ant -p
+    $ ant -p
 
-to see the available tasks. The ones you would use are ant debug, ant dist.
+The ones you would use are _ant debug_ and _ant dist_.
 
-###Runnint tests
+###Running tests
 
 In order to execute the automated tests you need to have the [PhantomJS](http://phantomjs.org/) executable on your machine. The script will look for phantomjs in:
 
     /usr/local/bin/phantomjs
 
-Also python is required for the build to run.
+Of course Python is also required for the build to run.
 
