@@ -2,7 +2,9 @@
 
 The application allows to visualize the data collected by vnstat, network traffic information tool, using the [Highcharts](http://www.highcharts.com) Javascript library.
 
-[AngularJS](http://angularjs.org) is being introduced to manage the interaction with the application.
+At the moment the code is in a working but transitional state. A better implementation would be needed for loading data from an external source.
+
+[AngularJS](http://angularjs.org) has been introduced to manage the interaction with the application elements more as a prototype implementation.
 
 Vnstat can be used on a Linux machine to register the amount of traffic in download and upload for a specific network interface card.
 
